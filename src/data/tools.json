@@ -1,0 +1,9 @@
+[
+  {
+    "id": "tool-1",
+    "name": "示例小工具",
+    "description": "一个好玩的命令行小工具，用来做某件有趣的事情。",
+    "githubUrl": "https://github.com/花萍雨/example-tool",
+    "tags": ["Python", "CLI"]
+  }
+]

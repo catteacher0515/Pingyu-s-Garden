@@ -1,3 +1,18 @@
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import HomePage from './pages/HomePage'
+import ToolsPage from './pages/ToolsPage'
+import ArticlesPage from './pages/ArticlesPage'
+import NotFoundPage from './pages/NotFoundPage'
+
 export default function App() {
-  return <div className="min-h-screen bg-green-50">花萍雨的数字花园</div>
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/tools" element={<ToolsPage />} />
+        <Route path="/articles" element={<ArticlesPage />} />
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
+    </BrowserRouter>
+  )
 }
