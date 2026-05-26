@@ -1,13 +1,12 @@
-export type FlowerType = 'tools' | 'articles' | 'notes' | 'ideas'
-export type ClickBehavior = 'navigate' | 'expand'
+export type HomeSectionId = 'profile' | 'projects' | 'articles' | 'tools'
 
-export interface FlowerConfig {
-  id: FlowerType
+export interface HomeSectionConfig {
+  id: HomeSectionId
   label: string
   emoji: string
-  behavior: ClickBehavior
-  angle: number        // 在同心圆上的角度（度），0 = 正上方
-  color: string        // Tailwind bg 色，用于卡片背景
+  description: string
+  path: string
+  angle: number
 }
 
 export interface Tool {

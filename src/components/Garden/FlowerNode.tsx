@@ -1,41 +1,26 @@
-import { motion } from 'framer-motion'
-import type { FlowerConfig } from '../../types'
+import type { HomeSectionConfig } from '../../types'
 
 interface FlowerNodeProps {
-  flower: FlowerConfig
-  radius: number
-  containerSize: number
-  onClick: (flower: FlowerConfig) => void
-  index: number
+  section: HomeSectionConfig
+  onClick: () => void
 }
 
-export default function FlowerNode({
-  flower,
-  radius,
-  containerSize,
-  onClick,
-  index,
-}: FlowerNodeProps) {
-  const center = containerSize / 2
-  const rad = (flower.angle - 90) * (Math.PI / 180)
-  const x = center + radius * Math.cos(rad)
-  const y = center + radius * Math.sin(rad)
+export default function FlowerNode({ section, onClick }: FlowerNodeProps) {
+  const style = {
+    transform: `translate(-50%, -50%) translate(${Math.cos((section.angle - 90) * Math.PI / 180) * 170}px, ${Math.sin((section.angle - 90) * Math.PI / 180) * 170}px)`,
+  }
 
   return (
-    <motion.div
-      className="absolute -translate-x-1/2 -translate-y-1/2 text-center cursor-pointer select-none"
-      style={{ left: x, top: y }}
-      initial={{ scale: 0, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      transition={{ duration: 0.4, delay: 0.4 + index * 0.1 }}
-      whileHover={{ scale: 1.2 }}
-      whileTap={{ scale: 0.95 }}
-      onClick={() => onClick(flower)}
+    <button
+      type="button"
+      onClick={onClick}
+      style={style}
+      aria-label={section.label}
+      className="absolute flex w-32 -translate-x-1/2 -translate-y-1/2 flex-col items-center rounded-[1.5rem] border border-white/20 bg-white/10 px-4 py-4 text-center text-white shadow-[0_16px_40px_rgba(0,0,0,0.18)] backdrop-blur-2xl transition hover:bg-white/16 hover:shadow-[0_20px_52px_rgba(0,0,0,0.24)]"
     >
-      <div className="text-4xl drop-shadow-md">{flower.emoji}</div>
-      <div className="text-xs text-gray-600 mt-1 bg-white/80 rounded px-1.5 py-0.5 whitespace-nowrap">
-        {flower.label}
-      </div>
-    </motion.div>
+      <span className="text-3xl">{section.emoji}</span>
+      <span className="mt-2 text-sm font-semibold">{section.label}</span>
+      <span className="mt-1 text-[11px] leading-5 text-white/62">{section.description}</span>
+    </button>
   )
 }

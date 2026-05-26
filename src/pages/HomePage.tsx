@@ -1,35 +1,19 @@
-import { useState } from 'react'
 import GardenMap from '../components/Garden/GardenMap'
-import ContentCard from '../components/Overlay/ContentCard'
-import type { FlowerConfig, Note, Idea } from '../types'
-import notesData from '../data/notes.json'
-import ideasData from '../data/ideas.json'
-
-const expandData: Record<string, Note[] | Idea[]> = {
-  notes: notesData as Note[],
-  ideas: ideasData as Idea[],
-}
 
 export default function HomePage() {
-  const [activeFlower, setActiveFlower] = useState<FlowerConfig | null>(null)
-
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center"
-      style={{ background: 'linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 50%, #e0f7fa 100%)' }}
-    >
-      <h1 className="text-2xl font-bold text-gray-600 mb-8 tracking-wide">
-        花萍雨的数字花园
-      </h1>
+    <main className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.16),transparent_34%),radial-gradient(circle_at_80%_20%,rgba(170,205,188,0.18),transparent_22%),linear-gradient(135deg,#111827_0%,#0b1020_48%,#08111a_100%)]">
+      <section className="mx-auto flex min-h-screen max-w-6xl flex-col items-center justify-center px-6 py-10">
+        <header className="mb-10 text-center">
+          <p className="text-xs uppercase tracking-[0.32em] text-white/55">Digital Garden</p>
+          <h1 className="mt-4 text-3xl font-semibold text-white">花萍雨的数字花园</h1>
+          <p className="mt-3 text-sm text-white/65">个人介绍、文章、项目和工具的统一入口</p>
+        </header>
 
-      <GardenMap onExpand={setActiveFlower} />
+        <GardenMap />
 
-      <ContentCard
-        flower={activeFlower}
-        data={activeFlower ? (expandData[activeFlower.id] ?? []) : []}
-        onClose={() => setActiveFlower(null)}
-      />
-
-      <p className="mt-8 text-xs text-gray-400">点击花朵，探索花园 🌱</p>
-    </div>
+        <p className="mt-8 text-xs text-white/55">点击任一入口，进入对应内容页</p>
+      </section>
+    </main>
   )
 }

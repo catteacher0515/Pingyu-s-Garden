@@ -1,8 +1,12 @@
 import { motion, AnimatePresence } from 'framer-motion'
-import type { FlowerConfig, Note, Idea } from '../../types'
+import type { Note, Idea } from '../../types'
 
 interface ContentCardProps {
-  flower: FlowerConfig | null
+  flower: {
+    emoji: string
+    label: string
+    color: string
+  } | null
   data: Note[] | Idea[]
   onClose: () => void
 }
