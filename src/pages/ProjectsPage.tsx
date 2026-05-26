@@ -4,7 +4,7 @@ interface Project {
   id: string
   name: string
   summary: string
-  url: string
+  url?: string
   highlights: string[]
 }
 
@@ -14,7 +14,6 @@ const projects: Project[] = [
     name: '代表项目占位卡',
     summary:
       '这里先放一个可写进简历的项目展示位，后续替换成真实项目名称、成果和技术细节。',
-    url: '#project-placeholder',
     highlights: ['成果导向', '技术栈说明', '可量化结果'],
   },
 ]
@@ -44,12 +43,18 @@ export default function ProjectsPage() {
                 </div>
               </div>
 
-              <a
-                href={project.url}
-                className="shrink-0 rounded-full border border-white/16 bg-white/12 px-3 py-1.5 text-xs text-white transition-colors hover:bg-white/18"
-              >
-                查看
-              </a>
+              {project.url ? (
+                <a
+                  href={project.url}
+                  className="shrink-0 rounded-full border border-white/16 bg-white/12 px-3 py-1.5 text-xs text-white transition-colors hover:bg-white/18"
+                >
+                  查看
+                </a>
+              ) : (
+                <span className="shrink-0 rounded-full border border-white/10 bg-white/6 px-3 py-1.5 text-xs text-white/45">
+                  待补充
+                </span>
+              )}
             </div>
           </article>
         ))}

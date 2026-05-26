@@ -28,6 +28,6 @@ describe('detail pages', () => {
 
     expect(screen.getByRole('heading', { name: '项目' })).toBeInTheDocument()
     expect(screen.getByText('代表项目占位卡')).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: '查看' })).toHaveAttribute('href', '#project-placeholder')
+    expect(screen.getByText('待补充')).toBeInTheDocument()
   })
 })
