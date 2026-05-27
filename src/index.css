@@ -1,7 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap');
 @import "tailwindcss";
 
 :root {
-  color-scheme: dark;
+  color-scheme: light;
+  --site-bg: #f7faf3;
+  --site-ink: #344156;
+  --site-muted: #6b7b8f;
+  --site-paper: rgba(255, 255, 255, 0.8);
+  --site-border: rgba(255, 255, 255, 0.75);
+  --site-shadow: 0 24px 90px rgba(100, 126, 109, 0.12);
 }
 
 html,
@@ -12,6 +19,32 @@ body,
 
 body {
   min-height: 100vh;
-  background: #0b1020;
-  color: #fff;
+  background:
+    radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.86), transparent 24%),
+    radial-gradient(circle at 82% 14%, rgba(208, 230, 221, 0.56), transparent 24%),
+    linear-gradient(135deg, #f7faf3 0%, #edf4ed 46%, #e9f1f5 100%);
+  color: var(--site-ink);
+  font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(rgba(255, 255, 255, 0.7) 1px, transparent 1px),
+    radial-gradient(rgba(112, 138, 122, 0.15) 1px, transparent 1px);
+  background-size: 3px 3px, 11px 11px;
+  opacity: 0.18;
+  mix-blend-mode: soft-light;
+}
+
+.font-display {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+}
+
+.font-body {
+  font-family: 'IBM Plex Sans', system-ui, sans-serif;
 }

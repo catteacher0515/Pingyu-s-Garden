@@ -1,5 +1,4 @@
 import { useNavigate } from 'react-router-dom'
-import CenterNode from './CenterNode'
 import FlowerNode from './FlowerNode'
 import type { HomeSectionConfig } from '../../types'
 
@@ -14,15 +13,18 @@ export default function GardenMap() {
   const navigate = useNavigate()
 
   return (
-    <div className="relative aspect-square w-[min(84vw,38rem)]">
-      <CenterNode />
-      {HOME_SECTIONS.map((section) => (
-        <FlowerNode
-          key={section.id}
-          section={section}
-          onClick={() => navigate(section.path)}
-        />
-      ))}
+    <div className="relative w-full">
+      <div className="mx-auto max-w-5xl rounded-[2.75rem] border border-white/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.92),rgba(255,255,255,0.66))] px-5 py-5 shadow-[0_24px_90px_rgba(100,126,109,0.12)] backdrop-blur-3xl sm:px-6 sm:py-6">
+        <div className="grid gap-4 md:grid-cols-4">
+          {HOME_SECTIONS.map((section) => (
+            <FlowerNode
+              key={section.id}
+              section={section}
+              onClick={() => navigate(section.path)}
+            />
+          ))}
+        </div>
+      </div>
     </div>
   )
 }

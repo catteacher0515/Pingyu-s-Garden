@@ -13,7 +13,7 @@ describe('HomePage', () => {
     )
 
     expect(screen.getByText('花萍雨的数字花园')).toBeInTheDocument()
-    expect(screen.getByAltText('花萍雨头像')).toBeInTheDocument()
+    expect(screen.getByText('DIGITAL GARDEN')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /个人介绍/i })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /项目/i })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /文章/i })).toBeInTheDocument()
