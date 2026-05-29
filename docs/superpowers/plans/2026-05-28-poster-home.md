@@ -1,5 +1,7 @@
 # Poster Home Implementation Plan
 
+> 状态：当前有效实施计划。该计划对应已确认的海报式首页方向，但截至 2026-05-28 尚未执行代码实现。
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Rebuild the homepage as a dark, poster-like cover with a central abstract panel, handwritten/print hybrid typography, and low-priority entry links for the rest of the site.

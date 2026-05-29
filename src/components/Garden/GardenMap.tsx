@@ -14,7 +14,7 @@ export default function GardenMap() {
 
   return (
     <div className="relative w-full">
-      <div className="mx-auto max-w-5xl rounded-[2.75rem] border border-white/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.92),rgba(255,255,255,0.66))] px-5 py-5 shadow-[0_24px_90px_rgba(100,126,109,0.12)] backdrop-blur-3xl sm:px-6 sm:py-6">
+      <div className="mx-auto max-w-6xl rounded-[2.2rem] border border-[#efcfbf]/24 bg-[linear-gradient(180deg,rgba(245,226,206,0.08),rgba(255,255,255,0.02))] px-4 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-[2px] sm:px-5 sm:py-5">
         <div className="grid gap-4 md:grid-cols-4">
           {HOME_SECTIONS.map((section) => (
             <FlowerNode

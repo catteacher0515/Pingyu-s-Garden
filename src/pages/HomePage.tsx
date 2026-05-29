@@ -1,28 +1,24 @@
-import GardenMap from '../components/Garden/GardenMap'
+import EntryStrip from '../components/Home/EntryStrip'
+import PosterHero from '../components/Home/PosterHero'
+import SideOrnaments from '../components/Home/SideOrnaments'
+import TopNav from '../components/Home/TopNav'
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.96),transparent_28%),radial-gradient(circle_at_80%_20%,rgba(200,224,214,0.72),transparent_26%),linear-gradient(135deg,#f7faf3_0%,#edf4ed_46%,#e9f1f5_100%)]">
-      <section className="mx-auto flex min-h-screen max-w-6xl flex-col justify-center px-6 py-10">
-        <header className="mx-auto max-w-4xl text-center">
-          <p className="font-body text-xs uppercase tracking-[0.38em] text-slate-500">DIGITAL GARDEN</p>
-          <h1 className="font-display mt-5 text-[clamp(3rem,8vw,5.8rem)] leading-[0.92] tracking-[-0.03em] text-slate-700">
+    <main className="relative min-h-screen overflow-hidden bg-[#0d0b0b] text-[#f4eadf]">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(215,106,78,0.12),transparent_22%),radial-gradient(circle_at_12%_22%,rgba(255,255,255,0.06),transparent_18%),radial-gradient(circle_at_85%_30%,rgba(255,255,255,0.04),transparent_16%),linear-gradient(180deg,#161111_0%,#0e0a0a_48%,#090707_100%)]" />
+      <TopNav />
+      <SideOrnaments />
+      <section className="relative mx-auto flex min-h-screen w-full max-w-[92rem] flex-col justify-center px-6 pb-12 pt-8 lg:px-10 lg:pb-16 lg:pt-10">
+        <div className="mb-6 text-center text-[#f4eadf]">
+          <p className="font-body text-xs uppercase tracking-[0.42em] text-[#f4eadf]/56">DIGITAL GARDEN</p>
+          <h1 className="mt-5 font-display text-[clamp(3rem,6vw,5.8rem)] leading-[0.92] tracking-[-0.04em]">
             花萍雨的数字花园
           </h1>
-          <p className="font-body mx-auto mt-6 max-w-2xl text-[0.98rem] leading-8 text-slate-500">
-            个人介绍、文章、项目和工具的统一入口。
-            这是一个长期维护的个人站，而不是临时首页。
-          </p>
-        </header>
-
-        <div className="mx-auto mt-12 w-full max-w-5xl">
-          <GardenMap />
         </div>
 
-        <div className="mx-auto mt-8 flex max-w-4xl flex-wrap items-center justify-between gap-4 text-xs text-slate-500">
-          <p className="font-body">点击任一入口，进入对应内容页</p>
-          <p className="font-body">当前是偏纸感、展签式的轻量首页</p>
-        </div>
+        <PosterHero />
+        <EntryStrip />
       </section>
     </main>
   )

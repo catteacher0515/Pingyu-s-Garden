@@ -1,0 +1,48 @@
+import '@testing-library/jest-dom/vitest'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { describe, expect, it } from 'vitest'
+import SideOrnaments from './SideOrnaments'
+
+describe('SideOrnaments', () => {
+  it('extends both edge rails when page height grows and keeps edge icon sizing standardized', async () => {
+    Object.defineProperty(window, 'innerHeight', {
+      configurable: true,
+      value: 860,
+    })
+
+    Object.defineProperty(document.documentElement, 'scrollHeight', {
+      configurable: true,
+      value: 860,
+    })
+
+    render(<SideOrnaments />)
+
+    const leftRail = screen.getByTestId('edge-rail-left')
+    const rightRail = screen.getByTestId('edge-rail-right')
+    const initialLeftCount = leftRail.querySelectorAll('[data-testid="edge-asset"]').length
+    const initialRightCount = rightRail.querySelectorAll('[data-testid="edge-asset"]').length
+
+    expect(leftRail).toBeInTheDocument()
+    expect(rightRail).toBeInTheDocument()
+    expect(initialLeftCount).toBeGreaterThanOrEqual(12)
+    expect(initialRightCount).toBeGreaterThanOrEqual(12)
+
+    const leftSquare = leftRail.querySelector('[data-shape="square"] img')
+    const leftDiamond = leftRail.querySelector('[data-shape="diamond"] img')
+
+    expect(leftSquare).toHaveStyle({ width: '4.65rem', height: '4.65rem' })
+    expect(leftDiamond).toHaveStyle({ width: '4.15rem', height: '4.15rem' })
+
+    Object.defineProperty(document.documentElement, 'scrollHeight', {
+      configurable: true,
+      value: 2600,
+    })
+
+    fireEvent(window, new Event('resize'))
+
+    await waitFor(() => {
+      expect(leftRail.querySelectorAll('[data-testid="edge-asset"]').length).toBeGreaterThan(initialLeftCount)
+      expect(rightRail.querySelectorAll('[data-testid="edge-asset"]').length).toBeGreaterThan(initialRightCount)
+    })
+  })
+})

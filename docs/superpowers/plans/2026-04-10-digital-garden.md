@@ -1,5 +1,7 @@
 # 花萍雨的数字花园 Implementation Plan
 
+> 状态：历史实施计划。该计划服务于最初的花园同心圆 MVP，已经完成其主要实现价值，但不再代表当前首页方向。
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** 构建一个以同心圆花园地图为首页的个人作品集网站，花朵是导航入口，点击探索内容。
@@ -215,7 +217,7 @@ export interface Idea {
 [
   {
     "id": "note-1",
-    "content": "今天学了一个新东西，感觉很有意思。",
+    "content": "2026-04-10 记下一件刚学到的新东西，后续可以扩写成正式记录。",
     "date": "2026-04-10"
   }
 ]

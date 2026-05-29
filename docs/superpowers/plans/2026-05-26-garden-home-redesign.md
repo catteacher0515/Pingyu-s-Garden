@@ -1,5 +1,7 @@
 # Garden Home Redesign Implementation Plan
 
+> 状态：历史实施计划。该计划对应“中心头像 + 四向入口 + Apple 玻璃感”方案，后续被 2026-05-28 的海报式首页计划取代。
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Rebuild the homepage into a center-avatar, four-direction navigation hub with Apple-style glassmorphism, then add dedicated detail pages for personal intro, projects, articles, and tools.
@@ -342,4 +344,3 @@ Expected: Build succeeds with no route resolution or type errors.
 
 Run: `npm run dev`
 Expected: Homepage loads, each entry route opens, and the pages share the new glass visual language.
-
