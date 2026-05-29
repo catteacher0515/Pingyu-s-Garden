@@ -13,7 +13,8 @@ describe('PosterHero', () => {
     const posterFrame = screen.getByTestId('poster-frame')
     const posterPaper = screen.getByTestId('poster-paper')
 
-    expect(posterStage).toHaveClass('max-w-[70rem]')
+    expect(posterStage).toHaveClass('max-w-[63rem]')
+    expect(posterStage).toHaveClass('w-[min(90%,calc(100vw-3rem))]')
     expect(posterFrame).toHaveClass('bg-[linear-gradient(135deg,#e75843_0%,#c83f32_52%,#ee6a51_100%)]')
     expect(posterFrame).toHaveClass('max-w-full')
     expect(posterFrame).toHaveClass('w-full')

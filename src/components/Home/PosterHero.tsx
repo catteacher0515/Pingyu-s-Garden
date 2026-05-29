@@ -4,8 +4,7 @@ export default function PosterHero() {
   return (
     <section
       data-testid="poster-stage"
-      className="relative mx-auto min-w-0 max-w-[70rem]"
-      style={{ width: 'min(100%, calc(100vw - 3rem))' }}
+      className="relative mx-auto min-w-0 w-[min(90%,calc(100vw-3rem))] max-w-[63rem]"
     >
       <div
         data-testid="poster-frame"
