@@ -98,8 +98,8 @@ function EdgeRail({
   return (
     <div
       data-testid={`edge-rail-${side}`}
-      className={`pointer-events-none absolute inset-y-0 z-10 hidden overflow-hidden lg:flex lg:flex-col ${
-        side === 'left' ? 'left-[-1.2rem] items-start' : 'right-[-1.15rem] items-end'
+      className={`pointer-events-none fixed inset-y-0 z-10 hidden w-[4.9rem] overflow-visible lg:flex lg:flex-col ${
+        side === 'left' ? 'left-0 items-start' : 'right-0 items-end'
       }`}
     >
       {renderedAssets.map((asset) => (
@@ -107,9 +107,9 @@ function EdgeRail({
           key={asset.id}
           data-testid="edge-asset"
           data-shape={asset.shape}
-          className={`relative -mb-1.5 flex h-[4.35rem] items-center ${
-            side === 'left' ? 'justify-start pl-0' : 'justify-end pr-0'
-          } flex`}
+          className={`relative -mb-1.5 flex h-[4.35rem] w-[4.9rem] items-center ${
+            side === 'left' ? 'justify-start' : 'justify-end'
+          }`}
           style={{ zIndex: asset.zIndex }}
         >
           <img
