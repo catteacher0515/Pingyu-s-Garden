@@ -2,7 +2,32 @@
 
 这个页面的数据来源是 `src/data/articles.ts`，封面资源放在 `public/articles/`。
 
+## 推荐方式：使用脚本
+
+运行：
+
+```bash
+npm run add:article
+```
+
+脚本会依次询问：
+
+- 文章标题
+- 知乎文章链接
+- 文章 `id`
+- 本地封面文件路径
+- 保存到 `public/articles/` 的封面文件名
+- 选择已有系列，或新增一个系列
+
+脚本会自动：
+
+- 复制封面到 `public/articles/`
+- 将文章记录插入 `src/data/articles.ts`
+- 新增系列时同步更新 `src/types.ts` 和 `src/data/articles.ts`
+
 ## 新增一篇文章
+
+如果不用脚本，也可以手动维护。
 
 1. 将文章封面放到 `public/articles/`。
 
