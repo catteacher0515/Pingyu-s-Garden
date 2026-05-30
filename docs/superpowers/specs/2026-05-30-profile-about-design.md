@@ -1,197 +1,197 @@
-# Profile About Page Design
+# `/profile` About 页面设计稿
 
-## Status
+## 状态
 
-Approved for implementation on 2026-05-30.
+已于 2026-05-30 确认，可进入实施计划阶段。
 
-## Goal
+## 目标
 
-Turn `/profile` from a placeholder personal introduction page into a real About page.
+把 `/profile` 从占位式个人介绍页，改造成真正可用的 About 页面。
 
-The page should introduce Pingyu as a learning-oriented developer and content creator. It should feel like a natural inner page of the current poster-style homepage, not a separate portfolio template.
+这个页面要介绍花萍雨是一个学习型开发者和内容创作者。它应该像是当前海报式首页向内延伸出来的一页，而不是另一套独立的作品集模板。
 
-## Core Positioning
+## 核心定位
 
-Use this as the main self-introduction:
+主自我介绍使用这段文案：
 
 > 我是花萍雨，一个还在探索中的开发者和内容创作者。
 > 我用 AI 和代码做一些小工具，记录自己如何学习、试错、搭建工作流，也把那些真正有用的开源项目介绍给更多人。
 
-The page should not present Pingyu as a fully settled expert. Its strength is honesty: learning, trying, writing, building, and leaving a trail for others.
+页面不把花萍雨包装成一个已经完全定型的专家。它的核心气质是真实：正在学习、尝试、写作、动手做东西，并把过程留下来给别人参考。
 
-## Design Rule
+## 视觉规则
 
-All `/profile` visuals must stay consistent with the current poster-style homepage.
+`/profile` 的所有视觉都必须和当前海报式首页保持一致。
 
-Required visual language:
+必须延续的视觉语言：
 
-- dark brown-black stage background
-- warm paper-like content surfaces
-- red-brown borders, labels, and emphasis
-- hand-drawn or printed texture
-- restrained motion, such as fade-in, slight lift, and subtle hover states
+- 深黑 / 深棕黑的舞台感背景
+- 暖纸色内容区域
+- 红棕色边框、标签和重点强调
+- 手绘或印刷质感
+- 克制动效，例如渐入、轻微上浮、细微 hover 变化
 
-Do not use:
+不要使用：
 
-- blue-black glassmorphism
-- neon technology styling
-- generic dashboard cards
-- standard resume or portfolio templates
+- 蓝黑玻璃拟态
+- 霓虹科技风
+- 通用 dashboard 卡片
+- 标准简历页或标准作品集模板
 
-## Page Structure
+## 页面结构
 
 ### 1. About Hero
 
-The first section introduces who Pingyu is and what this site is about.
+首屏介绍“我是谁”和“这个站点在做什么”。
 
-Content:
+内容包括：
 
-- name or page title
-- the approved two-sentence self-introduction
-- identity stickers:
+- 姓名或页面标题
+- 已确认的两句自我介绍
+- 身份贴纸：
   - 大二下在读
   - AI + Code
   - 学习记录
   - 小工具开发
 
-The hero should feel like a paper dossier or poster insert placed inside the dark homepage world.
+Hero 应该像一张放在深色首页世界里的纸质档案页或海报内页。
 
 ### 2. Focus Grid
 
-Section title: `我在探索什么`
+区块标题：`我在探索什么`
 
-Use four short cards:
+使用四张短卡片：
 
 1. `AI skill 与开源工具`
-   - Try useful AI workflows and open-source projects, then explain what they can really do.
+   - 试用有价值的 AI 工作流和开源项目，并说明它们到底能解决什么问题。
 2. `内容创作工作流`
-   - Turn writing, publishing, formatting, and topic discovery into repeatable processes.
+   - 把写作、发布、排版、选题发现等内容创作环节沉淀成可复用流程。
 3. `用代码解决真实问题`
-   - Build small tools from actual needs instead of making demos for their own sake.
+   - 从自己的真实需求出发做小工具，而不是为了做 demo 而做 demo。
 4. `编程 / 数据学习记录`
-   - Keep notes from learning programming, data, SQL, and practical development habits.
+   - 记录编程、数据、SQL 和实际开发习惯的学习过程。
 
-Each card should be concise. Avoid long explanatory paragraphs.
+每张卡片要短，不写成长段说明。
 
 ### 3. Output Map
 
-Section title: `我如何输出`
+区块标题：`我如何输出`
 
-Use three linked paths:
+使用三条站内路径：
 
-- `文章` links to `/articles`
-  - Records learning notes, project trials, and tool walkthroughs.
-- `项目` links to `/projects`
-  - Collects larger work that turns a problem into something usable.
-- `小工具` links to `/tools`
-  - Stores reusable utilities and experiments that may keep growing.
+- `文章` 链接到 `/articles`
+  - 记录学习笔记、项目试用和工具 walkthrough。
+- `项目` 链接到 `/projects`
+  - 收集更完整的作品，把一个问题做成可用的东西。
+- `小工具` 链接到 `/tools`
+  - 保存可复用的小能力和还在成长中的工具。
 
-This is not a generic navigation block. It should explain how each route fits into Pingyu's personal system.
+这里不是普通导航区，而是解释每个路由在花萍雨个人系统里承担什么角色。
 
 ### 4. Contact Panel
 
-Show contact and external identity options.
+展示联系方式和外部身份。
 
-Initial fields:
+初始字段：
 
-- Zhihu profile
-- Email
+- 知乎主页
+- 邮箱
 - GitHub
 
-If a real value is not available yet, keep a clear replaceable value. The module should still look intentional, not like a temporary placeholder.
+如果暂时没有真实值，可以保留清晰的可替换字段。这个模块视觉上仍然要像正式内容，不要像临时占位。
 
-## Data Model
+## 数据结构
 
-Keep the data lightweight. No CMS or backend is needed.
+数据保持轻量，不做 CMS，也不引入后端。
 
-Move profile content out of JSX into either `src/data/profile.ts` or `src/data/profile.json`.
+建议把 Profile 内容从 JSX 中抽出，放到 `src/data/profile.ts` 或 `src/data/profile.json`。
 
-Recommended structure:
+推荐结构：
 
 - `intro`
-  - name
-  - title
-  - description
+  - `name`
+  - `title`
+  - `description`
 - `identityTags`
 - `focusAreas`
-  - id
-  - title
-  - description
-  - label
+  - `id`
+  - `title`
+  - `description`
+  - `label`
 - `outputs`
-  - id
-  - title
-  - description
-  - path
+  - `id`
+  - `title`
+  - `description`
+  - `path`
 - `contacts`
-  - id
-  - label
-  - value
-  - href
-  - hint
+  - `id`
+  - `label`
+  - `value`
+  - `href`
+  - `hint`
 
-## Component Plan
+## 组件计划
 
-Implement the page with small, focused components:
+用小而清晰的组件实现：
 
 - `AboutHero`
 - `FocusGrid`
 - `OutputMap`
 - `ContactPanel`
 
-The page may introduce a poster-style shell or local page wrapper if the current shared `PageShell` cannot support the homepage-aligned visual language cleanly.
+如果当前共享的 `PageShell` 无法干净地承载首页一致的 poster 视觉，可以为 About 页面新增 poster-style shell 或局部页面 wrapper。
 
-Do not refactor unrelated pages as part of this work.
+不要在这次工作里重构无关页面。
 
-## Motion
+## 动效
 
-Use restrained animation only:
+只使用克制动效：
 
-- section fade-in
-- small card lift on hover
-- subtle border or paper tone changes
+- 区块渐入
+- 卡片 hover 时轻微上浮
+- 边框或纸张底色细微变化
 
-Avoid complex scroll narratives, large bouncing elements, or high-frequency decorative motion.
+避免复杂滚动叙事、大幅跳动元素或高频装饰动画。
 
-## Testing
+## 测试
 
-Add or update focused tests for `/profile`.
+为 `/profile` 添加或更新聚焦测试。
 
-Test requirements:
+测试要求：
 
-- `/profile` renders successfully.
-- The approved self-introduction appears.
-- Identity stickers render:
+- `/profile` 可以正常渲染。
+- 已确认的自我介绍文案会出现。
+- 身份贴纸会出现：
   - 大二下在读
   - AI + Code
   - 学习记录
   - 小工具开发
-- Output links point to:
+- 输出路径链接正确：
   - `/articles`
   - `/projects`
   - `/tools`
-- The contact panel renders.
-- Old placeholder copy is gone, especially:
+- 联系方式模块存在。
+- 旧占位文案已移除，尤其是：
   - `这里放我的自我介绍`
   - `可替换提示`
 
-## Non-Goals
+## 非目标
 
-This work does not include:
+这次不做：
 
-- changing the homepage
-- changing `/projects`, `/articles`, or `/tools`
-- adding new routes
-- adding a CMS or backend
-- writing a full resume page
-- creating complex scroll-driven storytelling
-- replacing all shared layout components across the app
+- 修改首页
+- 修改 `/projects`、`/articles`、`/tools`
+- 新增路由
+- 新增 CMS 或后端
+- 写完整简历页
+- 做复杂滚动叙事
+- 替换全站所有共享 layout 组件
 
-## Success Criteria
+## 成功标准
 
-The finished page should make a first-time visitor understand:
+完成后，第一次进入页面的人应该能理解：
 
-- Pingyu is a student developer and content creator still actively exploring.
-- The site records learning, tool use, small builds, and practical workflows.
-- The About page belongs visually to the same world as the poster-style homepage.
-- The page feels intentional and personal, not like a template with placeholder text.
+- 花萍雨是一个还在持续探索中的学生开发者和内容创作者。
+- 这个站点记录学习、工具使用、小项目和实际工作流。
+- About 页面在视觉上属于当前海报式首页的同一个世界。
+- 页面是有意设计过的个人介绍，而不是套模板后的占位文本。
