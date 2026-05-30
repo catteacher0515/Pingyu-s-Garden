@@ -1,49 +1,30 @@
-import { motion } from 'framer-motion'
+import ArticleCoverCard from '../components/Articles/ArticleCoverCard'
 import BackToGarden from '../components/Layout/BackToGarden'
-import articlesData from '../data/articles.json'
-import type { Article } from '../types'
-
-const articles = articlesData as Article[]
+import { articles } from '../data/articles'
 
 export default function ArticlesPage() {
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.12),transparent_28%),linear-gradient(180deg,#101826_0%,#0b1020_100%)] px-6 py-8">
-      <div className="mx-auto max-w-5xl">
+    <main className="relative min-h-screen overflow-hidden bg-[#0d0b0b] px-5 py-8 text-[#f4eadf] sm:px-6">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(215,106,78,0.13),transparent_24%),radial-gradient(circle_at_12%_22%,rgba(244,234,223,0.06),transparent_18%),linear-gradient(180deg,#171110_0%,#0e0a0a_46%,#080606_100%)]" />
+      <div className="absolute inset-0 opacity-[0.08] [background-image:linear-gradient(rgba(244,234,223,0.55)_1px,transparent_1px),linear-gradient(90deg,rgba(244,234,223,0.45)_1px,transparent_1px)] [background-size:42px_42px]" />
+
+      <div className="relative z-10 mx-auto max-w-6xl">
         <BackToGarden />
 
-        <div className="mt-8 mb-8 flex items-center gap-3">
-          <span className="text-4xl">📝</span>
-          <h1 className="text-2xl font-semibold text-white">文章</h1>
-        </div>
+        <header className="mt-10 border-y-[3px] border-[#d76a4e]/72 py-6">
+          <h1 className="font-display text-5xl font-semibold tracking-normal text-[#fff2e4] sm:text-6xl">
+            文章
+          </h1>
+        </header>
 
-        <div className="space-y-4">
-        {articles.length === 0 ? (
-            <p className="rounded-[1.75rem] border border-white/14 bg-white/8 px-5 py-12 text-center text-sm text-white/58 backdrop-blur-2xl">
-              还没有文章，快去写一篇 🌱
-            </p>
-        ) : (
-            articles.map((article, i) => (
-              <motion.a
-                key={article.id}
-                href={article.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block rounded-[1.75rem] border border-white/14 bg-white/8 p-5 shadow-[0_20px_50px_rgba(0,0,0,0.18)] backdrop-blur-2xl transition hover:bg-white/12"
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.08 }}
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <h2 className="font-semibold text-white">{article.title}</h2>
-                    <p className="mt-1 text-sm text-white/66">{article.summary}</p>
-                  </div>
-                  <span className="shrink-0 whitespace-nowrap text-xs text-white/42">{article.date}</span>
-                </div>
-              </motion.a>
-            ))
-        )}
-        </div>
+        <section
+          aria-label="知乎文章封面墙"
+          className="mt-8 grid grid-cols-1 gap-7 pb-16 md:grid-cols-2 md:gap-8"
+        >
+          {articles.map((article, index) => (
+            <ArticleCoverCard key={article.id} article={article} index={index} />
+          ))}
+        </section>
       </div>
     </main>
   )

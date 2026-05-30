@@ -20,8 +20,7 @@ export interface Tool {
 export interface Article {
   id: string
   title: string
-  date: string         // ISO 格式 "2026-04-10"
-  summary: string
+  cover: string
   url: string
 }
 
