@@ -1,63 +1,44 @@
-import PageShell from '../components/Layout/PageShell'
-
-const identityTags = ['写作', '开发', '记录', '生长']
-
-const contactItems = [
-  { label: '邮箱', value: '（待补充）', hint: '用于工作联系或合作邀约' },
-  { label: '社交账号', value: '（待补充）', hint: '可替换为你的常用平台主页' },
-  { label: '所在地', value: '（待补充）', hint: '如果你愿意公开，可以写城市或时区' },
-]
+import { Link } from 'react-router-dom'
+import AboutHero from '../components/Profile/AboutHero'
+import ContactPanel from '../components/Profile/ContactPanel'
+import FocusGrid from '../components/Profile/FocusGrid'
+import OutputMap from '../components/Profile/OutputMap'
+import {
+  contactItems,
+  focusAreas,
+  identityTags,
+  outputLinks,
+  profileIntro,
+} from '../data/profile'
 
 export default function ProfilePage() {
   return (
-    <PageShell title="个人介绍" subtitle="这里放我的自我介绍、工作方向、标签和联系方式。">
-      <div className="grid gap-6 md:grid-cols-[1.4fr_0.9fr]">
-        <article className="rounded-[2rem] border border-white/18 bg-white/10 p-6 backdrop-blur-2xl">
-          <h2 className="text-lg font-semibold text-white">我是谁</h2>
-          <p className="mt-4 text-sm leading-7 text-white/70">
-            这里是个人介绍的正式页面。当前仓库里没有可直接使用的自我介绍原文，
-            所以先保留为可替换占位内容。后续可以补充你的职业方向、擅长领域、近期关注主题，
-            以及这座数字花园想传达的整体气质。
-          </p>
+    <main className="relative min-h-screen overflow-hidden bg-[#0d0b0b] px-6 py-8 text-[#f4eadf]">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(215,106,78,0.12),transparent_24%),radial-gradient(circle_at_12%_22%,rgba(255,255,255,0.06),transparent_18%),linear-gradient(180deg,#161111_0%,#0e0a0a_48%,#090707_100%)]" />
+      <div className="pointer-events-none absolute left-0 top-20 hidden h-[72vh] w-16 border-y border-r border-[#efcfbf]/18 bg-[linear-gradient(180deg,rgba(244,234,223,0.08),rgba(215,106,78,0.04))] lg:block" />
+      <div className="pointer-events-none absolute right-0 top-28 hidden h-[64vh] w-16 border-y border-l border-[#efcfbf]/18 bg-[linear-gradient(180deg,rgba(244,234,223,0.06),rgba(215,106,78,0.05))] lg:block" />
 
-          <div className="mt-6">
-            <h3 className="text-sm font-medium uppercase tracking-[0.24em] text-white/45">
-              标签
-            </h3>
-            <div className="mt-3 flex flex-wrap gap-2">
-              {identityTags.map((tag) => (
-                <span
-                  key={tag}
-                  className="rounded-full border border-white/15 bg-white/12 px-3 py-1 text-xs text-white/80"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          </div>
+      <div className="relative z-10 mx-auto max-w-6xl">
+        <Link
+          to="/"
+          className="inline-flex items-center gap-2 rounded-full border border-[#efcfbf]/22 bg-[#f4eadf]/8 px-4 py-2 text-sm text-[#f4eadf]/78 transition hover:border-[#ed7b62]/58 hover:text-[#fff2e4]"
+        >
+          <span aria-hidden="true">←</span>
+          <span>回到花园</span>
+        </Link>
 
-          <div className="mt-8 rounded-[1.5rem] border border-dashed border-white/14 bg-white/6 p-4">
-            <p className="text-sm font-medium text-white">可替换提示</p>
-            <p className="mt-2 text-sm leading-7 text-white/62">
-              把这里替换成你的真实简介、现在在做什么、希望别人如何理解你。
-              如果以后有更完整的“关于我”内容，可以直接替换整段正文而不影响版式。
-            </p>
-          </div>
-        </article>
-
-        <aside className="rounded-[2rem] border border-white/18 bg-white/10 p-6 backdrop-blur-2xl">
-          <h2 className="text-lg font-semibold text-white">联系我</h2>
-          <ul className="mt-4 space-y-4">
-            {contactItems.map((item) => (
-              <li key={item.label} className="rounded-[1.25rem] border border-white/12 bg-white/6 p-4">
-                <p className="text-xs uppercase tracking-[0.24em] text-white/40">{item.label}</p>
-                <p className="mt-2 text-sm font-medium text-white">{item.value}</p>
-                <p className="mt-2 text-xs leading-6 text-white/55">{item.hint}</p>
-              </li>
-            ))}
-          </ul>
-        </aside>
+        <div className="mt-10">
+          <AboutHero
+            eyebrow={profileIntro.eyebrow}
+            title={profileIntro.title}
+            description={profileIntro.description}
+            tags={identityTags}
+          />
+          <FocusGrid areas={focusAreas} />
+          <OutputMap outputs={outputLinks} />
+          <ContactPanel contacts={contactItems} />
+        </div>
       </div>
-    </PageShell>
+    </main>
   )
 }

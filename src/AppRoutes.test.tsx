@@ -11,7 +11,7 @@ describe('app routes', () => {
 
     fireEvent.click(screen.getByRole('button', { name: '个人介绍' }))
 
-    expect(await screen.findByRole('heading', { name: '个人介绍' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: '关于花萍雨' })).toBeInTheDocument()
 
     fireEvent.click(screen.getByRole('link', { name: '回到花园' }))
 
