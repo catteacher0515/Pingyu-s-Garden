@@ -29,7 +29,7 @@ export default function ArticleCoverCard({ article, index }: ArticleCoverCardPro
         />
       </div>
 
-      <div className="mt-3 grid min-h-28 grid-cols-[4.25rem_1fr_auto] items-center gap-4 border-[3px] border-[#241312] bg-[#0b0807] px-4 py-4 text-[#fff4e7] sm:min-h-30 sm:grid-cols-[5rem_1fr_auto] sm:px-5">
+      <div className="mt-3 grid min-h-28 grid-cols-[3.1rem_1fr_auto] items-center gap-2 border-[3px] border-[#241312] bg-[#0b0807] px-4 py-4 text-[#fff4e7] sm:min-h-30 sm:grid-cols-[3.7rem_1fr_auto] sm:gap-3 sm:px-5">
         <span className="font-display text-4xl font-semibold leading-none text-[#d76a4e] sm:text-5xl">
           {articleNumber}
         </span>
