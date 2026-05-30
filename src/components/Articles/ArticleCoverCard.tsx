@@ -39,7 +39,7 @@ export default function ArticleCoverCard({ article, index }: ArticleCoverCardPro
             {article.title}
           </h2>
           <p className="mt-3 text-xs font-semibold uppercase tracking-[0.26em] text-[#f1e5d2]/58">
-            知乎文章
+            {article.series}
           </p>
         </div>
 

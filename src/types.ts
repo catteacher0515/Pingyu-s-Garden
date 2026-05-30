@@ -22,7 +22,10 @@ export interface Article {
   title: string
   cover: string
   url: string
+  series: ArticleSeries
 }
+
+export type ArticleSeries = 'AI 杂谈' | 'AI 工具箱' | '每周 GitHub 精选'
 
 export interface Note {
   id: string
