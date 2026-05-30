@@ -2,7 +2,7 @@ import '@testing-library/jest-dom/vitest'
 import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { afterEach, describe, expect, it } from 'vitest'
-import { articles } from '../data/articles'
+import { articleSeries, articles, getArticleSeriesLabel } from '../data/articles'
 import ArticlesPage from './ArticlesPage'
 
 afterEach(() => {
@@ -23,6 +23,7 @@ describe('ArticlesPage', () => {
     expect(screen.queryByText('文章标题占位')).not.toBeInTheDocument()
 
     expect(articles).toHaveLength(6)
+    expect(articleSeries.map((series) => series.id)).toEqual(['ai-talk', 'ai-tools', 'github-weekly'])
     expect(screen.getByRole('button', { name: '全部' })).toHaveAttribute('aria-pressed', 'true')
     expect(screen.getByRole('button', { name: 'AI 杂谈' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'AI 工具箱' })).toBeInTheDocument()
@@ -35,7 +36,7 @@ describe('ArticlesPage', () => {
       expect(link).toHaveAttribute('rel', 'noopener noreferrer')
 
       expect(screen.getByText(String(index + 1).padStart(2, '0'))).toBeInTheDocument()
-      expect(screen.getAllByText(article.series).length).toBeGreaterThan(0)
+      expect(screen.getAllByText(getArticleSeriesLabel(article.seriesId)).length).toBeGreaterThan(0)
       expect(screen.getAllByText('↗')).toHaveLength(articles.length)
 
       const image = screen.getByRole('img', { name: `${article.title} 封面` })

@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import ArticleCoverCard from '../components/Articles/ArticleCoverCard'
 import BackToGarden from '../components/Layout/BackToGarden'
-import { articleSeriesFilters, filterArticlesBySeries, type ArticleSeriesFilter } from '../data/articles'
+import { articleSeriesFilters, filterArticlesBySeries, type ArticleSeriesFilterId } from '../data/articles'
 
 export default function ArticlesPage() {
-  const [selectedSeries, setSelectedSeries] = useState<ArticleSeriesFilter>('全部')
+  const [selectedSeries, setSelectedSeries] = useState<ArticleSeriesFilterId>('all')
   const visibleArticles = filterArticlesBySeries(selectedSeries)
 
   return (
@@ -23,11 +23,11 @@ export default function ArticlesPage() {
           <div className="mt-5 h-[3px] w-28 bg-[#d76a4e]" />
           <nav aria-label="文章系列" className="mt-7 flex flex-wrap justify-center gap-3">
             {articleSeriesFilters.map((series) => {
-              const isActive = selectedSeries === series
+              const isActive = selectedSeries === series.id
 
               return (
                 <button
-                  key={series}
+                  key={series.id}
                   type="button"
                   aria-pressed={isActive}
                   className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${
@@ -35,9 +35,9 @@ export default function ArticlesPage() {
                       ? 'border-[#f1e5d2] bg-[#f1e5d2] text-[#241312] shadow-[4px_5px_0_rgba(116,48,36,0.82)]'
                       : 'border-[#f1e5d2]/28 bg-[#120d0c]/80 text-[#f1e5d2]/72 hover:border-[#d76a4e] hover:text-[#fff2e4]'
                   }`}
-                  onClick={() => setSelectedSeries(series)}
+                  onClick={() => setSelectedSeries(series.id)}
                 >
-                  {series}
+                  {series.label}
                 </button>
               )
             })}

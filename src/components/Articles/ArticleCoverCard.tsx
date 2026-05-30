@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import { getArticleSeriesLabel } from '../../data/articles'
 import type { Article } from '../../types'
 
 interface ArticleCoverCardProps {
@@ -39,7 +40,7 @@ export default function ArticleCoverCard({ article, index }: ArticleCoverCardPro
             {article.title}
           </h2>
           <p className="mt-3 text-xs font-semibold uppercase tracking-[0.26em] text-[#f1e5d2]/58">
-            {article.series}
+            {getArticleSeriesLabel(article.seriesId)}
           </p>
         </div>
 
