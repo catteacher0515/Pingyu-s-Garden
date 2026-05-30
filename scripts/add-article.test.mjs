@@ -5,6 +5,8 @@ import {
   insertArticleEntry,
   insertSeriesEntry,
   insertSeriesIdType,
+  isCoverFileName,
+  isSlug,
   parseArticleSeries,
   slugify,
 } from './add-article.mjs'
@@ -13,6 +15,16 @@ describe('add-article helpers', () => {
   it('creates stable lowercase slugs', () => {
     expect(slugify('GitHub 每周精选 2026 W21')).toBe('github-2026-w21')
     expect(slugify('')).toBe('')
+  })
+
+  it('validates ids and cover file names before writing files', () => {
+    expect(isSlug('github-w21')).toBe(true)
+    expect(isSlug('啊？')).toBe(false)
+    expect(isSlug('GitHub W21')).toBe(false)
+
+    expect(isCoverFileName('github-w21.png')).toBe(true)
+    expect(isCoverFileName('对')).toBe(false)
+    expect(isCoverFileName('封面.png')).toBe(false)
   })
 
   it('parses article series definitions from the data file', () => {

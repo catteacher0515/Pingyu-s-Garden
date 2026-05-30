@@ -17,6 +17,14 @@ export function slugify(value) {
     .replace(/^-+|-+$/g, '')
 }
 
+export function isSlug(value) {
+  return /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(value)
+}
+
+export function isCoverFileName(value) {
+  return /^[a-z0-9]+(?:-[a-z0-9]+)*\.(png|jpe?g|webp)$/i.test(value)
+}
+
 export function parseArticleSeries(source) {
   const seriesBlock = source.match(/export const articleSeries(?:\s*:\s*ArticleSeries\[\])?\s*=\s*\[([\s\S]*?)\]\n/)
   if (!seriesBlock) {
@@ -86,6 +94,35 @@ async function ask(rl, question, defaultValue = '') {
   return answer || defaultValue
 }
 
+async function askRequired(rl, question, validator, errorMessage, defaultValue = '') {
+  while (true) {
+    const answer = await ask(rl, question, defaultValue)
+    if (validator(answer)) {
+      return answer
+    }
+
+    console.log(errorMessage)
+  }
+}
+
+async function askExistingFile(rl, question) {
+  while (true) {
+    const answer = await ask(rl, question)
+    const resolved = path.resolve(answer)
+
+    try {
+      const stat = await fs.stat(resolved)
+      if (stat.isFile()) {
+        return resolved
+      }
+    } catch {
+      // Continue to the user-facing message below.
+    }
+
+    console.log('找不到这个文件。可以把封面图片拖进终端，或粘贴完整文件路径。')
+  }
+}
+
 async function chooseSeries(rl, dataSource) {
   const series = parseArticleSeries(dataSource)
 
@@ -95,7 +132,14 @@ async function chooseSeries(rl, dataSource) {
   })
   console.log(`${series.length + 1}. 新增系列`)
 
-  const choice = Number(await ask(rl, '选择系列编号'))
+  let choice = 0
+  while (!Number.isInteger(choice) || choice < 1 || choice > series.length + 1) {
+    choice = Number(await ask(rl, '选择系列编号，输入数字'))
+    if (!Number.isInteger(choice) || choice < 1 || choice > series.length + 1) {
+      console.log(`请输入 1 到 ${series.length + 1} 之间的数字。`)
+    }
+  }
+
   const existing = series[choice - 1]
   if (existing) {
     return { id: existing.id, label: existing.label, isNew: false }
@@ -103,7 +147,13 @@ async function chooseSeries(rl, dataSource) {
 
   const label = await ask(rl, '新系列名称')
   const suggestedId = slugify(label) || 'new-series'
-  const id = await ask(rl, '新系列 id，使用英文小写短横线', suggestedId)
+  const id = await askRequired(
+    rl,
+    '新系列 id，使用英文小写短横线，例如 content-workflow',
+    isSlug,
+    '系列 id 只能包含英文小写、数字和短横线，例如 content-workflow。',
+    suggestedId,
+  )
   return { id, label, isNew: true }
 }
 
@@ -111,14 +161,34 @@ async function runCli() {
   const rl = readline.createInterface({ input: process.stdin, output: process.stdout })
 
   try {
+    console.log('这个脚本会把一篇新文章加入 /articles。没有合适封面时可以先退出，等封面准备好再运行。')
+    console.log('提示：封面文件路径可以直接把图片拖进终端。\n')
+
     const dataSource = await fs.readFile(dataPath, 'utf8')
     const title = await ask(rl, '文章标题')
-    const url = await ask(rl, '知乎文章链接')
+    const url = await askRequired(
+      rl,
+      '知乎文章链接',
+      (value) => /^https?:\/\//.test(value),
+      '请输入完整链接，例如 https://zhuanlan.zhihu.com/p/xxxx。',
+    )
     const suggestedId = slugify(title) || `article-${Date.now()}`
-    const id = await ask(rl, '文章 id，使用英文小写短横线', suggestedId)
-    const coverSource = await ask(rl, '本地封面文件路径')
+    const id = await askRequired(
+      rl,
+      '文章 id，页面内部使用，不会显示；用英文小写短横线，例如 github-w21',
+      isSlug,
+      '文章 id 只能包含英文小写、数字和短横线，例如 github-w21。中文标题可以自己取一个英文 id。',
+      suggestedId,
+    )
+    const coverSource = await askExistingFile(rl, '本地封面文件路径')
     const coverExt = path.extname(coverSource) || '.png'
-    const coverFileName = await ask(rl, '保存到 public/articles/ 的文件名', `${id}${coverExt}`)
+    const coverFileName = await askRequired(
+      rl,
+      '保存到 public/articles/ 的文件名；建议直接回车使用默认值',
+      isCoverFileName,
+      '文件名只能使用英文小写、数字、短横线，并以 .png/.jpg/.jpeg/.webp 结尾，例如 github-w21.png。',
+      `${id}${coverExt.toLowerCase()}`,
+    )
     const series = await chooseSeries(rl, dataSource)
     const coverTarget = path.join(publicArticlesDir, coverFileName)
     const coverPublicPath = `/articles/${coverFileName}`
