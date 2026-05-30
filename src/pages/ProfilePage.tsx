@@ -15,8 +15,6 @@ export default function ProfilePage() {
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#0d0b0b] px-6 py-8 text-[#f4eadf]">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(215,106,78,0.12),transparent_24%),radial-gradient(circle_at_12%_22%,rgba(255,255,255,0.06),transparent_18%),linear-gradient(180deg,#161111_0%,#0e0a0a_48%,#090707_100%)]" />
-      <div className="pointer-events-none absolute left-0 top-20 hidden h-[72vh] w-16 border-y border-r border-[#efcfbf]/18 bg-[linear-gradient(180deg,rgba(244,234,223,0.08),rgba(215,106,78,0.04))] lg:block" />
-      <div className="pointer-events-none absolute right-0 top-28 hidden h-[64vh] w-16 border-y border-l border-[#efcfbf]/18 bg-[linear-gradient(180deg,rgba(244,234,223,0.06),rgba(215,106,78,0.05))] lg:block" />
 
       <div className="relative z-10 mx-auto max-w-6xl">
         <Link
@@ -31,6 +29,8 @@ export default function ProfilePage() {
           <AboutHero
             eyebrow={profileIntro.eyebrow}
             title={profileIntro.title}
+            avatarSrc={profileIntro.avatarSrc}
+            avatarAlt={profileIntro.avatarAlt}
             description={profileIntro.description}
             tags={identityTags}
           />

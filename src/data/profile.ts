@@ -2,6 +2,8 @@ export const profileIntro = {
   name: '花萍雨',
   title: '关于花萍雨',
   eyebrow: 'About / Digital Garden',
+  avatarSrc: '/avatar.jpg',
+  avatarAlt: '花萍雨头像',
   description: [
     '我是花萍雨，一个还在探索中的开发者和内容创作者。',
     '我用 AI 和代码做一些小工具，记录自己如何学习、试错、搭建工作流，也把那些真正有用的开源项目介绍给更多人。',
@@ -67,17 +69,17 @@ export const contactItems = [
     hint: '最近的文章、项目记录和学习笔记。',
   },
   {
-    id: 'email',
-    label: '邮箱',
-    value: '待补充',
+    id: 'wechat',
+    label: '微信',
+    value: 'ssm0515ssm',
     href: '',
-    hint: '用于合作、交流或更正式的联系。',
+    hint: '添加时请备注“数字花园”，并识别来意。',
   },
   {
     id: 'github',
     label: 'GitHub',
-    value: '待补充',
-    href: '',
-    hint: '后续可以放公开项目与代码仓库。',
+    value: 'catteacher0515',
+    href: 'https://github.com/catteacher0515',
+    hint: '公开项目、代码仓库和后续工具沉淀。',
   },
 ]

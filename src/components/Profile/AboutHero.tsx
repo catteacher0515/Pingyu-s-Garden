@@ -3,11 +3,13 @@ import { motion } from 'framer-motion'
 interface AboutHeroProps {
   eyebrow: string
   title: string
+  avatarSrc: string
+  avatarAlt: string
   description: string[]
   tags: string[]
 }
 
-export default function AboutHero({ eyebrow, title, description, tags }: AboutHeroProps) {
+export default function AboutHero({ eyebrow, title, avatarSrc, avatarAlt, description, tags }: AboutHeroProps) {
   return (
     <section className="grid gap-6 lg:grid-cols-[1.25fr_0.75fr] lg:items-stretch">
       <motion.article
@@ -16,9 +18,11 @@ export default function AboutHero({ eyebrow, title, description, tags }: AboutHe
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.45, ease: 'easeOut' }}
       >
-        <div className="absolute right-5 top-5 h-14 w-14 rounded-full border border-[#b35d45]/45 bg-[#d76a4e]/12" />
+        <div className="absolute right-5 top-5 h-16 w-16 overflow-hidden rounded-full border border-[#b35d45]/45 bg-[#d76a4e]/12 shadow-[0_8px_24px_rgba(61,36,32,0.18)] sm:h-20 sm:w-20">
+          <img src={avatarSrc} alt={avatarAlt} className="h-full w-full object-cover" />
+        </div>
         <p className="font-body text-xs uppercase tracking-[0.32em] text-[#8f3f2e]/72">{eyebrow}</p>
-        <h1 className="mt-4 font-display text-4xl font-semibold leading-none text-[#241312] sm:text-5xl">
+        <h1 className="mt-4 pr-16 font-display text-4xl font-semibold leading-none text-[#241312] sm:pr-24 sm:text-5xl">
           {title}
         </h1>
         <div className="mt-6 space-y-4 text-base leading-8 text-[#3d2420]/82">
@@ -40,7 +44,7 @@ export default function AboutHero({ eyebrow, title, description, tags }: AboutHe
           {tags.map((tag, index) => (
             <span
               key={tag}
-              className="block rotate-[-1deg] border border-[#8f3f2e]/70 bg-[#f4eadf] px-4 py-3 font-hand text-lg tracking-[0.04em] text-[#8f3f2e] shadow-[6px_7px_0_rgba(0,0,0,0.22)] even:rotate-[1deg]"
+              className="block rotate-[-1deg] border border-[#8f3f2e]/70 bg-[#f4eadf] px-4 py-3 font-hand text-xl tracking-[0.04em] text-[#8f3f2e] shadow-[6px_7px_0_rgba(0,0,0,0.22)] even:rotate-[1deg]"
               style={{ marginLeft: index % 2 === 0 ? '0' : '0.75rem' }}
             >
               {tag}

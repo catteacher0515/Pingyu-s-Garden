@@ -41,8 +41,15 @@ describe('detail pages', () => {
 
     expect(screen.getByRole('heading', { name: '联系我' })).toBeInTheDocument()
     expect(screen.getByText('知乎主页')).toBeInTheDocument()
-    expect(screen.getByText('邮箱')).toBeInTheDocument()
+    expect(screen.getByText('微信')).toBeInTheDocument()
+    expect(screen.getByText('ssm0515ssm')).toBeInTheDocument()
     expect(screen.getByText('GitHub')).toBeInTheDocument()
+    expect(screen.getByText('catteacher0515')).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /catteacher0515/ })).toHaveAttribute(
+      'href',
+      'https://github.com/catteacher0515',
+    )
+    expect(screen.getByRole('img', { name: '花萍雨头像' })).toHaveAttribute('src', '/avatar.jpg')
 
     expect(screen.queryByText('这里放我的自我介绍')).not.toBeInTheDocument()
     expect(screen.queryByText('可替换提示')).not.toBeInTheDocument()
