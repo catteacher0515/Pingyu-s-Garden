@@ -24,6 +24,7 @@ describe('HomePage', () => {
     expect(screen.queryByText('花萍雨的数字花园')).not.toBeInTheDocument()
     expect(screen.queryByText('DIGITAL GARDEN')).not.toBeInTheDocument()
     expect(screen.getByRole('img', { name: '花萍雨的数字花园主海报' })).toBeInTheDocument()
+    expect(screen.getByTestId('poster-viewport')).toHaveClass('items-start')
     expect(screen.getByRole('link', { name: /个人介绍/i })).toHaveAttribute('href', '/profile')
     expect(screen.getByRole('link', { name: /项目/i })).toHaveAttribute('href', '/projects')
     expect(screen.getByRole('link', { name: /文章/i })).toHaveAttribute('href', '/articles')

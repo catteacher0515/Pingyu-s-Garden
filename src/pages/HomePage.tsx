@@ -10,7 +10,7 @@ export default function HomePage() {
       <TopNav />
       <SideOrnaments />
       <section className="relative mx-auto flex w-full max-w-[92rem] flex-col px-6 pb-12 pt-8 lg:px-10 lg:pb-16 lg:pt-8">
-        <div className="flex min-h-[calc(100vh-8rem)] items-center">
+        <div data-testid="poster-viewport" className="flex min-h-[calc(100vh-8rem)] items-start">
           <PosterHero />
         </div>
         <EntryStrip />
