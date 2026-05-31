@@ -94,22 +94,14 @@ function EdgeRail({
   }, [])
 
   const renderedAssets = buildRailAssets(assets, itemCount, side)
-  const settleClass =
-    side === 'left'
-      ? 'animate-[ornament-rail-settle-left_720ms_ease-out_both]'
-      : 'animate-[ornament-rail-settle-right_720ms_ease-out_both]'
 
   return (
     <div
       data-testid={`edge-rail-${side}`}
-      className={`pointer-events-none fixed inset-y-0 z-10 hidden w-[4.9rem] overflow-visible lg:block ${
+      className={`pointer-events-none fixed inset-y-0 z-10 hidden w-[4.9rem] overflow-visible lg:flex lg:flex-col ${
         side === 'left' ? 'left-0 items-start' : 'right-0 items-end'
       }`}
     >
-      <div
-        data-testid={`edge-settle-${side}`}
-        className={`${settleClass} motion-reduce:animate-none`}
-      >
       {renderedAssets.map((asset) => (
         <div
           key={asset.id}
@@ -133,7 +125,6 @@ function EdgeRail({
           />
         </div>
       ))}
-      </div>
     </div>
   )
 }

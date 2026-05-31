@@ -52,27 +52,3 @@ body::before {
 .font-hand {
   font-family: 'Knewave', cursive;
 }
-
-@keyframes ornament-rail-settle-left {
-  from {
-    opacity: 0.82;
-    transform: translateY(10px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes ornament-rail-settle-right {
-  from {
-    opacity: 0.82;
-    transform: translateY(-10px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}

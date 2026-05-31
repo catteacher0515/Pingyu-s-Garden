@@ -50,7 +50,7 @@ describe('SideOrnaments', () => {
     })
   })
 
-  it('keeps desktop edge rails fixed to the viewport without clipping settled icons', () => {
+  it('keeps desktop edge rails fixed to the viewport without clipping icons horizontally', () => {
     render(<SideOrnaments />)
 
     const leftRail = screen.getByTestId('edge-rail-left')
@@ -64,18 +64,18 @@ describe('SideOrnaments', () => {
     expect(rightRail).toHaveClass('right-0')
   })
 
-  it('settles edge rails once without continuous marquee motion while keeping floating doodles static', () => {
+  it('keeps ornament rails completely static while floating doodles remain static', () => {
     render(<SideOrnaments />)
 
-    const leftTrack = screen.getByTestId('edge-settle-left')
-    const rightTrack = screen.getByTestId('edge-settle-right')
+    const leftRail = screen.getByTestId('edge-rail-left')
+    const rightRail = screen.getByTestId('edge-rail-right')
 
-    expect(leftTrack).toHaveClass('animate-[ornament-rail-settle-left_720ms_ease-out_both]')
-    expect(rightTrack).toHaveClass('animate-[ornament-rail-settle-right_720ms_ease-out_both]')
-    expect(leftTrack.className).not.toContain('infinite')
-    expect(rightTrack.className).not.toContain('infinite')
-    expect(leftTrack).toHaveClass('motion-reduce:animate-none')
-    expect(rightTrack).toHaveClass('motion-reduce:animate-none')
+    expect(screen.queryByTestId('edge-settle-left')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('edge-settle-right')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('edge-marquee-left')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('edge-marquee-right')).not.toBeInTheDocument()
+    expect(leftRail.className).not.toContain('animate-')
+    expect(rightRail.className).not.toContain('animate-')
     expect(screen.getByAltText('cat doodle')).not.toHaveAttribute('data-testid', 'edge-asset')
   })
 
