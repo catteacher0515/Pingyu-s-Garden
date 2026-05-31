@@ -17,6 +17,10 @@ describe('HomePage', () => {
     )
 
     expect(screen.getByText("Pingyu's Garden")).toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: 'about' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: 'work' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: 'journal' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: 'tools' })).not.toBeInTheDocument()
     expect(screen.queryByText('花萍雨的数字花园')).not.toBeInTheDocument()
     expect(screen.queryByText('DIGITAL GARDEN')).not.toBeInTheDocument()
     expect(screen.getByRole('img', { name: '花萍雨的数字花园主海报' })).toBeInTheDocument()
