@@ -67,6 +67,6 @@ describe('HomePage', () => {
     )
 
     expect(screen.queryByText('四个入口保留在次级层，不和主视觉抢重心')).not.toBeInTheDocument()
-    expect(screen.getByRole('img', { name: 'flower doodle for entry area' })).toBeInTheDocument()
+    expect(screen.getByRole('img', { name: 'notebook doodle for entry area' })).toBeInTheDocument()
   })
 })

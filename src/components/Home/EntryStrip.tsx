@@ -1,5 +1,5 @@
 import GardenMap from '../Garden/GardenMap'
-import flowerDoodle from '../../assets/poster/doodle/flower-doodle.png'
+import notebookDoodle from '../../assets/poster/doodle/notebook-doodle.png'
 
 export default function EntryStrip() {
   return (
@@ -9,9 +9,9 @@ export default function EntryStrip() {
       </div>
       <GardenMap />
       <img
-        src={flowerDoodle}
-        alt="flower doodle for entry area"
-        className="pointer-events-none absolute -right-7 bottom-1 hidden w-28 rotate-[-10deg] select-none opacity-90 lg:block xl:-right-16 xl:w-36"
+        src={notebookDoodle}
+        alt="notebook doodle for entry area"
+        className="pointer-events-none absolute -right-7 bottom-1 hidden w-28 rotate-[8deg] select-none opacity-90 lg:block xl:-right-16 xl:w-36"
         draggable={false}
       />
     </section>
