@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react'
 import { doodleAssets, leftEdgeAssets, rightEdgeAssets, type PosterAsset } from '../../data/posterAssets'
 
 const DOODLE_WIDTHS: Record<string, string> = {
-  'cat-doodle': '15rem',
+  'cat-doodle': '12rem',
   'paper-doodle': '10rem',
-  'folder-doodle': '8rem',
-  'cloud-doodle': '8rem',
+  'folder-doodle': '10rem',
+  'cloud-doodle': '10rem',
   'arrow-doodle': '7rem',
-  'flower-doodle': '6rem',
+  'flower-doodle': '11rem',
 }
 
 const EDGE_SLOT_HEIGHT = 66
@@ -134,12 +134,11 @@ export default function SideOrnaments() {
     <>
       <EdgeRail side="left" assets={leftEdgeAssets} />
       <EdgeRail side="right" assets={rightEdgeAssets} />
-      <DoodleImage asset={doodleAssets[0]} left="83%" top="68%" />
-      <DoodleImage asset={doodleAssets[1]} left="17%" top="63%" />
-      <DoodleImage asset={doodleAssets[2]} left="86%" top="23%" />
-      <DoodleImage asset={doodleAssets[3]} left="17%" top="19%" />
-      <DoodleImage asset={doodleAssets[4]} left="74%" top="17%" />
-      <DoodleImage asset={doodleAssets[5]} left="12%" top="83%" />
+      <DoodleImage asset={doodleAssets[0]} left="90%" top="48%" />
+      <DoodleImage asset={doodleAssets[1]} left="12%" top="80%" />
+      <DoodleImage asset={doodleAssets[2]} left="90%" top="25%" />
+      <DoodleImage asset={doodleAssets[3]} left="10%" top="15%" />
+      <DoodleImage asset={doodleAssets[5]} left="10%" top="35%" />
     </>
   )
 }

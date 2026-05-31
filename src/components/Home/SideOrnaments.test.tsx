@@ -63,4 +63,14 @@ describe('SideOrnaments', () => {
     expect(leftRail).toHaveClass('left-0')
     expect(rightRail).toHaveClass('right-0')
   })
+
+  it('positions floating doodles in the outer gutters away from the poster frame', () => {
+    render(<SideOrnaments />)
+
+    expect(screen.getByAltText('cat doodle')).toHaveStyle({ left: '90%', top: '48%' })
+    expect(screen.getByAltText('paper doodle')).toHaveStyle({ left: '12%', top: '80%' })
+    expect(screen.getByAltText('folder doodle')).toHaveStyle({ left: '90%', top: '25%' })
+    expect(screen.getByAltText('cloud doodle')).toHaveStyle({ left: '10%', top: '15%' })
+    expect(screen.getByAltText('flower doodle')).toHaveStyle({ left: '10%', top: '35%' })
+  })
 })
