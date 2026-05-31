@@ -9,14 +9,7 @@ export default function HomePage() {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(215,106,78,0.12),transparent_22%),radial-gradient(circle_at_12%_22%,rgba(255,255,255,0.06),transparent_18%),radial-gradient(circle_at_85%_30%,rgba(255,255,255,0.04),transparent_16%),linear-gradient(180deg,#161111_0%,#0e0a0a_48%,#090707_100%)]" />
       <TopNav />
       <SideOrnaments />
-      <section className="relative mx-auto flex min-h-screen w-full max-w-[92rem] flex-col justify-center px-6 pb-12 pt-8 lg:px-10 lg:pb-16 lg:pt-10">
-        <div className="mb-6 text-center text-[#f4eadf]">
-          <p className="font-body text-xs uppercase tracking-[0.42em] text-[#f4eadf]/56">DIGITAL GARDEN</p>
-          <h1 className="mt-5 font-display text-[clamp(3rem,6vw,5.8rem)] leading-[0.92] tracking-[-0.04em]">
-            花萍雨的数字花园
-          </h1>
-        </div>
-
+      <section className="relative mx-auto flex min-h-[calc(100vh-5rem)] w-full max-w-[92rem] flex-col justify-center px-6 pb-12 pt-8 lg:px-10 lg:pb-16 lg:pt-8">
         <PosterHero />
         <EntryStrip />
       </section>

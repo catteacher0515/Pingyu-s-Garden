@@ -15,7 +15,8 @@ describe('app routes', () => {
 
     fireEvent.click(screen.getByRole('link', { name: '回到花园' }))
 
-    expect(await screen.findByText('花萍雨的数字花园')).toBeInTheDocument()
+    expect(await screen.findByText("Pingyu's Garden")).toBeInTheDocument()
+    expect(screen.getByRole('img', { name: '花萍雨的数字花园主海报' })).toBeInTheDocument()
   })
 
   it('navigates from the homepage to the projects page', async () => {
