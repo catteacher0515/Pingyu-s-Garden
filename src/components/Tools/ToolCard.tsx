@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import { cardEntrance } from '../../lib/motion'
 import type { Tool } from '../../types'
 
 interface ToolCardProps {
@@ -12,9 +13,9 @@ export default function ToolCard({ tool, index }: ToolCardProps) {
   return (
     <motion.article
       className="border-[3px] border-[#241312] bg-[#f1e5d2] p-4 text-[#241312] shadow-[7px_8px_0_rgba(116,48,36,0.84),0_22px_54px_rgba(0,0,0,0.34)]"
-      initial={{ opacity: 0, y: 18 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.07, duration: 0.36, ease: 'easeOut' }}
+      initial={cardEntrance.initial}
+      animate={cardEntrance.animate}
+      transition={cardEntrance.transition(index)}
     >
       <div className="flex min-h-full flex-col border-[3px] border-[#241312] bg-[#fff2e4] p-5">
         <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#9f4d3e]">

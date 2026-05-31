@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import { getArticleSeriesLabel } from '../../data/articles'
+import { cardEntrance } from '../../lib/motion'
 import type { Article } from '../../types'
 
 interface ArticleCoverCardProps {
@@ -17,9 +18,9 @@ export default function ArticleCoverCard({ article, index }: ArticleCoverCardPro
       rel="noopener noreferrer"
       aria-label={article.title}
       className="group block rounded-[0.9rem] border-[3px] border-[#241312] bg-[#f1e5d2] p-3 text-[#190e0c] shadow-[7px_8px_0_rgba(116,48,36,0.86),0_22px_54px_rgba(0,0,0,0.34)] transition duration-300 hover:-translate-y-1 hover:shadow-[5px_6px_0_rgba(215,106,78,0.78),0_26px_64px_rgba(0,0,0,0.4)]"
-      initial={{ opacity: 0, y: 18 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.07, duration: 0.38, ease: 'easeOut' }}
+      initial={cardEntrance.initial}
+      animate={cardEntrance.animate}
+      transition={cardEntrance.transition(index)}
     >
       <div className="aspect-video overflow-hidden border-[3px] border-[#241312] bg-[#100b0a]">
         <img

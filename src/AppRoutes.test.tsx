@@ -1,9 +1,25 @@
 import '@testing-library/jest-dom/vitest'
-import { fireEvent, render, screen } from '@testing-library/react'
-import { describe, expect, it } from 'vitest'
+import { cleanup, fireEvent, render, screen } from '@testing-library/react'
+import { afterEach, describe, expect, it } from 'vitest'
 import App from './App'
 
+afterEach(() => {
+  cleanup()
+})
+
 describe('app routes', () => {
+  it('wraps routed pages in a shared transition container', () => {
+    window.history.pushState({}, '', '/')
+
+    render(<App />)
+
+    const transitionFrame = screen.getByTestId('route-transition')
+
+    expect(transitionFrame).toHaveAttribute('data-route', '/')
+    expect(transitionFrame).toHaveStyle({ opacity: '0' })
+    expect(transitionFrame.style.transform).toContain('translateY(12px)')
+  })
+
   it('navigates from the homepage to the profile page and back', async () => {
     window.history.pushState({}, '', '/')
 
