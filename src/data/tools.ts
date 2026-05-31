@@ -11,6 +11,7 @@ export const toolCategories: ToolCategory[] = [
   { id: 'all', label: '全部' },
   { id: 'content-tools', label: '内容工具' },
   { id: 'study-tools', label: '学习工具' },
+  { id: 'experiment-projects', label: '实验项目' },
   { id: 'ai-workflow', label: 'AI 工作流' },
   { id: 'lark-automation', label: '飞书自动化' },
   { id: 'skill', label: 'Skill' },
@@ -77,6 +78,23 @@ export const tools: Tool[] = [
       {
         label: 'GitHub',
         href: 'https://github.com/catteacher0515/cet6-download',
+        kind: 'github',
+      },
+    ],
+  },
+  {
+    id: 'shadow-play',
+    name: 'ShadowPlay / 云上皮影',
+    description:
+      '一个围绕唐山皮影文化做的小程序原型，重点在素材整理、文化内容呈现和轻量交互设计。',
+    categoryIds: ['experiment-projects'],
+    status: '已归档',
+    form: '小程序原型',
+    tags: ['小程序原型', '互动展示', '素材整理', '唐山皮影', '非遗文化'],
+    links: [
+      {
+        label: 'GitHub',
+        href: 'https://github.com/catteacher0515/ShadowPlay',
         kind: 'github',
       },
     ],

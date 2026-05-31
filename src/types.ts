@@ -12,6 +12,7 @@ export interface HomeSectionConfig {
 export type ToolCategoryId =
   | 'content-tools'
   | 'study-tools'
+  | 'experiment-projects'
   | 'ai-workflow'
   | 'lark-automation'
   | 'skill'
@@ -21,7 +22,7 @@ export type ToolCategoryFilterId = 'all' | ToolCategoryId
 
 export type ToolStatus = '自用中' | '可访问' | '实验中' | '已归档'
 
-export type ToolForm = '网站' | '脚本' | '飞书工作流' | 'Hermes Agent' | 'Skill'
+export type ToolForm = '网站' | '脚本' | '飞书工作流' | 'Hermes Agent' | 'Skill' | '小程序原型'
 
 export interface ToolLink {
   label: string
