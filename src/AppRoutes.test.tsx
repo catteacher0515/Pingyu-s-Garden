@@ -9,7 +9,7 @@ describe('app routes', () => {
 
     render(<App />)
 
-    fireEvent.click(screen.getByRole('button', { name: '个人介绍' }))
+    fireEvent.click(screen.getByRole('link', { name: '个人介绍' }))
 
     expect(await screen.findByRole('heading', { name: '关于花萍雨' })).toBeInTheDocument()
 
@@ -23,7 +23,7 @@ describe('app routes', () => {
 
     render(<App />)
 
-    fireEvent.click(screen.getAllByRole('button', { name: '项目' })[0])
+    fireEvent.click(screen.getAllByRole('link', { name: '项目' })[0])
 
     expect(await screen.findByRole('heading', { name: '项目' })).toBeInTheDocument()
     expect(screen.getByText('代表项目占位卡')).toBeInTheDocument()
