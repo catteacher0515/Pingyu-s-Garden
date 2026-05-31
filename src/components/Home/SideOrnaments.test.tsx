@@ -50,7 +50,7 @@ describe('SideOrnaments', () => {
     })
   })
 
-  it('keeps desktop edge rails fixed to the viewport without clipping icons horizontally', () => {
+  it('keeps desktop edge rails fixed to the viewport and clips the marquee track vertically', () => {
     render(<SideOrnaments />)
 
     const leftRail = screen.getByTestId('edge-rail-left')
@@ -58,10 +58,24 @@ describe('SideOrnaments', () => {
 
     expect(leftRail).toHaveClass('fixed')
     expect(rightRail).toHaveClass('fixed')
-    expect(leftRail).toHaveClass('overflow-visible')
-    expect(rightRail).toHaveClass('overflow-visible')
+    expect(leftRail).toHaveClass('overflow-hidden')
+    expect(rightRail).toHaveClass('overflow-hidden')
     expect(leftRail).toHaveClass('left-0')
     expect(rightRail).toHaveClass('right-0')
+  })
+
+  it('animates edge rails as repeated ornament marquees while keeping floating doodles static', () => {
+    render(<SideOrnaments />)
+
+    const leftTrack = screen.getByTestId('edge-marquee-left')
+    const rightTrack = screen.getByTestId('edge-marquee-right')
+
+    expect(leftTrack).toHaveClass('animate-[ornament-marquee-up_52s_linear_infinite]')
+    expect(rightTrack).toHaveClass('animate-[ornament-marquee-down_58s_linear_infinite]')
+    expect(leftTrack).toHaveClass('motion-reduce:animate-none')
+    expect(rightTrack).toHaveClass('motion-reduce:animate-none')
+    expect(screen.getAllByTestId('edge-marquee-group')).toHaveLength(4)
+    expect(screen.getByAltText('cat doodle')).not.toHaveAttribute('data-testid', 'edge-asset')
   })
 
   it('positions floating doodles in the outer gutters away from the poster frame', () => {

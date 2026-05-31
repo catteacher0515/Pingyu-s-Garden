@@ -52,3 +52,23 @@ body::before {
 .font-hand {
   font-family: 'Knewave', cursive;
 }
+
+@keyframes ornament-marquee-up {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(-50%);
+  }
+}
+
+@keyframes ornament-marquee-down {
+  from {
+    transform: translateY(-50%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}

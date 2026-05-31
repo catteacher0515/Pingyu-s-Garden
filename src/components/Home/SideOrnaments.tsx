@@ -94,17 +94,16 @@ function EdgeRail({
   }, [])
 
   const renderedAssets = buildRailAssets(assets, itemCount, side)
+  const marqueeClass =
+    side === 'left'
+      ? 'animate-[ornament-marquee-up_52s_linear_infinite]'
+      : 'animate-[ornament-marquee-down_58s_linear_infinite]'
 
-  return (
-    <div
-      data-testid={`edge-rail-${side}`}
-      className={`pointer-events-none fixed inset-y-0 z-10 hidden w-[4.9rem] overflow-visible lg:flex lg:flex-col ${
-        side === 'left' ? 'left-0 items-start' : 'right-0 items-end'
-      }`}
-    >
+  const renderGroup = (groupId: string) => (
+    <div key={groupId} data-testid="edge-marquee-group">
       {renderedAssets.map((asset) => (
         <div
-          key={asset.id}
+          key={`${groupId}-${asset.id}`}
           data-testid="edge-asset"
           data-shape={asset.shape}
           className={`relative -mb-1.5 flex h-[4.35rem] w-[4.9rem] items-center ${
@@ -125,6 +124,23 @@ function EdgeRail({
           />
         </div>
       ))}
+    </div>
+  )
+
+  return (
+    <div
+      data-testid={`edge-rail-${side}`}
+      className={`pointer-events-none fixed inset-y-0 z-10 hidden w-[4.9rem] overflow-hidden lg:block ${
+        side === 'left' ? 'left-0 items-start' : 'right-0 items-end'
+      }`}
+    >
+      <div
+        data-testid={`edge-marquee-${side}`}
+        className={`${marqueeClass} motion-reduce:animate-none`}
+      >
+        {renderGroup('a')}
+        {renderGroup('b')}
+      </div>
     </div>
   )
 }
