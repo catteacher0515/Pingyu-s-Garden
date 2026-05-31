@@ -94,16 +94,25 @@ function EdgeRail({
   }, [])
 
   const renderedAssets = buildRailAssets(assets, itemCount, side)
-  const marqueeClass =
+  const settleClass =
     side === 'left'
-      ? 'animate-[ornament-marquee-up_52s_linear_infinite]'
-      : 'animate-[ornament-marquee-down_58s_linear_infinite]'
+      ? 'animate-[ornament-rail-settle-left_720ms_ease-out_both]'
+      : 'animate-[ornament-rail-settle-right_720ms_ease-out_both]'
 
-  const renderGroup = (groupId: string) => (
-    <div key={groupId} data-testid="edge-marquee-group">
+  return (
+    <div
+      data-testid={`edge-rail-${side}`}
+      className={`pointer-events-none fixed inset-y-0 z-10 hidden w-[4.9rem] overflow-visible lg:block ${
+        side === 'left' ? 'left-0 items-start' : 'right-0 items-end'
+      }`}
+    >
+      <div
+        data-testid={`edge-settle-${side}`}
+        className={`${settleClass} motion-reduce:animate-none`}
+      >
       {renderedAssets.map((asset) => (
         <div
-          key={`${groupId}-${asset.id}`}
+          key={asset.id}
           data-testid="edge-asset"
           data-shape={asset.shape}
           className={`relative -mb-1.5 flex h-[4.35rem] w-[4.9rem] items-center ${
@@ -124,22 +133,6 @@ function EdgeRail({
           />
         </div>
       ))}
-    </div>
-  )
-
-  return (
-    <div
-      data-testid={`edge-rail-${side}`}
-      className={`pointer-events-none fixed inset-y-0 z-10 hidden w-[4.9rem] overflow-hidden lg:block ${
-        side === 'left' ? 'left-0 items-start' : 'right-0 items-end'
-      }`}
-    >
-      <div
-        data-testid={`edge-marquee-${side}`}
-        className={`${marqueeClass} motion-reduce:animate-none`}
-      >
-        {renderGroup('a')}
-        {renderGroup('b')}
       </div>
     </div>
   )

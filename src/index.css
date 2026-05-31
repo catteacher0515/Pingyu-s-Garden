@@ -53,22 +53,26 @@ body::before {
   font-family: 'Knewave', cursive;
 }
 
-@keyframes ornament-marquee-up {
+@keyframes ornament-rail-settle-left {
   from {
-    transform: translateY(0);
+    opacity: 0.82;
+    transform: translateY(10px);
   }
 
   to {
-    transform: translateY(-50%);
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-@keyframes ornament-marquee-down {
+@keyframes ornament-rail-settle-right {
   from {
-    transform: translateY(-50%);
+    opacity: 0.82;
+    transform: translateY(-10px);
   }
 
   to {
+    opacity: 1;
     transform: translateY(0);
   }
 }
