@@ -1,22 +1,13 @@
 import PageShell from '../components/Layout/PageShell'
+import { projects } from '../data/projects'
+import type { ProjectLinkKind } from '../types'
 
-interface Project {
-  id: string
-  name: string
-  summary: string
-  url?: string
-  highlights: string[]
+const projectLinkKindLabels: Record<ProjectLinkKind, string> = {
+  github: 'Code',
+  article: 'Writeup',
+  demo: 'Demo',
+  external: 'Link',
 }
-
-const projects: Project[] = [
-  {
-    id: 'featured-placeholder',
-    name: '代表项目占位卡',
-    summary:
-      '这里先放一个可写进简历的项目展示位，后续替换成真实项目名称、成果和技术细节。',
-    highlights: ['成果导向', '技术栈说明', '可量化结果'],
-  },
-]
 
 export default function ProjectsPage() {
   return (
@@ -27,34 +18,65 @@ export default function ProjectsPage() {
             key={project.id}
             className="rounded-[1.75rem] border border-white/18 bg-white/10 p-5 backdrop-blur-2xl"
           >
-            <div className="flex items-start justify-between gap-4">
+            <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
               <div className="min-w-0">
-                <h2 className="text-base font-semibold text-white">{project.name}</h2>
+                <div className="flex flex-wrap items-center gap-2 text-xs uppercase tracking-[0.22em] text-white/48">
+                  <span>{project.year}</span>
+                  <span aria-hidden="true">/</span>
+                  <span>{project.status}</span>
+                  <span aria-hidden="true">/</span>
+                  <span>{project.role}</span>
+                </div>
+                <h2 className="mt-3 text-base font-semibold text-white">{project.title}</h2>
                 <p className="mt-2 text-sm leading-7 text-white/68">{project.summary}</p>
+                <p className="mt-3 text-sm leading-7 text-white/62">{project.outcome}</p>
                 <div className="mt-4 flex flex-wrap gap-2">
-                  {project.highlights.map((highlight) => (
+                  {project.tags.map((tag) => (
                     <span
-                      key={highlight}
+                      key={tag}
                       className="rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs text-white/78"
                     >
-                      {highlight}
+                      {tag}
                     </span>
                   ))}
                 </div>
               </div>
 
-              {project.url ? (
-                <a
-                  href={project.url}
-                  className="shrink-0 rounded-full border border-white/16 bg-white/12 px-3 py-1.5 text-xs text-white transition-colors hover:bg-white/18"
-                >
-                  查看
-                </a>
-              ) : (
-                <span className="shrink-0 rounded-full border border-white/10 bg-white/6 px-3 py-1.5 text-xs text-white/45">
-                  待补充
+              <div className="flex shrink-0 flex-col gap-2 sm:items-end">
+                <span className="text-[0.66rem] uppercase tracking-[0.22em] text-white/42">
+                  链接计划
                 </span>
-              )}
+                <div className="flex flex-wrap gap-2 sm:justify-end">
+                {project.links.length > 0 ? (
+                  project.links.map((link) =>
+                    link.href ? (
+                      <a
+                        key={`${link.kind}-${link.label}`}
+                        href={link.href}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="rounded-full border border-[#ed7b62]/38 bg-[#ed7b62]/12 px-3 py-1.5 text-xs text-white transition-colors hover:bg-[#ed7b62]/20"
+                      >
+                        {link.label}
+                        <span className="ml-2 text-white/44">{projectLinkKindLabels[link.kind]}</span>
+                      </a>
+                    ) : (
+                      <span
+                        key={`${link.kind}-${link.label}`}
+                        className="rounded-full border border-white/10 bg-white/6 px-3 py-1.5 text-xs text-white/45"
+                      >
+                        {link.label}
+                        <span className="ml-2 text-white/30">{projectLinkKindLabels[link.kind]}</span>
+                      </span>
+                    ),
+                  )
+                ) : (
+                  <span className="rounded-full border border-white/10 bg-white/6 px-3 py-1.5 text-xs text-white/45">
+                    待补充链接
+                  </span>
+                )}
+                </div>
+              </div>
             </div>
           </article>
         ))}

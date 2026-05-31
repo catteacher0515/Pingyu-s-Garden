@@ -9,7 +9,13 @@ export interface HomeSectionConfig {
   angle: number
 }
 
-export type ToolCategoryId = 'content-tools' | 'ai-workflow' | 'lark-automation' | 'skill' | 'script'
+export type ToolCategoryId =
+  | 'content-tools'
+  | 'study-tools'
+  | 'ai-workflow'
+  | 'lark-automation'
+  | 'skill'
+  | 'script'
 
 export type ToolCategoryFilterId = 'all' | ToolCategoryId
 
@@ -47,6 +53,28 @@ export type ArticleSeriesId = 'ai-talk' | 'ai-tools' | 'github-weekly'
 export interface ArticleSeries {
   id: ArticleSeriesId
   label: string
+}
+
+export type ProjectLinkKind = 'external' | 'github' | 'article' | 'demo'
+
+export type ProjectStatus = '规划中' | '进行中' | '已发布' | '已归档'
+
+export interface ProjectLink {
+  label: string
+  href?: string
+  kind: ProjectLinkKind
+}
+
+export interface Project {
+  id: string
+  title: string
+  year: string
+  status: ProjectStatus
+  role: string
+  summary: string
+  outcome: string
+  tags: string[]
+  links: ProjectLink[]
 }
 
 export interface Note {

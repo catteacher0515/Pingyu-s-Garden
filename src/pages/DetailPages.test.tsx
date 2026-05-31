@@ -2,6 +2,7 @@ import '@testing-library/jest-dom/vitest'
 import { cleanup, render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { afterEach, describe, expect, it } from 'vitest'
+import { projects } from '../data/projects'
 import ProfilePage from './ProfilePage'
 import ProjectsPage from './ProjectsPage'
 
@@ -56,7 +57,7 @@ describe('detail pages', () => {
     expect(screen.getByRole('link', { name: '回到花园' })).toHaveAttribute('href', '/')
   })
 
-  it('renders the projects page shell and featured placeholder project', () => {
+  it('renders structured project cards with metadata and link strategy', () => {
     render(
       <MemoryRouter>
         <ProjectsPage />
@@ -64,7 +65,24 @@ describe('detail pages', () => {
     )
 
     expect(screen.getByRole('heading', { name: '项目' })).toBeInTheDocument()
-    expect(screen.getByText('代表项目占位卡')).toBeInTheDocument()
-    expect(screen.getByText('待补充')).toBeInTheDocument()
+    expect(projects).toHaveLength(1)
+
+    const [project] = projects
+    expect(screen.getByRole('heading', { name: project.title })).toBeInTheDocument()
+    expect(screen.getByText(project.year)).toBeInTheDocument()
+    expect(screen.getByText(project.status)).toBeInTheDocument()
+    expect(screen.getByText(project.role)).toBeInTheDocument()
+    expect(screen.getByText(project.summary)).toBeInTheDocument()
+    expect(screen.getByText(project.outcome)).toBeInTheDocument()
+
+    for (const tag of project.tags) {
+      expect(screen.getByText(tag)).toBeInTheDocument()
+    }
+
+    expect(screen.getByText('链接计划')).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /GitHub/ })).toHaveAttribute('href', project.links[0].href)
+    expect(screen.getByText('项目文章')).toBeInTheDocument()
+    expect(screen.getByText('在线 Demo')).toBeInTheDocument()
+    expect(screen.queryByText('代表项目占位卡')).not.toBeInTheDocument()
   })
 })
