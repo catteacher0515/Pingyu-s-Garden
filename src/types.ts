@@ -9,12 +9,29 @@ export interface HomeSectionConfig {
   angle: number
 }
 
+export type ToolCategoryId = 'content-tools' | 'ai-workflow' | 'lark-automation' | 'skill' | 'script'
+
+export type ToolCategoryFilterId = 'all' | ToolCategoryId
+
+export type ToolStatus = '自用中' | '可访问' | '实验中' | '已归档'
+
+export type ToolForm = '网站' | '脚本' | '飞书工作流' | 'Hermes Agent' | 'Skill'
+
+export interface ToolLink {
+  label: string
+  href?: string
+  kind: 'external' | 'github' | 'note' | 'internal'
+}
+
 export interface Tool {
   id: string
   name: string
   description: string
-  githubUrl: string
+  categoryIds: ToolCategoryId[]
+  status: ToolStatus
+  form: ToolForm
   tags: string[]
+  links: ToolLink[]
 }
 
 export interface Article {

@@ -1,63 +1,72 @@
-import { motion } from 'framer-motion'
+import { useState } from 'react'
 import BackToGarden from '../components/Layout/BackToGarden'
-import toolsData from '../data/tools.json'
-import type { Tool } from '../types'
+import ToolCard from '../components/Tools/ToolCard'
+import ToolCategoryFilter from '../components/Tools/ToolCategoryFilter'
+import ToolEmptyState from '../components/Tools/ToolEmptyState'
+import { filterToolsByCategory, toolCategories, type ToolCategoryFilterId } from '../data/tools'
 
-const tools = toolsData as Tool[]
+const labSnapshots = [
+  { label: 'Focus', value: 'AI + 内容工作流' },
+  { label: 'Forms', value: '网站 / 脚本 / 飞书流 / Agent / Skill' },
+  { label: 'Mode', value: '自用优先，慢慢公开' },
+]
 
 export default function ToolsPage() {
+  const [selectedCategory, setSelectedCategory] = useState<ToolCategoryFilterId>('all')
+  const visibleTools = filterToolsByCategory(selectedCategory)
+
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.12),transparent_28%),linear-gradient(180deg,#101826_0%,#0b1020_100%)] px-6 py-8">
-      <div className="mx-auto max-w-5xl">
+    <main className="relative min-h-screen overflow-hidden bg-[#0d0b0b] px-5 py-8 text-[#f4eadf] sm:px-6">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(215,106,78,0.13),transparent_24%),radial-gradient(circle_at_12%_22%,rgba(244,234,223,0.06),transparent_18%),linear-gradient(180deg,#171110_0%,#0e0a0a_46%,#080606_100%)]" />
+      <div className="absolute inset-0 opacity-[0.08] [background-image:linear-gradient(rgba(244,234,223,0.55)_1px,transparent_1px),linear-gradient(90deg,rgba(244,234,223,0.45)_1px,transparent_1px)] [background-size:42px_42px]" />
+
+      <div className="relative z-10 mx-auto max-w-6xl">
         <BackToGarden />
 
-        <div className="mt-8 mb-8 flex items-center gap-3">
-          <span className="text-4xl">🛠️</span>
-          <h1 className="text-2xl font-semibold text-white">小工具</h1>
-        </div>
+        <header className="mx-auto mt-10 flex max-w-4xl flex-col items-center text-center">
+          <p className="font-body text-xs uppercase tracking-[0.42em] text-[#d76a4e]/72">Tool Lab</p>
+          <h1 className="mt-4 font-display text-6xl font-semibold tracking-normal text-[#fff2e4] sm:text-7xl">
+            小工具实验室
+          </h1>
+          <div className="mt-5 h-[3px] w-28 bg-[#d76a4e]" />
 
-        <div className="space-y-4">
-        {tools.length === 0 ? (
-            <p className="rounded-[1.75rem] border border-white/14 bg-white/8 px-5 py-12 text-center text-sm text-white/58 backdrop-blur-2xl">
-              还没有工具，快去种一个 🌱
-            </p>
-        ) : (
-            tools.map((tool, i) => (
-              <motion.article
-                key={tool.id}
-                className="rounded-[1.75rem] border border-white/14 bg-white/8 p-5 shadow-[0_20px_50px_rgba(0,0,0,0.18)] backdrop-blur-2xl"
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.08 }}
+          <section
+            aria-label="实验室概览"
+            className="mt-8 grid w-full gap-3 text-left sm:grid-cols-3"
+          >
+            {labSnapshots.map((snapshot) => (
+              <div
+                key={snapshot.label}
+                className="border-[3px] border-[#241312] bg-[#f1e5d2] p-3 text-[#241312] shadow-[4px_5px_0_rgba(116,48,36,0.76)]"
               >
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <h2 className="font-semibold text-white">{tool.name}</h2>
-                    <p className="mt-1 text-sm text-white/66">{tool.description}</p>
-                    <div className="mt-3 flex flex-wrap gap-1.5">
-                      {tool.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="rounded-full border border-white/14 bg-white/10 px-2.5 py-0.5 text-xs text-white/76"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                  <a
-                    href={tool.githubUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="shrink-0 rounded-full border border-white/16 bg-white/12 px-3 py-1.5 text-xs text-white transition hover:bg-white/18"
-                  >
-                    GitHub
-                  </a>
-                </div>
-              </motion.article>
-            ))
-        )}
-        </div>
+                <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[#9f4d3e]">
+                  {snapshot.label}
+                </p>
+                <p className="mt-2 text-sm font-semibold leading-6">{snapshot.value}</p>
+              </div>
+            ))}
+          </section>
+
+          <div className="mt-8">
+            <ToolCategoryFilter
+              categories={toolCategories}
+              selectedCategory={selectedCategory}
+              onSelectCategory={setSelectedCategory}
+            />
+          </div>
+        </header>
+
+        <section aria-label="工具列表" className="mt-10 pb-16">
+          {visibleTools.length === 0 ? (
+            <ToolEmptyState />
+          ) : (
+            <div className="grid gap-6 md:grid-cols-2">
+              {visibleTools.map((tool, index) => (
+                <ToolCard key={tool.id} tool={tool} index={index} />
+              ))}
+            </div>
+          )}
+        </section>
       </div>
     </main>
   )

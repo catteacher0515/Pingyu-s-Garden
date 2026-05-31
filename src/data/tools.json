@@ -1,9 +1,0 @@
-[
-  {
-    "id": "tool-1",
-    "name": "工具展示占位卡",
-    "description": "这里先放一个自用工具展示位，后续替换成真实工具名称、用途说明和仓库链接。",
-    "githubUrl": "https://github.com/example/tool-placeholder",
-    "tags": ["待补充", "工具", "GitHub"]
-  }
-]
