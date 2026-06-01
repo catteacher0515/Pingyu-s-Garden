@@ -41,6 +41,112 @@ export const tools: Tool[] = [
     ],
   },
   {
+    id: 'softpage',
+    name: 'SoftPage',
+    description: '用于制作小红书图文和封面的内容工具。',
+    categoryIds: ['content-tools'],
+    status: '可访问',
+    form: '网站',
+    tags: ['小红书', '图文制作', '封面设计', '内容工具'],
+    links: [
+      {
+        label: '打开工具',
+        href: 'https://catteacher0515.github.io/SoftPage/',
+        kind: 'external',
+      },
+      {
+        label: 'GitHub',
+        href: 'https://github.com/catteacher0515/SoftPage',
+        kind: 'github',
+      },
+    ],
+  },
+  {
+    id: 'draftflow',
+    name: 'DraftFlow',
+    description:
+      '正在建设中的多平台草稿分发桌面工具，目标是把 Markdown 内容转换并同步到不同内容平台草稿。',
+    categoryIds: ['content-tools', 'ai-workflow'],
+    status: '实验中',
+    form: '桌面应用',
+    tags: ['多平台分发', 'Markdown', '草稿同步', 'Electron', '内容工作流'],
+    links: [
+      {
+        label: 'GitHub',
+        href: 'https://github.com/catteacher0515/DraftFlow',
+        kind: 'github',
+      },
+    ],
+  },
+  {
+    id: 'publish-guard',
+    name: 'publish-guard / content-safety-pipeline',
+    description:
+      '一个已归档的小红书发布前内容安全流水线 Skill，串联 RedBook-Fixer、零克查词、小红书草稿和本地日志，用来验证文案过审处理的自动化流程。',
+    categoryIds: ['content-tools', 'skill'],
+    status: '已归档',
+    form: 'Skill',
+    tags: ['小红书', '内容安全', '敏感词筛查', '浏览器自动化', '发布前检查'],
+    links: [
+      {
+        label: 'GitHub',
+        href: 'https://github.com/catteacher0515/publish-guard',
+        kind: 'github',
+      },
+    ],
+  },
+  {
+    id: 'github-star-top',
+    name: 'GitHub-Star-Top',
+    description:
+      '自动抓取每周热门 GitHub 项目，生成 AI 解读并同步到飞书选题池，用来发现优质仓库和支持内容选题。',
+    categoryIds: ['ai-workflow', 'lark-automation', 'script'],
+    status: '自用中',
+    form: '脚本',
+    tags: ['GitHub', '选题池', '飞书自动化', 'AI 解读', '内容选题'],
+    links: [
+      {
+        label: 'GitHub',
+        href: 'https://github.com/catteacher0515/GitHub-Star-Top',
+        kind: 'github',
+      },
+    ],
+  },
+  {
+    id: 'hermes-gh-demo-tools',
+    name: 'hermes-gh-demo-tools',
+    description:
+      '一组围绕 Hermes CLI 封装的 GitHub 仓库研究脚本，先抓取真实仓库事实，再生成是否值得体验和写作的判断卡。',
+    categoryIds: ['ai-workflow', 'script'],
+    status: '自用中',
+    form: 'Hermes Agent',
+    tags: ['GitHub', 'Hermes Agent', '仓库研究', 'Demo 判断', '内容选题'],
+    links: [
+      {
+        label: 'GitHub',
+        href: 'https://github.com/catteacher0515/hermes-gh-demo-tools',
+        kind: 'github',
+      },
+    ],
+  },
+  {
+    id: 'spring-boot-scaffold-skill',
+    name: 'spring-boot-scaffold-skill',
+    description:
+      '用于快速初始化 Spring Boot 后端项目的 Claude Code Skill，会生成统一响应、业务异常、全局异常、CORS 和接口文档等通用脚手架代码。',
+    categoryIds: ['skill'],
+    status: '已归档',
+    form: 'Skill',
+    tags: ['Spring Boot', '后端脚手架', 'Claude Code', '统一异常', '工程初始化'],
+    links: [
+      {
+        label: 'GitHub',
+        href: 'https://github.com/catteacher0515/spring-boot-scaffold-skill',
+        kind: 'github',
+      },
+    ],
+  },
+  {
     id: 'cet4-download',
     name: '四级真题工具站',
     description: '直接下载四级真题，无需再在评论区刷 ××',
@@ -78,6 +184,28 @@ export const tools: Tool[] = [
       {
         label: 'GitHub',
         href: 'https://github.com/catteacher0515/cet6-download',
+        kind: 'github',
+      },
+    ],
+  },
+  {
+    id: 'wordtrace',
+    name: 'WordTrace',
+    description:
+      '从四六级真题文本中提取、清洗和统计高频词，生成临时抱佛脚用的重点词书和本地学习页面。',
+    categoryIds: ['study-tools', 'script'],
+    status: '可访问',
+    form: '网站',
+    tags: ['四六级', '高频词', '真题词汇', '临时抱佛脚', '学习工具'],
+    links: [
+      {
+        label: '打开工具',
+        href: 'https://catteacher0515.github.io/WordTrace/',
+        kind: 'external',
+      },
+      {
+        label: 'GitHub',
+        href: 'https://github.com/catteacher0515/WordTrace',
         kind: 'github',
       },
     ],
