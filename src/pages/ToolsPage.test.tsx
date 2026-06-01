@@ -76,33 +76,36 @@ describe('ToolsPage', () => {
     expect(githubLinks).toHaveLength(11)
     expect(toolLinks[0]).toHaveAttribute(
       'href',
-      'https://catteacher0515.github.io/RedBook-Fixer/',
+      'https://catteacher0515.github.io/cet4-download/',
     )
-    expect(toolLinks[1]).toHaveAttribute('href', 'https://catteacher0515.github.io/SoftPage/')
+    expect(toolLinks[1]).toHaveAttribute('href', 'https://catteacher0515.github.io/cet6-download/')
+    expect(toolLinks[2]).toHaveAttribute('href', 'https://catteacher0515.github.io/WordTrace/')
+    expect(toolLinks[3]).toHaveAttribute('href', 'https://catteacher0515.github.io/RedBook-Fixer/')
+    expect(toolLinks[4]).toHaveAttribute('href', 'https://catteacher0515.github.io/SoftPage/')
     expect(githubLinks[0]).toHaveAttribute(
-      'href',
-      'https://github.com/catteacher0515/RedBook-Fixer',
-    )
-    expect(githubLinks[1]).toHaveAttribute('href', 'https://github.com/catteacher0515/SoftPage')
-    expect(githubLinks[2]).toHaveAttribute(
-      'href',
-      'https://github.com/catteacher0515/DraftFlow',
-    )
-    expect(githubLinks[3]).toHaveAttribute(
-      'href',
-      'https://github.com/catteacher0515/publish-guard',
-    )
-    expect(githubLinks[4]).toHaveAttribute(
       'href',
       'https://github.com/catteacher0515/GitHub-Star-Top',
     )
-    expect(githubLinks[5]).toHaveAttribute(
+    expect(githubLinks[1]).toHaveAttribute('href', 'https://github.com/catteacher0515/DraftFlow')
+    expect(githubLinks[2]).toHaveAttribute(
       'href',
       'https://github.com/catteacher0515/hermes-gh-demo-tools',
     )
+    expect(githubLinks[3]).toHaveAttribute(
+      'href',
+      'https://github.com/catteacher0515/ShadowPlay',
+    )
+    expect(githubLinks[4]).toHaveAttribute(
+      'href',
+      'https://github.com/catteacher0515/cet4-download',
+    )
+    expect(githubLinks[5]).toHaveAttribute(
+      'href',
+      'https://github.com/catteacher0515/cet6-download',
+    )
     expect(githubLinks[6]).toHaveAttribute(
       'href',
-      'https://github.com/catteacher0515/spring-boot-scaffold-skill',
+      'https://github.com/catteacher0515/WordTrace',
     )
     expect(screen.getByRole('heading', { name: '四级真题工具站' })).toBeInTheDocument()
     expect(screen.getByText('直接下载四级真题，无需再在评论区刷 ××')).toBeInTheDocument()
@@ -116,6 +119,28 @@ describe('ToolsPage', () => {
     expect(screen.queryByText('工具展示占位卡')).not.toBeInTheDocument()
     expect(screen.queryByText(/这里先放一个自用工具展示位/)).not.toBeInTheDocument()
     expect(screen.queryByText(/还没有工具，快去种一个/)).not.toBeInTheDocument()
+  })
+
+  it('orders tools by portfolio priority', () => {
+    render(
+      <MemoryRouter>
+        <ToolsPage />
+      </MemoryRouter>,
+    )
+
+    expect(screen.getAllByRole('heading', { level: 2 }).map((heading) => heading.textContent)).toEqual([
+      'GitHub-Star-Top',
+      'DraftFlow',
+      'hermes-gh-demo-tools',
+      'ShadowPlay / 云上皮影',
+      '四级真题工具站',
+      '六级真题工具站',
+      'WordTrace',
+      'RedBook Fixer',
+      'SoftPage',
+      'publish-guard / content-safety-pipeline',
+      'spring-boot-scaffold-skill',
+    ])
   })
 
   it('keeps category selection state when switching empty categories', () => {
@@ -133,6 +158,12 @@ describe('ToolsPage', () => {
     expect(screen.getByRole('heading', { name: 'DraftFlow' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'GitHub-Star-Top' })).toBeInTheDocument()
     expect(screen.queryByText('这个分类还在整理中。')).not.toBeInTheDocument()
+
+    expect(screen.getAllByRole('heading', { level: 2 }).map((heading) => heading.textContent)).toEqual([
+      'GitHub-Star-Top',
+      'DraftFlow',
+      'hermes-gh-demo-tools',
+    ])
   })
 
   it('shows RedBook Fixer under content tools', () => {
@@ -164,17 +195,23 @@ describe('ToolsPage', () => {
     expect(githubLinks).toHaveLength(4)
     expect(githubLinks[0]).toHaveAttribute(
       'href',
-      'https://github.com/catteacher0515/RedBook-Fixer',
-    )
-    expect(githubLinks[1]).toHaveAttribute('href', 'https://github.com/catteacher0515/SoftPage')
-    expect(githubLinks[2]).toHaveAttribute(
-      'href',
       'https://github.com/catteacher0515/DraftFlow',
     )
+    expect(githubLinks[1]).toHaveAttribute(
+      'href',
+      'https://github.com/catteacher0515/RedBook-Fixer',
+    )
+    expect(githubLinks[2]).toHaveAttribute('href', 'https://github.com/catteacher0515/SoftPage')
     expect(githubLinks[3]).toHaveAttribute(
       'href',
       'https://github.com/catteacher0515/publish-guard',
     )
+    expect(screen.getAllByRole('heading', { level: 2 }).map((heading) => heading.textContent)).toEqual([
+      'DraftFlow',
+      'RedBook Fixer',
+      'SoftPage',
+      'publish-guard / content-safety-pipeline',
+    ])
   })
 
   it('shows CET tools under study tools with site and GitHub links', () => {
@@ -224,6 +261,11 @@ describe('ToolsPage', () => {
       'href',
       'https://github.com/catteacher0515/WordTrace',
     )
+    expect(screen.getAllByRole('heading', { level: 2 }).map((heading) => heading.textContent)).toEqual([
+      '四级真题工具站',
+      '六级真题工具站',
+      'WordTrace',
+    ])
   })
 
   it('shows archived ShadowPlay under experiment projects with GitHub only', () => {
@@ -250,6 +292,9 @@ describe('ToolsPage', () => {
       'href',
       'https://github.com/catteacher0515/ShadowPlay',
     )
+    expect(screen.getAllByRole('heading', { level: 2 }).map((heading) => heading.textContent)).toEqual([
+      'ShadowPlay / 云上皮影',
+    ])
   })
 
   it('shows archived backend scaffold under skill category with GitHub only', () => {
@@ -281,6 +326,10 @@ describe('ToolsPage', () => {
       'href',
       'https://github.com/catteacher0515/spring-boot-scaffold-skill',
     )
+    expect(screen.getAllByRole('heading', { level: 2 }).map((heading) => heading.textContent)).toEqual([
+      'publish-guard / content-safety-pipeline',
+      'spring-boot-scaffold-skill',
+    ])
   })
 
   it('shows GitHub workflow tools under AI workflow and script categories', () => {
@@ -301,11 +350,11 @@ describe('ToolsPage', () => {
     expect(screen.queryByRole('link', { name: '打开工具' })).not.toBeInTheDocument()
     expect(screen.getAllByRole('link', { name: 'GitHub' })[0]).toHaveAttribute(
       'href',
-      'https://github.com/catteacher0515/DraftFlow',
+      'https://github.com/catteacher0515/GitHub-Star-Top',
     )
     expect(screen.getAllByRole('link', { name: 'GitHub' })[1]).toHaveAttribute(
       'href',
-      'https://github.com/catteacher0515/GitHub-Star-Top',
+      'https://github.com/catteacher0515/DraftFlow',
     )
     expect(screen.getAllByRole('link', { name: 'GitHub' })[2]).toHaveAttribute(
       'href',
@@ -327,5 +376,10 @@ describe('ToolsPage', () => {
     expect(screen.getByRole('heading', { name: 'GitHub-Star-Top' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'hermes-gh-demo-tools' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'WordTrace' })).toBeInTheDocument()
+    expect(screen.getAllByRole('heading', { level: 2 }).map((heading) => heading.textContent)).toEqual([
+      'GitHub-Star-Top',
+      'hermes-gh-demo-tools',
+      'WordTrace',
+    ])
   })
 })

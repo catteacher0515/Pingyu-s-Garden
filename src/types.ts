@@ -39,6 +39,7 @@ export interface ToolLink {
 
 export interface Tool {
   id: string
+  priority: number
   name: string
   description: string
   categoryIds: ToolCategoryId[]

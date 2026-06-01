@@ -18,9 +18,10 @@ export const toolCategories: ToolCategory[] = [
   { id: 'script', label: '脚本' },
 ]
 
-export const tools: Tool[] = [
+const toolEntries: Tool[] = [
   {
     id: 'redbook-fixer',
+    priority: 800,
     name: 'RedBook Fixer',
     description: '用于小红书文案的初筛并修改工作',
     categoryIds: ['content-tools'],
@@ -42,6 +43,7 @@ export const tools: Tool[] = [
   },
   {
     id: 'softpage',
+    priority: 900,
     name: 'SoftPage',
     description: '用于制作小红书图文和封面的内容工具。',
     categoryIds: ['content-tools'],
@@ -63,6 +65,7 @@ export const tools: Tool[] = [
   },
   {
     id: 'draftflow',
+    priority: 200,
     name: 'DraftFlow',
     description:
       '正在建设中的多平台草稿分发桌面工具，目标是把 Markdown 内容转换并同步到不同内容平台草稿。',
@@ -80,6 +83,7 @@ export const tools: Tool[] = [
   },
   {
     id: 'publish-guard',
+    priority: 1000,
     name: 'publish-guard / content-safety-pipeline',
     description:
       '一个已归档的小红书发布前内容安全流水线 Skill，串联 RedBook-Fixer、零克查词、小红书草稿和本地日志，用来验证文案过审处理的自动化流程。',
@@ -97,6 +101,7 @@ export const tools: Tool[] = [
   },
   {
     id: 'github-star-top',
+    priority: 100,
     name: 'GitHub-Star-Top',
     description:
       '自动抓取每周热门 GitHub 项目，生成 AI 解读并同步到飞书选题池，用来发现优质仓库和支持内容选题。',
@@ -114,6 +119,7 @@ export const tools: Tool[] = [
   },
   {
     id: 'hermes-gh-demo-tools',
+    priority: 300,
     name: 'hermes-gh-demo-tools',
     description:
       '一组围绕 Hermes CLI 封装的 GitHub 仓库研究脚本，先抓取真实仓库事实，再生成是否值得体验和写作的判断卡。',
@@ -131,6 +137,7 @@ export const tools: Tool[] = [
   },
   {
     id: 'spring-boot-scaffold-skill',
+    priority: 1100,
     name: 'spring-boot-scaffold-skill',
     description:
       '用于快速初始化 Spring Boot 后端项目的 Claude Code Skill，会生成统一响应、业务异常、全局异常、CORS 和接口文档等通用脚手架代码。',
@@ -148,6 +155,7 @@ export const tools: Tool[] = [
   },
   {
     id: 'cet4-download',
+    priority: 500,
     name: '四级真题工具站',
     description: '直接下载四级真题，无需再在评论区刷 ××',
     categoryIds: ['study-tools'],
@@ -169,6 +177,7 @@ export const tools: Tool[] = [
   },
   {
     id: 'cet6-download',
+    priority: 600,
     name: '六级真题工具站',
     description: '直接下载六级真题，无需再在评论区刷 ××',
     categoryIds: ['study-tools'],
@@ -190,6 +199,7 @@ export const tools: Tool[] = [
   },
   {
     id: 'wordtrace',
+    priority: 700,
     name: 'WordTrace',
     description:
       '从四六级真题文本中提取、清洗和统计高频词，生成临时抱佛脚用的重点词书和本地学习页面。',
@@ -212,6 +222,7 @@ export const tools: Tool[] = [
   },
   {
     id: 'shadow-play',
+    priority: 400,
     name: 'ShadowPlay / 云上皮影',
     description:
       '一个围绕唐山皮影文化做的小程序原型，重点在素材整理、文化内容呈现和轻量交互设计。',
@@ -228,6 +239,8 @@ export const tools: Tool[] = [
     ],
   },
 ]
+
+export const tools: Tool[] = [...toolEntries].sort((a, b) => a.priority - b.priority)
 
 export function filterToolsByCategory(categoryId: ToolCategoryFilterId) {
   if (categoryId === 'all') {
