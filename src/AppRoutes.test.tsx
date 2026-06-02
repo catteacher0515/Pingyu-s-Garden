@@ -42,7 +42,7 @@ describe('app routes', () => {
 
     fireEvent.click(screen.getAllByRole('link', { name: '项目' })[0])
 
-    expect(await screen.findByRole('heading', { name: '项目' })).toBeInTheDocument()
-    expect(screen.getByText('代表项目占位卡')).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: 'Selected Works / 04 Projects' })).toBeInTheDocument()
+    expect(screen.getByLabelText('项目详情')).toBeInTheDocument()
   })
 })

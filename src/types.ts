@@ -64,7 +64,7 @@ export interface ArticleSeries {
   label: string
 }
 
-export type ProjectLinkKind = 'external' | 'github' | 'article' | 'demo'
+export type ProjectLinkKind = 'external' | 'github' | 'article' | 'demo' | 'internal'
 
 export type ProjectStatus = '规划中' | '进行中' | '已发布' | '已归档'
 
@@ -74,14 +74,27 @@ export interface ProjectLink {
   kind: ProjectLinkKind
 }
 
+export type ProjectSectionId = 'problem' | 'solution' | 'highlights' | 'tech-stack' | 'results' | 'diagram'
+
+export interface ProjectSection {
+  id: ProjectSectionId
+  title: string
+  body: string
+  items?: string[]
+}
+
 export interface Project {
   id: string
+  rank: number
   title: string
   year: string
   status: ProjectStatus
-  role: string
-  summary: string
-  outcome: string
+  positioning: string
+  problem: string
+  sections: ProjectSection[]
+  role?: string
+  summary?: string
+  outcome?: string
   tags: string[]
   links: ProjectLink[]
 }

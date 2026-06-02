@@ -1,10 +1,22 @@
 import '@testing-library/jest-dom/vitest'
-import { cleanup, render, screen } from '@testing-library/react'
+import { cleanup, fireEvent, render, screen, within } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
-import { afterEach, describe, expect, it } from 'vitest'
-import { projects } from '../data/projects'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+import { projects as baseProjects } from '../data/projects'
 import ProfilePage from './ProfilePage'
 import ProjectsPage from './ProjectsPage'
+
+vi.mock('../data/projects', async () => {
+  const actual = await vi.importActual<typeof import('../data/projects')>('../data/projects')
+
+  return {
+    ...actual,
+    projects: actual.projects.map((project) => ({
+      ...project,
+      sections: [project.sections[1], project.sections[0], ...project.sections.slice(2)],
+    })),
+  }
+})
 
 afterEach(() => {
   cleanup()
@@ -57,32 +69,41 @@ describe('detail pages', () => {
     expect(screen.getByRole('link', { name: '回到花园' })).toHaveAttribute('href', '/')
   })
 
-  it('renders structured project cards with metadata and link strategy', () => {
+  it('renders the projects page as a single-selected summary wall', () => {
     render(
       <MemoryRouter>
         <ProjectsPage />
       </MemoryRouter>,
     )
 
-    expect(screen.getByRole('heading', { name: '项目' })).toBeInTheDocument()
-    expect(projects).toHaveLength(1)
+    const firstProject = baseProjects[0]
+    const secondProject = baseProjects[1]
+    const detailArea = screen.getByLabelText('项目详情')
 
-    const [project] = projects
-    expect(screen.getByRole('heading', { name: project.title })).toBeInTheDocument()
-    expect(screen.getByText(project.year)).toBeInTheDocument()
-    expect(screen.getByText(project.status)).toBeInTheDocument()
-    expect(screen.getByText(project.role)).toBeInTheDocument()
-    expect(screen.getByText(project.summary)).toBeInTheDocument()
-    expect(screen.getByText(project.outcome)).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Selected Works / 04 Projects' })).toBeInTheDocument()
+    expect(within(detailArea).getByRole('heading', { name: firstProject.title })).toBeInTheDocument()
+    expect(within(detailArea).getByRole('heading', { name: '问题' })).toBeInTheDocument()
+    expect(within(detailArea).getByRole('heading', { name: '方案' })).toBeInTheDocument()
+    expect(within(detailArea).getByRole('heading', { name: '亮点' })).toBeInTheDocument()
+    expect(within(detailArea).getByRole('heading', { name: '技术栈' })).toBeInTheDocument()
+    expect(within(detailArea).getByRole('heading', { name: '结果' })).toBeInTheDocument()
+    expect(within(detailArea).queryByRole('heading', { name: secondProject.title })).not.toBeInTheDocument()
+    expect(screen.queryByText('链接计划')).not.toBeInTheDocument()
 
-    for (const tag of project.tags) {
-      expect(screen.getByText(tag)).toBeInTheDocument()
-    }
+    expect(screen.getAllByRole('button', { name: /展开 .* 项目档案/ })).toHaveLength(baseProjects.length)
+    expect(
+      screen.getByRole('button', { name: `展开 ${firstProject.title} 项目档案` }),
+    ).toBeInTheDocument()
 
-    expect(screen.getByText('链接计划')).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: /GitHub/ })).toHaveAttribute('href', project.links[0].href)
-    expect(screen.getByText('项目文章')).toBeInTheDocument()
-    expect(screen.getByText('在线 Demo')).toBeInTheDocument()
-    expect(screen.queryByText('代表项目占位卡')).not.toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: `展开 ${secondProject.title} 项目档案` }))
+
+    const updatedDetailArea = screen.getByLabelText('项目详情')
+    expect(within(updatedDetailArea).getByRole('heading', { name: secondProject.title })).toBeInTheDocument()
+    expect(within(updatedDetailArea).getByRole('heading', { name: '问题' })).toBeInTheDocument()
+    expect(within(updatedDetailArea).getByRole('heading', { name: '方案' })).toBeInTheDocument()
+    expect(within(updatedDetailArea).getByRole('heading', { name: '亮点' })).toBeInTheDocument()
+    expect(within(updatedDetailArea).getByRole('heading', { name: '技术栈' })).toBeInTheDocument()
+    expect(within(updatedDetailArea).getByRole('heading', { name: '结果' })).toBeInTheDocument()
+    expect(within(updatedDetailArea).queryByRole('heading', { name: firstProject.title })).not.toBeInTheDocument()
   })
 })
