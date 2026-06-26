@@ -57,7 +57,7 @@ export interface Article {
   seriesId: ArticleSeriesId
 }
 
-export type ArticleSeriesId = 'ai-talk' | 'ai-tools' | 'github-weekly'
+export type ArticleSeriesId = 'ai-talk' | 'ai-tools' | 'github-weekly' | 'personal-tools'
 
 export interface ArticleSeries {
   id: ArticleSeriesId
