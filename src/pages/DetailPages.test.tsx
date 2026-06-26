@@ -36,7 +36,7 @@ describe('detail pages', () => {
       screen.getByText('我用 AI 和代码做一些小工具，记录自己如何学习、试错、搭建工作流，也把那些真正有用的开源项目介绍给更多人。'),
     ).toBeInTheDocument()
 
-    expect(screen.getByText('大二下在读')).toBeInTheDocument()
+    expect(screen.getByText('准大三')).toBeInTheDocument()
     expect(screen.getByText('AI + Code')).toBeInTheDocument()
     expect(screen.getByText('学习记录')).toBeInTheDocument()
     expect(screen.getByText('小工具开发')).toBeInTheDocument()

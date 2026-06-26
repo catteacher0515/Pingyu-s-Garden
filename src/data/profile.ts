@@ -10,7 +10,7 @@ export const profileIntro = {
   ],
 }
 
-export const identityTags = ['大二下在读', 'AI + Code', '学习记录', '小工具开发']
+export const identityTags = ['准大三', 'AI + Code', '学习记录', '小工具开发']
 
 export const focusAreas = [
   {

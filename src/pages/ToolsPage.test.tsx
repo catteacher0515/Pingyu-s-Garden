@@ -35,6 +35,10 @@ describe('ToolsPage', () => {
     expect(screen.getByText('用于小红书文案的初筛并修改工作')).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'SoftPage' })).toBeInTheDocument()
     expect(screen.getByText('用于制作小红书图文和封面的内容工具。')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'TaskFlow Progress Visualizer' })).toBeInTheDocument()
+    expect(
+      screen.getByText('本地模板化任务进度工具，用于把探索性任务拆成可见的小反馈和大反馈，并在任务失控时进入收束模式。'),
+    ).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'DraftFlow' })).toBeInTheDocument()
     expect(
       screen.getByText('正在建设中的多平台草稿分发桌面工具，目标是把 Markdown 内容转换并同步到不同内容平台草稿。'),
@@ -52,9 +56,9 @@ describe('ToolsPage', () => {
       screen.getByText('一组围绕 Hermes CLI 封装的 GitHub 仓库研究脚本，先抓取真实仓库事实，再生成是否值得体验和写作的判断卡。'),
     ).toBeInTheDocument()
     expect(screen.getAllByText('可访问')).toHaveLength(5)
-    expect(screen.getAllByText('自用中')).toHaveLength(2)
+    expect(screen.getAllByText('自用中')).toHaveLength(3)
     expect(screen.getByText('实验中')).toBeInTheDocument()
-    expect(screen.getAllByText('网站')).toHaveLength(5)
+    expect(screen.getAllByText('网站')).toHaveLength(6)
     expect(screen.getAllByText('脚本')).toHaveLength(2)
     expect(screen.getByText('桌面应用')).toBeInTheDocument()
     expect(screen.getByText('Hermes Agent')).toBeInTheDocument()
@@ -73,7 +77,7 @@ describe('ToolsPage', () => {
     const githubLinks = screen.getAllByRole('link', { name: 'GitHub' })
 
     expect(toolLinks).toHaveLength(5)
-    expect(githubLinks).toHaveLength(11)
+    expect(githubLinks).toHaveLength(12)
     expect(toolLinks[0]).toHaveAttribute(
       'href',
       'https://catteacher0515.github.io/cet4-download/',
@@ -86,24 +90,25 @@ describe('ToolsPage', () => {
       'href',
       'https://github.com/catteacher0515/GitHub-Star-Top',
     )
-    expect(githubLinks[1]).toHaveAttribute('href', 'https://github.com/catteacher0515/DraftFlow')
-    expect(githubLinks[2]).toHaveAttribute(
+    expect(githubLinks[1]).toHaveAttribute('href', 'https://github.com/catteacher0515/TaskFlow')
+    expect(githubLinks[2]).toHaveAttribute('href', 'https://github.com/catteacher0515/DraftFlow')
+    expect(githubLinks[3]).toHaveAttribute(
       'href',
       'https://github.com/catteacher0515/hermes-gh-demo-tools',
     )
-    expect(githubLinks[3]).toHaveAttribute(
+    expect(githubLinks[4]).toHaveAttribute(
       'href',
       'https://github.com/catteacher0515/ShadowPlay',
     )
-    expect(githubLinks[4]).toHaveAttribute(
+    expect(githubLinks[5]).toHaveAttribute(
       'href',
       'https://github.com/catteacher0515/cet4-download',
     )
-    expect(githubLinks[5]).toHaveAttribute(
+    expect(githubLinks[6]).toHaveAttribute(
       'href',
       'https://github.com/catteacher0515/cet6-download',
     )
-    expect(githubLinks[6]).toHaveAttribute(
+    expect(githubLinks[7]).toHaveAttribute(
       'href',
       'https://github.com/catteacher0515/WordTrace',
     )
@@ -130,6 +135,7 @@ describe('ToolsPage', () => {
 
     expect(screen.getAllByRole('heading', { level: 2 }).map((heading) => heading.textContent)).toEqual([
       'GitHub-Star-Top',
+      'TaskFlow Progress Visualizer',
       'DraftFlow',
       'hermes-gh-demo-tools',
       'ShadowPlay / 云上皮影',
@@ -161,6 +167,7 @@ describe('ToolsPage', () => {
 
     expect(screen.getAllByRole('heading', { level: 2 }).map((heading) => heading.textContent)).toEqual([
       'GitHub-Star-Top',
+      'TaskFlow Progress Visualizer',
       'DraftFlow',
       'hermes-gh-demo-tools',
     ])
@@ -342,10 +349,11 @@ describe('ToolsPage', () => {
     fireEvent.click(screen.getByRole('button', { name: 'AI 工作流' }))
 
     expect(screen.getByRole('button', { name: 'AI 工作流' })).toHaveAttribute('aria-pressed', 'true')
-    expect(screen.getByRole('heading', { name: 'DraftFlow' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'GitHub-Star-Top' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'TaskFlow Progress Visualizer' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'DraftFlow' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'hermes-gh-demo-tools' })).toBeInTheDocument()
-    expect(screen.getAllByText('自用中')).toHaveLength(2)
+    expect(screen.getAllByText('自用中')).toHaveLength(3)
     expect(screen.getAllByText('脚本')).toHaveLength(2)
     expect(screen.queryByRole('link', { name: '打开工具' })).not.toBeInTheDocument()
     expect(screen.getAllByRole('link', { name: 'GitHub' })[0]).toHaveAttribute(
@@ -354,9 +362,13 @@ describe('ToolsPage', () => {
     )
     expect(screen.getAllByRole('link', { name: 'GitHub' })[1]).toHaveAttribute(
       'href',
-      'https://github.com/catteacher0515/DraftFlow',
+      'https://github.com/catteacher0515/TaskFlow',
     )
     expect(screen.getAllByRole('link', { name: 'GitHub' })[2]).toHaveAttribute(
+      'href',
+      'https://github.com/catteacher0515/DraftFlow',
+    )
+    expect(screen.getAllByRole('link', { name: 'GitHub' })[3]).toHaveAttribute(
       'href',
       'https://github.com/catteacher0515/hermes-gh-demo-tools',
     )
@@ -374,10 +386,12 @@ describe('ToolsPage', () => {
 
     expect(screen.getByRole('button', { name: '脚本' })).toHaveAttribute('aria-pressed', 'true')
     expect(screen.getByRole('heading', { name: 'GitHub-Star-Top' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'TaskFlow Progress Visualizer' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'hermes-gh-demo-tools' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'WordTrace' })).toBeInTheDocument()
     expect(screen.getAllByRole('heading', { level: 2 }).map((heading) => heading.textContent)).toEqual([
       'GitHub-Star-Top',
+      'TaskFlow Progress Visualizer',
       'hermes-gh-demo-tools',
       'WordTrace',
     ])
