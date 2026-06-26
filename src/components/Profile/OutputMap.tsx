@@ -17,7 +17,7 @@ export default function OutputMap({ outputs }: OutputMapProps) {
     <section className="mt-12 rounded-[1.75rem] border border-[#efcfbf]/22 bg-[linear-gradient(180deg,rgba(244,234,223,0.1),rgba(215,106,78,0.04))] p-5 sm:p-6">
       <p className="font-body text-xs uppercase tracking-[0.32em] text-[#ed7b62]/70">output map</p>
       <h2 className="mt-2 font-display text-3xl font-semibold text-[#f4eadf]">我如何输出</h2>
-      <div className="mt-5 grid gap-4 md:grid-cols-3">
+      <div className="mt-5 grid gap-4 md:grid-cols-2">
         {outputs.map((output, index) => (
           <motion.div
             key={output.id}

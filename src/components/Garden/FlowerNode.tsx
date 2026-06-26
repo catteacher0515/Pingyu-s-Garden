@@ -9,7 +9,6 @@ interface FlowerNodeProps {
 
 const SECTION_CODES: Record<HomeSectionConfig['id'], string> = {
   profile: 'ABOUT',
-  projects: 'WORK',
   articles: 'JOURNAL',
   tools: 'TOOLS',
 }

@@ -18,7 +18,6 @@ describe('HomePage', () => {
 
     expect(screen.getByText("Pingyu's Garden")).toBeInTheDocument()
     expect(screen.queryByRole('link', { name: 'about' })).not.toBeInTheDocument()
-    expect(screen.queryByRole('link', { name: 'work' })).not.toBeInTheDocument()
     expect(screen.queryByRole('link', { name: 'journal' })).not.toBeInTheDocument()
     expect(screen.queryByRole('link', { name: 'tools' })).not.toBeInTheDocument()
     expect(screen.queryByText('花萍雨的数字花园')).not.toBeInTheDocument()
@@ -26,7 +25,6 @@ describe('HomePage', () => {
     expect(screen.getByRole('img', { name: '花萍雨的数字花园主海报' })).toBeInTheDocument()
     expect(screen.getByTestId('poster-viewport')).toHaveClass('items-start')
     expect(screen.getByRole('link', { name: /个人介绍/i })).toHaveAttribute('href', '/profile')
-    expect(screen.getByRole('link', { name: /项目/i })).toHaveAttribute('href', '/projects')
     expect(screen.getByRole('link', { name: /文章/i })).toHaveAttribute('href', '/articles')
     expect(screen.getByRole('link', { name: /小工具/i })).toHaveAttribute('href', '/tools')
   })
@@ -52,15 +50,13 @@ describe('HomePage', () => {
     )
 
     expect(screen.getByTestId('ticket-stack')).toBeInTheDocument()
-    expect(screen.getAllByTestId('entry-ticket')).toHaveLength(4)
+    expect(screen.getAllByTestId('entry-ticket')).toHaveLength(3)
     expect(screen.getByText('01')).toBeInTheDocument()
     expect(screen.getByText('02')).toBeInTheDocument()
     expect(screen.getByText('03')).toBeInTheDocument()
-    expect(screen.getByText('04')).toBeInTheDocument()
     expect(screen.getByText('CURRENT')).toBeInTheDocument()
 
     expect(screen.queryByText('👤')).not.toBeInTheDocument()
-    expect(screen.queryByText('🧩')).not.toBeInTheDocument()
     expect(screen.queryByText('📝')).not.toBeInTheDocument()
     expect(screen.queryByText('🛠️')).not.toBeInTheDocument()
   })

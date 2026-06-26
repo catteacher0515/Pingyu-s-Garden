@@ -49,7 +49,6 @@ describe('detail pages', () => {
 
     expect(screen.getByRole('heading', { name: '我如何输出' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /^文章/ })).toHaveAttribute('href', '/articles')
-    expect(screen.getByRole('link', { name: /^项目/ })).toHaveAttribute('href', '/projects')
     expect(screen.getByRole('link', { name: /^小工具/ })).toHaveAttribute('href', '/tools')
 
     expect(screen.getByRole('heading', { name: '联系我' })).toBeInTheDocument()

@@ -1,4 +1,4 @@
-export type HomeSectionId = 'profile' | 'projects' | 'articles' | 'tools'
+export type HomeSectionId = 'profile' | 'articles' | 'tools'
 
 export interface HomeSectionConfig {
   id: HomeSectionId

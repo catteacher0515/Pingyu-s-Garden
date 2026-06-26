@@ -47,12 +47,6 @@ export const outputLinks = [
     description: '记录学习笔记、项目试用和工具 walkthrough。',
   },
   {
-    id: 'projects',
-    title: '项目',
-    path: '/projects',
-    description: '收集更完整的作品，把一个问题做成可用的东西。',
-  },
-  {
     id: 'tools',
     title: '小工具',
     path: '/tools',
