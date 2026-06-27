@@ -10,6 +10,10 @@
 - `/articles` 文章
 - `/tools` 小工具
 
+## 线上访问
+
+- GitHub Pages 项目页（部署后）：`https://catteacher0515.github.io/Pingyu-s-Garden/`
+
 ## 本地运行
 
 ```bash
@@ -26,7 +30,9 @@ npm run build
 ## 说明
 
 - 当前首页实现是黑底红棕海报式入口页，包含手绘边饰、抽象主视觉和 4 个入口卡片
-- 个人介绍、项目、文章和工具页已存在，但内容仍以占位数据为主
+- `/profile` 是 poster-style About 页面，`/articles` 是知乎文章封面墙，`/tools` 是小工具实验室，`/projects` 是四个代表项目占位位
+- 项目页目前仍是占位数据，其余页面已经接入真实或接近真实的内容
+- GitHub Pages 项目页已按 Vite `base` 和 404 回退做了适配，适合通过仓库项目页发布
 - 海报式首页的设计稿和实施计划分别在：
   - `docs/superpowers/specs/2026-05-28-poster-home-design.md`
   - `docs/superpowers/plans/2026-05-28-poster-home.md`

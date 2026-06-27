@@ -2,6 +2,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion'
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import { routeTransition } from './lib/motion'
 import HomePage from './pages/HomePage'
+import ProjectsPage from './pages/ProjectsPage'
 import ToolsPage from './pages/ToolsPage'
 import ArticlesPage from './pages/ArticlesPage'
 import ProfilePage from './pages/ProfilePage'
@@ -33,6 +34,7 @@ function AnimatedRoutes() {
         <Routes location={location}>
           <Route path="/" element={<HomePage />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/projects" element={<ProjectsPage />} />
           <Route path="/tools" element={<ToolsPage />} />
           <Route path="/articles" element={<ArticlesPage />} />
           <Route path="*" element={<NotFoundPage />} />
@@ -43,8 +45,10 @@ function AnimatedRoutes() {
 }
 
 export default function App() {
+  const basename = import.meta.env.BASE_URL === '/' ? undefined : import.meta.env.BASE_URL.replace(/\/$/, '')
+
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={basename}>
       <AnimatedRoutes />
     </BrowserRouter>
   )

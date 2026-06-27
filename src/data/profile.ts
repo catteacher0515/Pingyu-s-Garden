@@ -1,8 +1,10 @@
+import { withBaseUrl } from '../lib/base-url'
+
 export const profileIntro = {
   name: '花萍雨',
   title: '关于花萍雨',
   eyebrow: 'About / Digital Garden',
-  avatarSrc: '/avatar.jpg',
+  avatarSrc: withBaseUrl('/avatar.jpg'),
   avatarAlt: '花萍雨头像',
   description: [
     '我是花萍雨，一个还在探索中的开发者和内容创作者。',

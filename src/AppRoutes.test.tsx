@@ -35,13 +35,11 @@ describe('app routes', () => {
     expect(screen.getByRole('img', { name: '花萍雨的数字花园主海报' })).toBeInTheDocument()
   })
 
-  it('shows the not found page for the hidden projects route', async () => {
-    window.history.pushState({}, '', '/')
-
+  it('opens the projects page from the public projects route', async () => {
     window.history.pushState({}, '', '/projects')
     render(<App />)
 
-    expect(await screen.findByText('这片花园还没有种上花')).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: 'Selected Works / 04 Projects' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /回到花园/ })).toHaveAttribute('href', '/')
   })
 })

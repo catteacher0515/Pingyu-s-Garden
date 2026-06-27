@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import BackToGarden from '../components/Layout/BackToGarden'
 import ProjectsHeader from '../components/Projects/ProjectsHeader'
 import ProjectSummaryGrid from '../components/Projects/ProjectSummaryGrid'
 import { projects } from '../data/projects'
@@ -12,6 +13,8 @@ export default function ProjectsPage() {
       <div className="absolute inset-0 opacity-[0.08] [background-image:linear-gradient(rgba(244,234,223,0.55)_1px,transparent_1px),linear-gradient(90deg,rgba(244,234,223,0.45)_1px,transparent_1px)] [background-size:42px_42px]" />
 
       <div className="relative z-10 mx-auto max-w-6xl">
+        <BackToGarden />
+
         <ProjectsHeader
           title="Selected Works / 04 Projects"
           subtitle="先看项目在解决什么问题，再展开对应的模块化详情区。"
