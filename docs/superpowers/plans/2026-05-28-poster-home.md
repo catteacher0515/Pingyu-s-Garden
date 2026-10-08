@@ -1,6 +1,6 @@
 # Poster Home Implementation Plan
 
-> 状态：当前有效实施计划。该计划对应已确认的海报式首页方向，但截至 2026-05-28 尚未执行代码实现。
+> 状态：已执行完成。该计划对应的海报式首页已落地到代码，以下正文保留为实施记录。
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 

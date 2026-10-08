@@ -64,6 +64,7 @@ public/articles/github-w21.png
 'ai-talk'
 'ai-tools'
 'github-weekly'
+'personal-tools'
 ```
 
 ## 新增一个文章系列

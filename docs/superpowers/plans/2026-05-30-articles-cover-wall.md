@@ -1,5 +1,7 @@
 # Articles Cover Wall Implementation Plan
 
+> 状态：已执行完成。`/articles` 已按该计划落地到代码，以下正文保留为实施记录。
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** 把 `/articles` 实现为只显示标题的 poster-style 知乎文章封面墙。

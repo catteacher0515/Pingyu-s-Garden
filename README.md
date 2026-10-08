@@ -12,7 +12,7 @@
 
 ## 线上访问
 
-- GitHub Pages 项目页（部署后）：`https://catteacher0515.github.io/Pingyu-s-Garden/`
+- GitHub Pages：`https://catteacher0515.github.io/Pingyu-s-Garden/`（push 到 `main` 自动部署）
 
 ## 本地运行
 
@@ -29,9 +29,10 @@ npm run build
 
 ## 说明
 
-- 当前首页实现是黑底红棕海报式入口页，包含手绘边饰、抽象主视觉和 4 个入口卡片
+- 当前首页实现是黑底红棕海报式入口页，包含手绘边饰和手绘主视觉
 - `/profile` 是 poster-style About 页面，`/articles` 是知乎文章封面墙，`/tools` 是小工具实验室，`/projects` 是四个代表项目占位位
-- 项目页目前仍是占位数据，其余页面已经接入真实或接近真实的内容
+- 项目页目前仍是占位数据，首页不提供入口；其余页面已经接入真实或接近真实的内容
+- 正在整体翻新：新方向的可交互原型在 `docs/prototypes/redesign-v2/`，尚未迁入正式代码
 - GitHub Pages 项目页已按 Vite `base` 和 404 回退做了适配，适合通过仓库项目页发布
 - 海报式首页的设计稿和实施计划分别在：
   - `docs/superpowers/specs/2026-05-28-poster-home-design.md`

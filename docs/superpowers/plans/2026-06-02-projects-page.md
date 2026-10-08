@@ -1,5 +1,7 @@
 # Projects Page Implementation Plan
 
+> 状态：已执行完成。`/projects` 已按该计划落地为四个代表项目占位位，以下正文保留为实施记录。
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Rebuild `/projects` into a poster-consistent selected-works page with four summary cards, single-project expansion, and modular detail panels.
@@ -467,4 +469,3 @@ git commit -m "refactor: finalize projects page poster layout"
   - Each code-edit step names concrete files and code targets.
 - Type consistency:
   - `Project.positioning`, `Project.problem`, and `Project.sections` are introduced in Task 1 and reused consistently in Tasks 2-4.
-

@@ -1,5 +1,7 @@
 # Profile About 页面实施计划
 
+> 状态：已执行完成。`/profile` 已按该计划落地到代码，以下正文保留为实施记录。
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **目标：** 把 `/profile` 从占位介绍页改造成与首页 poster 风一致的学习轨迹型 About 页面。
@@ -54,7 +56,7 @@
       screen.getByText('我用 AI 和代码做一些小工具，记录自己如何学习、试错、搭建工作流，也把那些真正有用的开源项目介绍给更多人。'),
     ).toBeInTheDocument()
 
-    expect(screen.getByText('大二下在读')).toBeInTheDocument()
+    expect(screen.getByText('准大三')).toBeInTheDocument()
     expect(screen.getByText('AI + Code')).toBeInTheDocument()
     expect(screen.getByText('学习记录')).toBeInTheDocument()
     expect(screen.getByText('小工具开发')).toBeInTheDocument()
@@ -128,7 +130,7 @@ export const profileIntro = {
   ],
 }
 
-export const identityTags = ['大二下在读', 'AI + Code', '学习记录', '小工具开发']
+export const identityTags = ['准大三', 'AI + Code', '学习记录', '小工具开发']
 
 export const focusAreas = [
   {
