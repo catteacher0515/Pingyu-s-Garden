@@ -6,10 +6,10 @@ import { getReelItems, getVideos, getPosts, getProjects } from '../lib/content'
 const [reel, videos, posts, projects] = await Promise.all([getReelItems(), getVideos(), getPosts(), getProjects()])
 const lanes = [
   { href: '/videos/', label: '视频', icon: 'star-square.png', desc: '主要的更新都在这里：工具上手、工作流演示和折腾记录。', count: videos.length },
-  { href: '/posts/', label: '图文', icon: 'owl-square.png', desc: '来不及做成视频的教程和资料，还有以前写的文章和周刊。', count: posts.length },
+  { href: '/posts/', label: '图文', icon: 'owl-square.png', desc: '来不及做成视频的教程和资料，还有以前写的文章。', count: posts.length },
   { href: '/projects/', label: '项目', icon: 'computer-square.png', desc: '从真实需求出发做的小工具，有的能直接打开用。', count: projects.length },
 ]
-const verbs = ['做视频', '写教程', '做工具', '记周刊']
+const verbs = ['做视频', '写教程', '做工具', '记笔记']
 ---
 <Base nav="home">
   <section class="hero">

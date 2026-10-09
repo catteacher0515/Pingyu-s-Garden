@@ -32,7 +32,7 @@ export function bvidOf(url: string) {
 }
 
 export const STATUS_ORDER = ['可访问', '自用中', '实验中', '已归档'] as const
-export const CATEGORY_ORDER = ['教程', '文章', '周刊'] as const
+export const CATEGORY_ORDER = ['教程', '文章'] as const
 
 export const ICON = '/images/doodles/'
 

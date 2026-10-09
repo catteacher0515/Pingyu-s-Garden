@@ -28,7 +28,7 @@ const posts = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/posts' }),
   schema: z.object({
     ...common,
-    category: z.enum(['教程', '文章', '周刊']),
+    category: z.enum(['教程', '文章']),
     date: z.coerce.date().optional(),
     external: z.string().url().optional(),
     order: z.number().default(0),

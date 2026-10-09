@@ -3,11 +3,10 @@ import type { ReelItem } from '../lib/content'
 
 interface Props { items: ReelItem[] }
 const { items } = Astro.props
-const ICONS: Record<string, string> = { 视频: '🎬', 项目: '🛠', 教程: '📘', 文章: '✍️', 周刊: '📮' }
+const ICONS: Record<string, string> = { 视频: '🎬', 项目: '🛠', 教程: '📘', 文章: '✍️' }
 const filters = ['全部', ...new Set(items.map((i) => i.label))]
-const issueOf = (t: string) => t.match(/W\d+/)?.[0] ?? '周刊'
 const hostOf = (href: string) => { try { return new URL(href).host } catch { return href } }
-const tpl = (i: ReelItem) => (i.kind === 'post' ? (i.category === '周刊' ? 'weekly' : 'article') : i.kind)
+const tpl = (i: ReelItem) => (i.kind === 'post' ? 'article' : i.kind)
 ---
 <div class="reelHead" id="reel">
   <div><div class="eyebrow">Now showing · 放映厅</div><div class="h2">最近在做</div></div>
@@ -46,12 +45,6 @@ const tpl = (i: ReelItem) => (i.kind === 'post' ? (i.category === '周刊' ? 'we
               <div class="meta">{it.meta ? `${it.meta} · 阅读全文 ↗` : '阅读全文 →'}</div>
             </div>
             <div class="cov">{it.cover ? <img src={it.cover} alt="" /> : <img class="ic" src="/images/doodles/owl-square.png" alt="" />}</div>
-          </>
-        )}
-        {tpl(it) === 'weekly' && (
-          <>
-            <div class="num"><b>{issueOf(it.title)}</b><span>GitHub 每周精选</span><small>每周挑几个值得一看的项目</small></div>
-            <div class="cov">{it.cover && <img src={it.cover} alt="" />}</div>
           </>
         )}
         <span class="type">{ICONS[it.label] ?? '•'} {it.label}</span>
@@ -103,13 +96,6 @@ const tpl = (i: ReelItem) => (i.kind === 'post' ? (i.category === '周刊' ? 'we
   .t-article .cov { background: var(--bg2); display: grid; place-items: center; padding: 30px; }
   .t-article .cov img { width: 100%; border-radius: 12px; box-shadow: 0 20px 40px rgba(0, 0, 0, .25); }
   .t-article .cov img.ic { width: 120px; box-shadow: none; }
-  .t-weekly { background: #e9f36a; color: #111; display: grid; grid-template-columns: 1.1fr .9fr; }
-  .t-weekly .num { padding: 70px 46px 40px; display: flex; flex-direction: column; }
-  .t-weekly .num b { font-size: clamp(100px, 13vw, 210px); line-height: .85; letter-spacing: -.06em; font-weight: 850; }
-  .t-weekly .num span { font-size: 20px; font-weight: 600; margin-top: 16px; }
-  .t-weekly .num small { margin-top: auto; font-size: 14px; opacity: .65; }
-  .t-weekly .cov { padding: 30px 30px 30px 0; display: grid; place-items: center; }
-  .t-weekly .cov img { width: 100%; border-radius: 12px; transform: rotate(3deg); box-shadow: 0 20px 40px rgba(0, 0, 0, .2); }
   .caption { text-align: center; margin-top: 4px; min-height: 90px; padding: 0 160px; }
   .caption h3 { font-size: clamp(22px, 2.6vw, 40px); font-weight: 600; letter-spacing: -.02em; margin: 0; overflow: hidden; }
   .ctrl { position: absolute; right: 40px; bottom: -66px; display: flex; gap: 14px; z-index: 5; }
@@ -120,8 +106,8 @@ const tpl = (i: ReelItem) => (i.kind === 'post' ? (i.category === '周刊' ? 'we
   .progress i b { position: absolute; inset: 0; background: var(--text); transform-origin: left; transform: scaleX(0); }
   @media (max-width: 1100px) {
     .slide { width: 84vw; margin-left: -42vw; }
-    .t-article, .t-weekly { grid-template-columns: 1fr; }
-    .t-article .cov, .t-weekly .cov { display: none; }
+    .t-article { grid-template-columns: 1fr; }
+    .t-article .cov { display: none; }
     .filters { display: none; }
     .caption { padding: 60px 20px 0; }
   }

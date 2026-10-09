@@ -11,7 +11,7 @@ interface Props {
 const { title, description, nav, toc } = Astro.props
 const sideLinks = [
   { group: '视频', items: [{ href: '/videos/', text: '全部视频', id: 'videos' }] },
-  { group: '图文', items: [{ href: '/posts/#教程', text: '教程' }, { href: '/posts/#文章', text: '文章' }, { href: '/posts/#周刊', text: '周刊' }] },
+  { group: '图文', items: [{ href: '/posts/#教程', text: '教程' }, { href: '/posts/#文章', text: '文章' }] },
   { group: '项目', items: [{ href: '/projects/', text: '全部项目', id: 'projects' }] },
 ]
 ---
@@ -32,7 +32,7 @@ const sideLinks = [
       {toc.map((t) => <a href={`#${t.id}`} data-id={t.id} class={t.depth === 3 ? 'd3' : undefined}>{t.text}</a>)}
     </aside>
   </div>
-  <button class="ask" data-open-search>✦ 搜一搜：比如 "小红书"、"周刊"…<span class="go">↑</span></button>
+  <button class="ask" data-open-search>✦ 搜一搜：比如 "小红书"、"Python"…<span class="go">↑</span></button>
 </Base>
 
 <script>

@@ -6,18 +6,17 @@ interface Props {
   cover?: string
   preview?: string
   icon?: string
-  weekly?: string
   play?: boolean
   draft?: boolean
   status?: string
   tags?: string[]
 }
-const { href, title, meta, cover, preview, icon, weekly, play, draft, status, tags = [] } = Astro.props
+const { href, title, meta, cover, preview, icon, play, draft, status, tags = [] } = Astro.props
 const external = href.startsWith('http')
 ---
 <a class="card" href={href} target={external ? '_blank' : undefined} rel={external ? 'noopener' : undefined}>
   <div class="th">
-    {weekly ? <div class="wk">{weekly}</div> : cover ? <img src={cover} alt="" loading="lazy" /> : <img class="ic" src={icon ?? '/images/doodles/star-square.png'} alt="" />}
+    {cover ? <img src={cover} alt="" loading="lazy" /> : <img class="ic" src={icon ?? '/images/doodles/star-square.png'} alt="" />}
     {preview && <video src={preview} muted loop playsinline preload="none" data-hover-preview></video>}
     {play && <span class="pl">▶</span>}
   </div>

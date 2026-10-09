@@ -48,7 +48,7 @@ collections:
       - { label: 分类, field: category }
     fields:
       - { name: title, label: 标题 }
-      - { name: category, label: 分类, widget: select, options: [教程, 文章, 周刊], default: 教程 }
+      - { name: category, label: 分类, widget: select, options: [教程, 文章], default: 教程 }
       - { name: date, label: 发布日期, widget: datetime, time_format: false, format: YYYY-MM-DD, required: false }
       - { name: summary, label: 一句话简介, widget: text, required: false }
       - { name: cover, label: 封面图, widget: image, required: false }

@@ -22,7 +22,7 @@
 
 ## Content model
 
-- Three content collections in `src/content/`: `videos`, `posts` (category 教程 / 文章 / 周刊), `projects`. Schemas live in `src/content.config.ts`.
+- Three content collections in `src/content/`: `videos`, `posts` (category 教程 / 文章; the GitHub weekly series stopped on 2026-10-09 and its 5 issues are kept as 文章 tagged `GitHub 周刊`), `projects`. Schemas live in `src/content.config.ts`.
 - `public/admin/config.yml` (Sveltia CMS) mirrors those schemas field by field. Change both together.
 - `draft: true` entries show only in `npm run dev`; `featured: true` entries go into the homepage showreel (`src/components/Reel.astro`, one card template per content type).
 - Full videos are not hosted here: they live on B站 etc. Video pages embed the B站 player behind a click-to-load cover. Optional short silent `preview` clips are the only video files in the repo.
