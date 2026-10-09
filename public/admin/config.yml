@@ -6,7 +6,7 @@ backend:
   repo: catteacher0515/Pingyu-s-Garden
   branch: astro-v2 # 新站正式上线、合并到 main 之后改成 main
 
-site_url: https://catteacher0515.github.io
+site_url: https://pingyu-s-garden.pages.dev
 
 media_folder: public/media/uploads
 public_folder: /media/uploads

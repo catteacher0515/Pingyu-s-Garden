@@ -9,7 +9,7 @@
 - `main`: the old React/Vite poster-style site, still live on GitHub Pages at `https://catteacher0515.github.io/Pingyu-s-Garden/` via `.github/workflows/deploy-pages.yml`. Leave it alone until the new site replaces it.
 - `astro-v2`: the from-scratch rebuild (Astro 7 + GSAP + Sveltia CMS). This is where new work happens.
 - `redesign-prototype`: archive of the single-file prototype in `docs/prototypes/redesign-v2/` that the rebuild is based on.
-- Planned hosting for `astro-v2`: Cloudflare Pages first (root path, no base prefix), then the user's own domestic server once ICP filing is done. Vercel was tried earlier and failed; `.vercel/` is ignored.
+- `astro-v2` is live on Cloudflare Pages at https://pingyu-s-garden.pages.dev (project `pingyu-s-garden`, production branch `astro-v2`, `NODE_VERSION=24.14.1`, auto-deploys on push). Later move to the user's own domestic server once ICP filing is done. Vercel was tried earlier and failed; `.vercel/` is ignored.
 - Before merging `astro-v2` into `main`, the GitHub Pages workflow must be removed or updated: the new site assumes it is served from `/`, not `/Pingyu-s-Garden/`.
 - `~/dev/Pingyu-s-Garden-repo` is a stale older clone; do not work there.
 
