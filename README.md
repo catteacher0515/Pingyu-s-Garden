@@ -1,40 +1,41 @@
 # Pingyu's Garden
 
-花萍雨的个人数字花园。这个站点优先服务我自己，作为长期维护的个人入口，其次才服务简历展示。
+花萍雨的个人网站：视频、图文教程和自己做的小工具。
 
-## 页面结构
-
-- `/` 当前为海报式首页入口
-- `/profile` 个人介绍
-- `/projects` 项目
-- `/articles` 文章
-- `/tools` 小工具
-
-## 线上访问
-
-- GitHub Pages：`https://catteacher0515.github.io/Pingyu-s-Garden/`（push 到 `main` 自动部署）
+> 这个分支（`astro-v2`）是从零重写的新版本。线上旧版仍在 `main` 分支，部署在 GitHub Pages。
 
 ## 本地运行
 
 ```bash
-npm install
-npm run dev
+npm install --registry=https://repo.huaweicloud.com/repository/npm/
+npm run dev      # http://localhost:4321
+npm run build    # 输出到 dist/
 ```
 
-## 构建
+## 页面
 
-```bash
-npm run build
-```
+- `/` 首页：自我介绍、「最近在做」放映厅、关于我
+- `/videos/` 视频列表和详情（嵌入 B 站播放器）
+- `/posts/` 图文：教程、文章、周刊
+- `/projects/` 项目
+- `/admin/` 编辑后台
 
-## 说明
+## 怎么更新内容
 
-- 当前首页实现是黑底红棕海报式入口页，包含手绘边饰和手绘主视觉
-- `/profile` 是 poster-style About 页面，`/articles` 是知乎文章封面墙，`/tools` 是小工具实验室，`/projects` 是四个代表项目占位位
-- 项目页目前仍是占位数据，首页不提供入口；其余页面已经接入真实或接近真实的内容
-- 正在整体翻新：新方向的可交互原型在 `docs/prototypes/redesign-v2/`，尚未迁入正式代码
-- GitHub Pages 项目页已按 Vite `base` 和 404 回退做了适配，适合通过仓库项目页发布
-- 海报式首页的设计稿和实施计划分别在：
-  - `docs/superpowers/specs/2026-05-28-poster-home-design.md`
-  - `docs/superpowers/plans/2026-05-28-poster-home.md`
-- 旧的花园同心圆、玻璃头像中心和浅色展签方案属于历史设计过程，不代表当前实现
+1. 打开 `你的网址/admin/`（本地是 `http://localhost:4321/admin/index.html`）。
+2. 选「Sign In Using Access Token」，按提示去 GitHub 生成一个只授权本仓库的令牌，粘贴登录。
+3. 新建或修改视频、图文、项目，点保存。内容会提交到 GitHub，网站重新构建后一两分钟内生效。
+
+几个开关：
+
+- **放进首页放映厅**：勾上后会出现在首页的「最近在做」。
+- **草稿**：勾上后只在本地预览可见，不会发布。
+- 视频的「预览片段」是可选的 3～6 秒静音 mp4，用来在首页和列表里自动播放。
+
+## 技术栈
+
+Astro 7、GSAP、Sveltia CMS。内容是 `src/content/` 下的 Markdown 文件，结构定义在 `src/content.config.ts`。
+
+## 设计来源
+
+`docs/prototypes/redesign-v2/` 是翻新前做的可交互原型，参考了 GSAP Showcase 和 HyperFrames Showcase。

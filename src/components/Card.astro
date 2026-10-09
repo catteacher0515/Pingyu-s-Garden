@@ -1,0 +1,35 @@
+---
+interface Props {
+  href: string
+  title: string
+  meta?: string
+  cover?: string
+  preview?: string
+  icon?: string
+  weekly?: string
+  play?: boolean
+  draft?: boolean
+  status?: string
+  tags?: string[]
+}
+const { href, title, meta, cover, preview, icon, weekly, play, draft, status, tags = [] } = Astro.props
+const external = href.startsWith('http')
+---
+<a class="card" href={href} target={external ? '_blank' : undefined} rel={external ? 'noopener' : undefined}>
+  <div class="th">
+    {weekly ? <div class="wk">{weekly}</div> : cover ? <img src={cover} alt="" loading="lazy" /> : <img class="ic" src={icon ?? '/images/doodles/star-square.png'} alt="" />}
+    {preview && <video src={preview} muted loop playsinline preload="none" data-hover-preview></video>}
+    {play && <span class="pl">▶</span>}
+  </div>
+  <div class="bd">
+    <b>{title}{external && ' ↗'}</b>
+    {meta && <span class="meta">{meta}</span>}
+    {(status || draft || tags.length > 0) && (
+      <div class="row tagrow">
+        {draft && <span class="draft-badge">草稿</span>}
+        {status && <span class="tag">{status}</span>}
+        {tags.slice(0, 3).map((t) => <span class="tag">{t}</span>)}
+      </div>
+    )}
+  </div>
+</a>

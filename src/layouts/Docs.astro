@@ -1,0 +1,72 @@
+---
+import Base from './Base.astro'
+
+export type TocItem = { id: string; text: string; depth?: number }
+interface Props {
+  title: string
+  description?: string
+  nav: 'videos' | 'posts' | 'projects'
+  toc: TocItem[]
+}
+const { title, description, nav, toc } = Astro.props
+const sideLinks = [
+  { group: '视频', items: [{ href: '/videos/', text: '全部视频', id: 'videos' }] },
+  { group: '图文', items: [{ href: '/posts/#教程', text: '教程' }, { href: '/posts/#文章', text: '文章' }, { href: '/posts/#周刊', text: '周刊' }] },
+  { group: '项目', items: [{ href: '/projects/', text: '全部项目', id: 'projects' }] },
+]
+---
+<Base title={title} description={description} nav={nav} footer={false}>
+  <div class="docs">
+    <aside class="side">
+      <h5>开始</h5><a href="/">首页</a><a href="/#about">关于我</a>
+      {sideLinks.map((g) => (
+        <>
+          <h5>{g.group}</h5>
+          {g.items.map((i) => <a href={i.href} class={'id' in i && i.id === nav ? 'on' : undefined} data-hash={i.href.split('#')[1]}>{i.text}</a>)}
+        </>
+      ))}
+    </aside>
+    <article class="docmain"><slot /></article>
+    <aside class="toc">
+      {toc.length > 0 && <h6>☰ 本页目录</h6>}
+      {toc.map((t) => <a href={`#${t.id}`} data-id={t.id} class={t.depth === 3 ? 'd3' : undefined}>{t.text}</a>)}
+    </aside>
+  </div>
+  <button class="ask" data-open-search>✦ 搜一搜：比如 "小红书"、"周刊"…<span class="go">↑</span></button>
+</Base>
+
+<script>
+  import { gsap } from 'gsap'
+  import { ScrollTrigger } from 'gsap/ScrollTrigger'
+  gsap.registerPlugin(ScrollTrigger)
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches
+
+  // 滚动时高亮右侧目录和左侧对应分组
+  const tocLinks = [...document.querySelectorAll<HTMLAnchorElement>('.toc a')]
+  tocLinks.forEach((a) => {
+    const el = document.getElementById(decodeURIComponent(a.dataset.id || ''))
+    if (!el) return
+    ScrollTrigger.create({
+      trigger: el, start: 'top 40%', endTrigger: el.classList.contains('grp') ? el : undefined, end: el.classList.contains('grp') ? 'bottom 40%' : 'max',
+      onToggle: (self) => {
+        if (!self.isActive) return
+        tocLinks.forEach((x) => x.classList.toggle('on', x === a))
+        document.querySelectorAll<HTMLAnchorElement>('.side a[data-hash]').forEach((x) => {
+          if (location.pathname.startsWith('/posts/') && x.dataset.hash) x.classList.toggle('on', x.dataset.hash === a.dataset.id)
+        })
+      },
+    })
+  })
+  if (!reduce) {
+    gsap.from('.docmain > h1, .docmain > .lead', { y: 24, opacity: 0, stagger: .08, duration: .8, ease: 'expo.out' })
+    document.querySelectorAll('.cards').forEach((g) => {
+      gsap.from(g.querySelectorAll('.card'), { y: 40, opacity: 0, stagger: .05, duration: .8, ease: 'expo.out', scrollTrigger: { trigger: g, start: 'top 90%' } })
+    })
+  }
+  // 卡片悬停时播放预览片段
+  document.querySelectorAll<HTMLVideoElement>('video[data-hover-preview]').forEach((v) => {
+    const card = v.closest('.card')!
+    card.addEventListener('mouseenter', () => { v.preload = 'auto'; v.play().catch(() => {}) })
+    card.addEventListener('mouseleave', () => v.pause())
+  })
+</script>

@@ -1,0 +1,82 @@
+# yaml-language-server: $schema=https://unpkg.com/@sveltia/cms/schema/sveltia-cms.json
+# 字段要和 src/content.config.ts 保持一致，改一边要同步改另一边。
+
+backend:
+  name: github
+  repo: catteacher0515/Pingyu-s-Garden
+  branch: astro-v2 # 新站正式上线、合并到 main 之后改成 main
+
+site_url: https://catteacher0515.github.io
+
+media_folder: public/media/uploads
+public_folder: /media/uploads
+
+output:
+  omit_empty_optional_fields: true
+
+collections:
+  - name: videos
+    label: 视频
+    label_singular: 视频
+    folder: src/content/videos
+    slug: '{{year}}{{month}}{{day}}-{{uuid_shorter}}'
+    create: true
+    sortable_fields: [date, title]
+    summary: '{{title}}（{{date}}）'
+    fields:
+      - { name: title, label: 标题 }
+      - { name: date, label: 发布日期, widget: datetime, time_format: false, format: YYYY-MM-DD }
+      - { name: url, label: 视频链接, hint: '完整视频的地址，比如 B 站视频页链接。B 站链接会自动生成网页内播放器。' }
+      - { name: platform, label: 平台, widget: select, options: [B站, YouTube, 小红书, 视频号, 抖音], default: B站 }
+      - { name: summary, label: 一句话简介, widget: text, required: false }
+      - { name: cover, label: 封面图, widget: image, required: false }
+      - { name: preview, label: 预览片段, widget: file, required: false, hint: '可选：3 到 6 秒的静音 mp4，用于首页放映厅和列表悬停预览，建议小于 3MB。' }
+      - { name: tags, label: 标签, widget: list, required: false }
+      - { name: featured, label: 放进首页放映厅, widget: boolean, default: false }
+      - { name: draft, label: 草稿（不发布）, widget: boolean, default: false }
+      - { name: body, label: 视频说明 / 资料, widget: markdown, required: false }
+
+  - name: posts
+    label: 图文
+    label_singular: 图文
+    folder: src/content/posts
+    slug: '{{year}}{{month}}{{day}}-{{uuid_shorter}}'
+    create: true
+    sortable_fields: [date, title, category]
+    summary: '【{{category}}】{{title}}'
+    view_groups:
+      - { label: 分类, field: category }
+    fields:
+      - { name: title, label: 标题 }
+      - { name: category, label: 分类, widget: select, options: [教程, 文章, 周刊], default: 教程 }
+      - { name: date, label: 发布日期, widget: datetime, time_format: false, format: YYYY-MM-DD, required: false }
+      - { name: summary, label: 一句话简介, widget: text, required: false }
+      - { name: cover, label: 封面图, widget: image, required: false }
+      - { name: external, label: 外部原文链接, required: false, hint: '如果正文在知乎等其他平台，填原文地址，点击会直接跳过去；在本站写正文就留空。' }
+      - { name: tags, label: 标签, widget: list, required: false }
+      - { name: featured, label: 放进首页放映厅, widget: boolean, default: false }
+      - { name: draft, label: 草稿（不发布）, widget: boolean, default: false }
+      - { name: order, label: 排序（没有日期时生效，越小越靠前）, widget: number, value_type: int, default: 0, required: false }
+      - { name: body, label: 正文, widget: markdown, required: false }
+
+  - name: projects
+    label: 项目
+    label_singular: 项目
+    folder: src/content/projects
+    slug: '{{year}}{{month}}{{day}}-{{uuid_shorter}}'
+    create: true
+    sortable_fields: [order, title]
+    summary: '{{title}}（{{status}}）'
+    fields:
+      - { name: title, label: 名称 }
+      - { name: summary, label: 一句话简介, widget: text, required: false }
+      - { name: status, label: 状态, widget: select, options: [可访问, 自用中, 实验中, 已归档], default: 实验中 }
+      - { name: form, label: 形态, required: false, hint: '比如：网站、脚本、Skill、桌面应用' }
+      - { name: link, label: 在线地址, required: false }
+      - { name: repo, label: GitHub 仓库, required: false }
+      - { name: cover, label: 截图, widget: image, required: false }
+      - { name: tags, label: 标签, widget: list, required: false }
+      - { name: featured, label: 放进首页放映厅, widget: boolean, default: false }
+      - { name: draft, label: 草稿（不发布）, widget: boolean, default: false }
+      - { name: order, label: 排序（越小越靠前）, widget: number, value_type: int, default: 0, required: false }
+      - { name: body, label: 详细介绍, widget: markdown, required: false }

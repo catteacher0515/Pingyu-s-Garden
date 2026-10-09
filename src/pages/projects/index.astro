@@ -1,0 +1,25 @@
+---
+import Docs from '../../layouts/Docs.astro'
+import Card from '../../components/Card.astro'
+import { getProjects, projectHref, STATUS_ORDER } from '../../lib/content'
+
+const projects = await getProjects()
+const DESC: Record<string, string> = { 可访问: '打开就能用。', 自用中: '每天在用，还没整理成公开版本。', 实验中: '还在摸索方向。', 已归档: '完成了使命，留作记录。' }
+const ICONS = ['computer-square.png', 'owl-square.png', 'star-square.png', 'bird-square.png', 'grass-square.png']
+const groups = STATUS_ORDER.map((s) => ({ id: s, items: projects.filter((p) => p.data.status === s) })).filter((g) => g.items.length)
+---
+<Docs title="项目" nav="projects" toc={groups.map((g) => ({ id: g.id, text: g.id }))}>
+  <h1>项目</h1>
+  <p class="lead">从自己的真实需求出发做的小工具，有的能直接用，有的还在长大。</p>
+  {groups.map((g) => (
+    <section class="grp" id={g.id}>
+      <h2>{g.id}</h2>
+      <p class="sub">{DESC[g.id]} · {g.items.length} 个</p>
+      <div class="cards">
+        {g.items.map((p, i) => (
+          <Card href={projectHref(p)} title={p.data.title} meta={p.data.summary} cover={p.data.cover} icon={`/images/doodles/${ICONS[i % ICONS.length]}`} draft={p.data.draft} status={p.data.form} tags={p.data.tags.slice(0, 2)} />
+        ))}
+      </div>
+    </section>
+  ))}
+</Docs>

@@ -1,0 +1,21 @@
+---
+import Docs from '../../layouts/Docs.astro'
+import Card from '../../components/Card.astro'
+import { getVideos, videoHref } from '../../lib/content'
+
+const videos = await getVideos()
+const fmt = (d: Date) => d.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })
+---
+<Docs title="视频" nav="videos" toc={[]}>
+  <h1>视频</h1>
+  <p class="lead">工具上手、工作流演示和折腾记录。点开可以在这里直接看，也可以去平台看高清和评论。</p>
+  <section class="grp">
+    {videos.length ? (
+      <div class="cards">
+        {videos.map((v) => (
+          <Card href={videoHref(v)} title={v.data.title} meta={`${fmt(v.data.date)} · ${v.data.platform}`} cover={v.data.cover} preview={v.data.preview} play draft={v.data.draft} tags={v.data.tags} />
+        ))}
+      </div>
+    ) : <p class="empty">还没有视频，在编辑后台新建第一条吧。</p>}
+  </section>
+</Docs>

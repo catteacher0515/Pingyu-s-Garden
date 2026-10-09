@@ -26,3 +26,9 @@ dist-ssr
 *.sln
 *.sw?
 .vercel
+
+# Astro
+.astro/
+
+# 误放进来的其他项目副本
+repos/

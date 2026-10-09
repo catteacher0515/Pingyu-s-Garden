@@ -1,0 +1,219 @@
+---
+import type { ReelItem } from '../lib/content'
+
+interface Props { items: ReelItem[] }
+const { items } = Astro.props
+const ICONS: Record<string, string> = { 视频: '🎬', 项目: '🛠', 教程: '📘', 文章: '✍️', 周刊: '📮' }
+const filters = ['全部', ...new Set(items.map((i) => i.label))]
+const issueOf = (t: string) => t.match(/W\d+/)?.[0] ?? '周刊'
+const hostOf = (href: string) => { try { return new URL(href).host } catch { return href } }
+const tpl = (i: ReelItem) => (i.kind === 'post' ? (i.category === '周刊' ? 'weekly' : 'article') : i.kind)
+---
+<div class="reelHead" id="reel">
+  <div><div class="eyebrow">Now showing · 放映厅</div><div class="h2">最近在做</div></div>
+  {filters.length > 2 && (
+    <div class="filters">
+      {filters.map((f, i) => <button data-f={f} class={i === 0 ? 'on' : undefined}>{f}</button>)}
+    </div>
+  )}
+</div>
+
+<div class="carouselWrap">
+  <div class="stage" id="stage">
+    {items.map((it) => (
+      <a class={`slide t-${tpl(it)}`} href={it.href} data-label={it.label} data-title={it.title} target={it.external ? '_blank' : undefined} rel={it.external ? 'noopener' : undefined} draggable="false">
+        {tpl(it) === 'video' && (
+          <>
+            <div class="frame">
+              {it.cover && <img src={it.cover} alt="" />}
+              {it.preview && <video src={it.preview} muted loop playsinline preload="none"></video>}
+            </div>
+            <div class="play">▶</div>
+            <div class="bar"><i></i></div>
+          </>
+        )}
+        {tpl(it) === 'project' && (
+          <div class="browser">
+            <div class="chrome"><i></i><i></i><i></i><span>{hostOf(it.href)}</span></div>
+            {it.cover ? <img src={it.cover} alt="" /> : <div class="noshot"><b>{it.title}</b><p>{it.summary}</p></div>}
+          </div>
+        )}
+        {tpl(it) === 'article' && (
+          <>
+            <div class="txt">
+              <h3>{it.title}</h3>
+              {it.summary && <p>{it.summary}</p>}
+              <div class="meta">{it.meta ? `${it.meta} · 阅读全文 ↗` : '阅读全文 →'}</div>
+            </div>
+            <div class="cov">{it.cover ? <img src={it.cover} alt="" /> : <img class="ic" src="/images/doodles/owl-square.png" alt="" />}</div>
+          </>
+        )}
+        {tpl(it) === 'weekly' && (
+          <>
+            <div class="num"><b>{issueOf(it.title)}</b><span>GitHub 每周精选</span><small>每周挑几个值得一看的项目</small></div>
+            <div class="cov">{it.cover && <img src={it.cover} alt="" />}</div>
+          </>
+        )}
+        <span class="type">{ICONS[it.label] ?? '•'} {it.label}</span>
+        {it.draft && <span class="demo">草稿 · 仅本地可见</span>}
+        <div class="veil"></div>
+      </a>
+    ))}
+  </div>
+  <div class="progress" id="prog">{items.map(() => <i><b></b></i>)}</div>
+  <div class="ctrl"><button class="arrow" id="prev" aria-label="上一个">←</button><button class="arrow" id="next" aria-label="下一个">→</button></div>
+</div>
+<div class="caption"><h3 id="capTitle"></h3></div>
+
+<style>
+  .reelHead { display: flex; align-items: flex-end; justify-content: space-between; padding: 90px 40px 0; max-width: 1440px; margin: 0 auto; }
+  .filters { display: flex; gap: 8px; }
+  .filters button { border: 1px solid var(--line); border-radius: 999px; padding: 8px 14px; font-size: 14px; color: var(--muted); transition: all .2s; }
+  .filters button.on { background: var(--text); color: var(--bg); border-color: var(--text); }
+  .carouselWrap { position: relative; margin-top: 6px; }
+  .stage { position: relative; height: min(66vh, 660px); overflow: hidden; cursor: grab; user-select: none; touch-action: pan-y; }
+  .stage:active { cursor: grabbing; }
+  .slide { position: absolute; top: 30px; left: 50%; width: min(64vw, 1040px); height: calc(100% - 60px); margin-left: calc(min(64vw, 1040px) / -2); border-radius: 22px; overflow: hidden; background: var(--card); box-shadow: 0 14px 30px rgba(0, 0, 0, .18); will-change: transform; color: var(--text); }
+  .slide .veil { position: absolute; inset: 0; background: var(--bg); pointer-events: none; z-index: 5; opacity: 0; }
+  .slide .type { position: absolute; left: 22px; top: 20px; z-index: 4; background: rgba(0, 0, 0, .6); color: #fff; backdrop-filter: blur(8px); border-radius: 999px; padding: 6px 14px; font-size: 13px; }
+  .slide .demo { position: absolute; right: 22px; top: 20px; z-index: 4; background: var(--accent); color: #fff; border-radius: 999px; padding: 5px 12px; font-size: 12px; }
+  .slide img { pointer-events: none; }
+  .t-video { background: #111; }
+  .t-video .frame { position: absolute; inset: 0; }
+  .t-video .frame img, .t-video .frame video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .t-video .play { position: absolute; left: 50%; top: 50%; width: 92px; height: 92px; margin: -46px; border-radius: 50%; background: rgba(255, 255, 255, .92); color: #111; display: grid; place-items: center; font-size: 30px; z-index: 3; }
+  .t-video .bar { position: absolute; left: 22px; right: 22px; bottom: 20px; height: 4px; border-radius: 2px; background: rgba(255, 255, 255, .3); z-index: 3; }
+  .t-video .bar i { display: block; height: 100%; width: 0; background: #fff; border-radius: 2px; }
+  .t-project { background: linear-gradient(135deg, #ffd9c7, #f6b9d9 50%, #c9d4ff); display: grid; place-items: end center; padding: 70px 60px 0; }
+  .browser { width: 88%; height: 100%; background: #fff; color: #111; border-radius: 14px 14px 0 0; overflow: hidden; box-shadow: 0 30px 60px rgba(0, 0, 0, .25); display: flex; flex-direction: column; }
+  .browser .chrome { height: 34px; background: #f1f0ee; display: flex; align-items: center; gap: 7px; padding: 0 14px; flex: none; }
+  .browser .chrome i { width: 11px; height: 11px; border-radius: 50%; background: #ff5f57; }
+  .browser .chrome i:nth-child(2) { background: #febc2e; }
+  .browser .chrome i:nth-child(3) { background: #28c840; }
+  .browser .chrome span { margin-left: 14px; background: #fff; border-radius: 6px; font-size: 12px; color: #888; padding: 3px 12px; }
+  .browser img { width: 100%; flex: 1; min-height: 0; object-fit: cover; object-position: top; }
+  .noshot { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 40px; }
+  .noshot b { font-size: clamp(28px, 3vw, 44px); letter-spacing: -.02em; }
+  .noshot p { color: #666; font-size: 17px; line-height: 1.7; }
+  .t-article { display: grid; grid-template-columns: 1fr 1fr; }
+  .t-article .txt { padding: 70px 46px 40px; display: flex; flex-direction: column; }
+  .t-article h3 { font-size: clamp(24px, 2.4vw, 38px); line-height: 1.3; letter-spacing: -.02em; margin: 0; }
+  .t-article p { color: var(--muted); font-size: 16px; line-height: 1.8; margin: 18px 0 0; }
+  .t-article .meta { margin-top: auto; color: var(--muted); font-size: 14px; }
+  .t-article .cov { background: var(--bg2); display: grid; place-items: center; padding: 30px; }
+  .t-article .cov img { width: 100%; border-radius: 12px; box-shadow: 0 20px 40px rgba(0, 0, 0, .25); }
+  .t-article .cov img.ic { width: 120px; box-shadow: none; }
+  .t-weekly { background: #e9f36a; color: #111; display: grid; grid-template-columns: 1.1fr .9fr; }
+  .t-weekly .num { padding: 70px 46px 40px; display: flex; flex-direction: column; }
+  .t-weekly .num b { font-size: clamp(100px, 13vw, 210px); line-height: .85; letter-spacing: -.06em; font-weight: 850; }
+  .t-weekly .num span { font-size: 20px; font-weight: 600; margin-top: 16px; }
+  .t-weekly .num small { margin-top: auto; font-size: 14px; opacity: .65; }
+  .t-weekly .cov { padding: 30px 30px 30px 0; display: grid; place-items: center; }
+  .t-weekly .cov img { width: 100%; border-radius: 12px; transform: rotate(3deg); box-shadow: 0 20px 40px rgba(0, 0, 0, .2); }
+  .caption { text-align: center; margin-top: 4px; min-height: 90px; padding: 0 160px; }
+  .caption h3 { font-size: clamp(22px, 2.6vw, 40px); font-weight: 600; letter-spacing: -.02em; margin: 0; overflow: hidden; }
+  .ctrl { position: absolute; right: 40px; bottom: -66px; display: flex; gap: 14px; z-index: 5; }
+  .arrow { width: 62px; height: 62px; border-radius: 50%; border: 1.5px solid var(--text); display: grid; place-items: center; font-size: 24px; transition: background .2s, color .2s, transform .2s; }
+  .arrow:hover { background: var(--text); color: var(--bg); transform: scale(1.06); }
+  .progress { position: absolute; left: 40px; bottom: -42px; display: flex; gap: 8px; z-index: 5; }
+  .progress i { width: 28px; height: 3px; border-radius: 2px; background: var(--line); overflow: hidden; position: relative; }
+  .progress i b { position: absolute; inset: 0; background: var(--text); transform-origin: left; transform: scaleX(0); }
+  @media (max-width: 1100px) {
+    .slide { width: 84vw; margin-left: -42vw; }
+    .t-article, .t-weekly { grid-template-columns: 1fr; }
+    .t-article .cov, .t-weekly .cov { display: none; }
+    .filters { display: none; }
+    .caption { padding: 60px 20px 0; }
+  }
+  @media (max-width: 640px) {
+    .reelHead { padding: 70px 20px 0; }
+    .stage { height: 62vh; }
+    .t-project { padding: 60px 16px 0; }
+    .browser { width: 100%; }
+    .ctrl { right: 20px; }
+    .progress { left: 20px; }
+  }
+</style>
+
+<script>
+  import { gsap } from 'gsap'
+
+  const stage = document.getElementById('stage')
+  if (stage) {
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches
+    const AUTOPLAY = 5
+    const all = [...stage.querySelectorAll<HTMLElement>('.slide')]
+    const bars = [...document.querySelectorAll<HTMLElement>('#prog i')]
+    let slides = all, cur = 0, timer: number | undefined, dragX: number | null = null, dragged = false
+
+    const offset = (i: number) => {
+      const N = slides.length; let d = i - cur
+      if (d > N / 2) d -= N
+      if (d < -N / 2) d += N
+      return d
+    }
+    function layout(animate = true) {
+      if (!slides.length) return
+      const w = slides[0].offsetWidth, dur = animate && !reduce ? 0.9 : 0
+      const dark = document.documentElement.dataset.theme === 'dark'
+      all.forEach((s) => { if (!slides.includes(s)) gsap.set(s, { autoAlpha: 0 }) })
+      slides.forEach((s, i) => {
+        const d = offset(i), ad = Math.abs(d)
+        gsap.to(s, { x: d * (w * 0.86 + 40), scale: ad ? 0.82 : 1, zIndex: 10 - ad, autoAlpha: ad > 2 ? 0 : 1, duration: dur, ease: 'expo.out' })
+        gsap.to(s.querySelector('.veil'), { opacity: ad ? (dark ? 0.6 : 0.45) : 0, duration: dur })
+        s.tabIndex = ad ? -1 : 0
+        const v = s.querySelector('video')
+        if (v) { if (ad) v.pause(); else { v.preload = 'auto'; v.play().catch(() => {}) } }
+        const bar = s.querySelector<HTMLElement>('.bar i')
+        if (bar) { gsap.killTweensOf(bar); gsap.set(bar, { width: 0 }); if (!ad && !reduce) gsap.to(bar, { width: '100%', duration: AUTOPLAY, ease: 'none' }) }
+      })
+      const t = document.getElementById('capTitle')!
+      t.innerHTML = ''
+      const span = document.createElement('span'); span.style.display = 'inline-block'
+      span.textContent = slides[cur].dataset.title || ''; t.appendChild(span)
+      if (dur) gsap.from(span, { yPercent: 110, duration: 0.8, ease: 'expo.out' })
+      bars.forEach((p, i) => {
+        p.style.display = i < slides.length ? '' : 'none'
+        const b = p.firstElementChild as HTMLElement
+        gsap.killTweensOf(b); gsap.set(b, { scaleX: i < cur ? 1 : 0 })
+        if (i === cur && !reduce) gsap.to(b, { scaleX: 1, duration: AUTOPLAY, ease: 'none' })
+      })
+      clearTimeout(timer)
+      if (slides.length > 1 && !reduce) timer = window.setTimeout(() => go(1), AUTOPLAY * 1000)
+    }
+    const go = (dir: number) => { cur = (cur + dir + slides.length) % slides.length; layout() }
+
+    document.getElementById('next')!.addEventListener('click', () => go(1))
+    document.getElementById('prev')!.addEventListener('click', () => go(-1))
+    stage.addEventListener('click', (e) => {
+      const s = (e.target as HTMLElement).closest<HTMLElement>('.slide')
+      if (!s) return
+      const d = offset(slides.indexOf(s))
+      if (dragged || d) { e.preventDefault(); if (d && !dragged) go(d) }
+    })
+    stage.addEventListener('pointerdown', (e) => { dragX = e.clientX; dragged = false })
+    addEventListener('pointerup', (e) => {
+      if (dragX === null) return
+      const dx = e.clientX - dragX; dragX = null
+      if (Math.abs(dx) > 50) { dragged = true; go(dx < 0 ? 1 : -1); setTimeout(() => (dragged = false), 50) }
+    })
+    addEventListener('keydown', (e) => {
+      if (document.getElementById('pal')?.classList.contains('show')) return
+      const r = stage.getBoundingClientRect()
+      if (r.bottom < 0 || r.top > innerHeight) return
+      if (e.key === 'ArrowRight') go(1)
+      if (e.key === 'ArrowLeft') go(-1)
+    })
+    addEventListener('resize', () => layout(false))
+    addEventListener('themechange', () => layout(false))
+    document.querySelector('.filters')?.addEventListener('click', (e) => {
+      const b = (e.target as HTMLElement).closest<HTMLButtonElement>('button')
+      if (!b) return
+      document.querySelectorAll('.filters button').forEach((x) => x.classList.toggle('on', x === b))
+      slides = b.dataset.f === '全部' ? all : all.filter((s) => s.dataset.label === b.dataset.f)
+      cur = 0; layout(false)
+      if (!reduce) gsap.fromTo(stage, { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: 'expo.out' })
+    })
+    layout(false)
+  }
+</script>

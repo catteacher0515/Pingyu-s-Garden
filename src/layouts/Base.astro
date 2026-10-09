@@ -1,0 +1,115 @@
+---
+import '../styles/global.css'
+import { getSearchIndex } from '../lib/content'
+
+interface Props {
+  title?: string
+  description?: string
+  nav?: 'home' | 'videos' | 'posts' | 'projects'
+  footer?: boolean
+}
+const { title, description = '花萍雨的个人网站：视频、图文教程和自己做的小工具。', nav, footer = true } = Astro.props
+const pageTitle = title ? `${title} · Pingyu's Garden` : "Pingyu's Garden · 花萍雨"
+const search = await getSearchIndex()
+const links = [
+  { id: 'home', href: '/', label: '首页' },
+  { id: 'videos', href: '/videos/', label: '视频' },
+  { id: 'posts', href: '/posts/', label: '图文' },
+  { id: 'projects', href: '/projects/', label: '项目' },
+]
+---
+<!doctype html>
+<html lang="zh-CN" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" href="/favicon.svg" />
+    <script is:inline>
+      document.documentElement.dataset.theme = localStorage.getItem('pgTheme') || 'dark'
+    </script>
+  </head>
+  <body>
+    <header class="nav">
+      <a class="logo" href="/"><i></i><span>Pingyu's Garden</span></a>
+      <nav class="links">
+        {links.map((l) => <a href={l.href} class={nav === l.id ? 'on' : undefined}>{l.label}</a>)}
+      </nav>
+      <div class="sp"></div>
+      <button class="kbtn" data-open-search>⌕ <span>搜索视频、图文、项目…</span><kbd>⌘K</kbd></button>
+      <button class="theme" id="theme" title="切换深浅色" aria-label="切换深浅色">◐</button>
+      <a class="pill" href="https://github.com/catteacher0515" target="_blank" rel="noopener">GitHub ↗</a>
+    </header>
+
+    <slot />
+
+    {footer && (
+      <footer class="foot">
+        <div><div class="sig">Pingyu's<br />Garden.</div><p style="margin-top:18px">© {new Date().getFullYear()} 花萍雨 · Built slowly.</p></div>
+        <div><h4>内容</h4><a href="/videos/">视频</a><br /><a href="/posts/">图文</a><br /><a href="/projects/">项目</a></div>
+        <div><h4>关于</h4><a href="/#about">关于我</a></div>
+        <div><h4>在别处</h4><a href="https://github.com/catteacher0515" target="_blank" rel="noopener">GitHub</a></div>
+      </footer>
+    )}
+
+    <div class="pal" id="pal">
+      <div class="box">
+        <input id="q" placeholder="搜索视频、图文、项目…" autocomplete="off" />
+        <div class="res" id="res"></div>
+      </div>
+    </div>
+    <script is:inline id="search-data" type="application/json" set:html={JSON.stringify(search)}></script>
+
+    <script>
+      import { gsap } from 'gsap'
+
+      // 仅本地开发：方便在浏览器控制台调试动画
+      if (import.meta.env.DEV) (window as unknown as { gsap: typeof gsap }).gsap = gsap
+
+      const root = document.documentElement
+      document.getElementById('theme')!.addEventListener('click', () => {
+        root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark'
+        localStorage.setItem('pgTheme', root.dataset.theme)
+        window.dispatchEvent(new Event('themechange'))
+      })
+
+      type Item = { title: string; label: string; href: string; cover?: string; text: string }
+      const all: Item[] = JSON.parse(document.getElementById('search-data')!.textContent || '[]')
+      const pal = document.getElementById('pal')!
+      const q = document.getElementById('q') as HTMLInputElement
+      const res = document.getElementById('res')!
+      const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches
+      let sel = 0
+      const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!)
+
+      function draw() {
+        const v = q.value.trim().toLowerCase()
+        const list = all.filter((x) => !v || (x.title + x.label + x.text).toLowerCase().includes(v)).slice(0, 12)
+        sel = Math.min(sel, Math.max(list.length - 1, 0))
+        res.innerHTML = list.length
+          ? list.map((x, i) => `<a href="${esc(x.href)}" class="${i === sel ? 'on' : ''}"${x.href.startsWith('http') ? ' target="_blank" rel="noopener"' : ''}>${x.cover ? `<img src="${esc(x.cover)}" alt="">` : '<img alt="">'}${esc(x.title)}<small>${esc(x.label)}</small></a>`).join('')
+          : '<p style="padding:14px;color:var(--muted)">没有找到</p>'
+      }
+      function open() {
+        pal.classList.add('show'); q.value = ''; sel = 0; draw(); q.focus()
+        if (!reduce) gsap.from('.pal .box', { y: -14, opacity: 0, scale: .98, duration: .35, ease: 'expo.out' })
+      }
+      const close = () => pal.classList.remove('show')
+      q.addEventListener('input', () => { sel = 0; draw() })
+      q.addEventListener('keydown', (e) => {
+        const items = res.querySelectorAll('a'); const n = items.length
+        if (!n) return
+        if (e.key === 'ArrowDown') { sel = (sel + 1) % n; draw(); e.preventDefault() }
+        if (e.key === 'ArrowUp') { sel = (sel - 1 + n) % n; draw(); e.preventDefault() }
+        if (e.key === 'Enter') (items[sel] as HTMLAnchorElement).click()
+      })
+      document.querySelectorAll('[data-open-search]').forEach((b) => b.addEventListener('click', open))
+      pal.addEventListener('click', (e) => { if (e.target === pal) close() })
+      addEventListener('keydown', (e) => {
+        if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); open() }
+        if (e.key === 'Escape') close()
+      })
+    </script>
+  </body>
+</html>

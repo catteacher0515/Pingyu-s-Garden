@@ -1,0 +1,31 @@
+---
+import Docs from '../../layouts/Docs.astro'
+import Card from '../../components/Card.astro'
+import { getPosts, postHref, CATEGORY_ORDER } from '../../lib/content'
+
+const posts = await getPosts()
+const DESC: Record<string, string> = {
+  教程: '来不及做成视频的内容，整理成一步一步的图文教程。',
+  文章: '以前在知乎写的文章，点开会跳到原文。',
+  周刊: '每周挑几个值得一看的 GitHub 项目。',
+}
+const groups = CATEGORY_ORDER.map((c) => ({ id: c, items: posts.filter((p) => p.data.category === c) }))
+const weeklyOf = (t: string) => t.match(/W\d+/)?.[0]
+---
+<Docs title="图文" nav="posts" toc={groups.map((g) => ({ id: g.id, text: g.id }))}>
+  <h1>图文</h1>
+  <p class="lead">教程、文章和周刊。</p>
+  {groups.map((g) => (
+    <section class="grp" id={g.id}>
+      <h2>{g.id}</h2>
+      <p class="sub">{DESC[g.id]} · {g.items.length} 篇</p>
+      {g.items.length ? (
+        <div class="cards">
+          {g.items.map((p) => (
+            <Card href={postHref(p)} title={p.data.title} meta={p.data.summary ?? (p.data.external ? '知乎' : undefined)} cover={g.id === '周刊' ? undefined : p.data.cover} weekly={g.id === '周刊' ? weeklyOf(p.data.title) : undefined} icon="/images/doodles/owl-square.png" draft={p.data.draft} tags={p.data.tags} />
+          ))}
+        </div>
+      ) : <p class="empty">这里还空着。</p>}
+    </section>
+  ))}
+</Docs>

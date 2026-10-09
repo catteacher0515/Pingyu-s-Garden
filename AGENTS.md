@@ -4,41 +4,35 @@
 
 - Unless the user explicitly requests another language, all model responses and project documentation should default to Simplified Chinese.
 
-## Current state
+## Branches and deployment
 
-- The implemented homepage is the poster-style version in `src/pages/HomePage.tsx`.
-- It renders `TopNav`, `SideOrnaments`, `PosterHero`, and `EntryStrip` from `src/components/Home/`.
-- Routes that currently exist: `/`, `/profile`, `/projects`, `/articles`, `/tools`. The `/projects` entry is hidden from the homepage, but the route still exists.
-- `ProfilePage` is the poster-style about page; `ProjectsPage` is the poster-style selected-works wall with placeholder project slots; `ArticlesPage` is the poster-style Zhihu cover wall; `ToolsPage` is the poster-style lab with `TaskFlow` and other self-use tools.
-- Production is GitHub Pages at `https://catteacher0515.github.io/Pingyu-s-Garden/`, deployed by `.github/workflows/` on push to `main`. Vite `base` is `/Pingyu-s-Garden/` for builds; `public/404.html` handles SPA deep links. Vercel was tried first and did not work; `.vercel/` is ignored and not a live deployment.
+- `main`: the old React/Vite poster-style site, still live on GitHub Pages at `https://catteacher0515.github.io/Pingyu-s-Garden/` via `.github/workflows/deploy-pages.yml`. Leave it alone until the new site replaces it.
+- `astro-v2`: the from-scratch rebuild (Astro 7 + GSAP + Sveltia CMS). This is where new work happens.
+- `redesign-prototype`: archive of the single-file prototype in `docs/prototypes/redesign-v2/` that the rebuild is based on.
+- Planned hosting for `astro-v2`: Cloudflare Pages first (root path, no base prefix), then the user's own domestic server once ICP filing is done. Vercel was tried earlier and failed; `.vercel/` is ignored.
+- Before merging `astro-v2` into `main`, the GitHub Pages workflow must be removed or updated: the new site assumes it is served from `/`, not `/Pingyu-s-Garden/`.
 - `~/dev/Pingyu-s-Garden-repo` is a stale older clone; do not work there.
 
-## Redesign in progress (decided 2026-10-07)
+## Commands (astro-v2)
 
-- The user finds the poster style too oppressive and wants a full redesign of UI, UX, and motion, modeled on GSAP Showcase and HyperFrames Showcase.
-- The current direction is the interactive prototype in `docs/prototypes/redesign-v2/` (see its `README.md`) on branch `redesign-prototype`. It is not migrated into `src/` yet, and the user still expects many changes.
-- New design work follows the prototype direction, not the poster-style rules below. Prefer interactive prototypes over static mockups when proposing visual changes.
+- `npm run dev` → http://localhost:4321 ; `npm run build` → `dist/`.
+- The default npm mirror (npmmirror) and registry.npmjs.org are often unusable from this machine. Install with `npm install --registry=https://repo.huaweicloud.com/repository/npm/`, then rewrite `resolved` URLs in `package-lock.json` back to `https://registry.npmjs.org/` so overseas CI can install.
 
-## Design docs
+## Content model
 
-- The poster-style homepage spec `docs/superpowers/specs/2026-05-28-poster-home-design.md` and plan `docs/superpowers/plans/2026-05-28-poster-home.md` describe the code that is live today; they will become historical once the redesign lands.
-- Earlier April and May 26 design docs are historical context only and should not be treated as the current UI.
+- Three content collections in `src/content/`: `videos`, `posts` (category 教程 / 文章 / 周刊), `projects`. Schemas live in `src/content.config.ts`.
+- `public/admin/config.yml` (Sveltia CMS) mirrors those schemas field by field. Change both together.
+- `draft: true` entries show only in `npm run dev`; `featured: true` entries go into the homepage showreel (`src/components/Reel.astro`, one card template per content type).
+- Full videos are not hosted here: they live on B站 etc. Video pages embed the B站 player behind a click-to-load cover. Optional short silent `preview` clips are the only video files in the repo.
+- Posts with `external` link out (old Zhihu articles) and get no on-site page.
 
-## Design rule (current poster-style code only)
+## Editing content
 
-- Small fixes to the existing poster-style pages should stay consistent with it: dark brown-black stage background, warm paper surfaces, red-brown accents, hand-drawn/printed texture, and restrained motion.
+- The user edits content at `/admin/` (Sveltia CMS, GitHub backend, currently `branch: astro-v2`). Sign-in uses a GitHub personal access token for now; an OAuth authenticator on Cloudflare Workers can be added later.
+- Saving in the CMS commits to GitHub; the host rebuilds the site.
 
-## Content state
+## Design direction
 
-- `ProjectsPage` content is still placeholder content.
-- `ProfilePage`, `ArticlesPage`, and `ToolsPage` already use real or near-real content, but all three still have room for more personal data and refinement.
-- `src/data/notes.json` and `src/data/ideas.json` are legacy MVP leftovers and are not surfaced on the current homepage.
-
-
-<claude-mem-context>
-# Memory Context
-
-# [Pingyu-s-Garden] recent context, 2026-10-03 10:08am GMT+8
-
-No previous sessions found.
-</claude-mem-context>
+- Based on GSAP Showcase and HyperFrames Showcase: person-first homepage hero, showreel carousel, docs-style list pages with sidebar + on-page TOC, ⌘K search, dark/light toggle, GSAP motion with `prefers-reduced-motion` respected.
+- The user cares about UI/UX and motion, not just color. Propose visual changes as clickable prototypes.
+- Astro 7 compiler is strict about unclosed/invalid HTML. `compressHTML: true` is set on purpose to keep HTML whitespace rules for mixed Chinese/English text.

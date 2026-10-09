@@ -1,0 +1,32 @@
+---
+// 先只显示封面，点击后才加载 B 站播放器，避免页面一打开就加载很重的 iframe。
+interface Props { bvid: string; cover?: string; title: string }
+const { bvid, cover, title } = Astro.props
+const src = `https://player.bilibili.com/player.html?bvid=${bvid}&autoplay=1&high_quality=1&danmaku=0`
+---
+<div class="bili" data-src={src}>
+  {cover && <img src={cover} alt="" />}
+  <button aria-label={`播放：${title}`}><span>▶</span></button>
+</div>
+
+<style>
+  .bili { position: relative; aspect-ratio: 16/9; border-radius: 16px; overflow: hidden; background: #000; }
+  .bili img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .bili button { position: absolute; inset: 0; display: grid; place-items: center; }
+  .bili button span { width: 84px; height: 84px; border-radius: 50%; background: rgba(255,255,255,.92); color: #111; display: grid; place-items: center; font-size: 28px; transition: transform .3s; }
+  .bili button:hover span { transform: scale(1.08); }
+  .bili :global(iframe) { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.bili').forEach((box) => {
+    box.querySelector('button')!.addEventListener('click', () => {
+      const f = document.createElement('iframe')
+      f.src = box.dataset.src!
+      f.allow = 'autoplay; fullscreen; picture-in-picture'
+      f.setAttribute('allowfullscreen', '')
+      f.setAttribute('sandbox', 'allow-top-navigation allow-same-origin allow-forms allow-scripts allow-popups')
+      box.replaceChildren(f)
+    })
+  })
+</script>

@@ -1,0 +1,148 @@
+---
+import Base from '../layouts/Base.astro'
+import Reel from '../components/Reel.astro'
+import { getReelItems, getVideos, getPosts, getProjects } from '../lib/content'
+
+const [reel, videos, posts, projects] = await Promise.all([getReelItems(), getVideos(), getPosts(), getProjects()])
+const lanes = [
+  { href: '/videos/', label: '视频', icon: 'star-square.png', desc: '主要的更新都在这里：工具上手、工作流演示和折腾记录。', count: videos.length },
+  { href: '/posts/', label: '图文', icon: 'owl-square.png', desc: '来不及做成视频的教程和资料，还有以前写的文章和周刊。', count: posts.length },
+  { href: '/projects/', label: '项目', icon: 'computer-square.png', desc: '从真实需求出发做的小工具，有的能直接打开用。', count: projects.length },
+]
+const verbs = ['做视频', '写教程', '做工具', '记周刊']
+---
+<Base nav="home">
+  <section class="hero">
+    <div>
+      <div class="hi"><span class="dot"></span>准大三 · AI + Code · 内容创作</div>
+      <h1>
+        <span class="line"><span>你好，我是花萍雨。</span></span>
+        <span class="line"><span>我在<span class="verb" id="verb" data-verbs={JSON.stringify(verbs)}>{verbs[0]}</span></span></span>
+      </h1>
+      <p class="bio">用 AI 和代码做小工具，把学习、试错和搭工作流的过程做成视频和教程。相信重要的事情值得慢慢做，做很久很久。</p>
+      <div class="cta"><a class="btn solid" href="#reel">看看我最近在做什么 ↓</a><a class="btn" href="#about">关于我</a></div>
+    </div>
+    <div class="portrait" id="portrait">
+      <img class="ill" src="/images/main-poster.png" alt="花萍雨的手绘插画" />
+      <img class="sticker" src="/images/doodles/cat-doodle.png" alt="" />
+      <div class="badge"><img src="/avatar.jpg" alt="" />花萍雨 · Creative Developer</div>
+    </div>
+  </section>
+
+  {reel.length > 0 && <Reel items={reel} />}
+
+  <div class="marquee" aria-hidden="true">
+    {[0, 1].map(() => (
+      <div>{Array.from({ length: 6 }).map(() => <>重要的事情值得慢慢做<em>✦</em>视频<em>✦</em>教程<em>✦</em>小工具<em>✦</em>AI + Code<em>✦</em></>)}</div>
+    ))}
+  </div>
+
+  <section class="section" id="about">
+    <div class="eyebrow">About · 关于我</div>
+    <p class="bigline" id="bigline">我用 AI 和代码做一些小工具，把怎么学、怎么试错、怎么搭工作流<span class="acc">做成视频和教程</span>，也把真正有用的开源项目介绍给更多人。</p>
+    <div class="lanes">
+      {lanes.map((l, i) => (
+        <a class="lane" href={l.href}>
+          <span class="n">0{i + 1}</span><span class="cnt">{l.count} 项</span>
+          <img src={`/images/doodles/${l.icon}`} alt="" />
+          <h3>{l.label} →</h3>
+          <p>{l.desc}</p>
+        </a>
+      ))}
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero { display: grid; grid-template-columns: 1.1fr .9fr; gap: 40px; align-items: center; padding: 70px 40px 40px; max-width: 1440px; margin: 0 auto; min-height: calc(100vh - 72px); }
+  .hi { color: var(--muted); font-size: 16px; display: flex; align-items: center; gap: 10px; }
+  .hi .dot { width: 8px; height: 8px; border-radius: 50%; background: #3ccf6e; box-shadow: 0 0 0 4px color-mix(in srgb, #3ccf6e 25%, transparent); }
+  h1 { font-size: clamp(38px, 5.4vw, 88px); line-height: 1.04; letter-spacing: -.045em; margin: 22px 0 0; font-weight: 800; }
+  h1 .line { display: block; overflow: hidden; padding-bottom: .06em; white-space: nowrap; }
+  h1 .line > span { display: inline-block; }
+  .verb { display: inline-block; color: var(--accent); }
+  .bio { color: var(--muted); font-size: 18px; line-height: 1.8; max-width: 540px; margin: 28px 0 0; }
+  .cta { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 34px; }
+  .portrait { position: relative; aspect-ratio: 1 / 1.02; border-radius: 28px; overflow: hidden; background: #fbefe4; box-shadow: var(--shadow); }
+  .portrait .ill { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 88% 50%; transform: scale(1.25); transform-origin: 70% 60%; }
+  .portrait .badge { position: absolute; left: 20px; bottom: 20px; display: flex; align-items: center; gap: 12px; background: rgba(20, 20, 20, .72); backdrop-filter: blur(10px); color: #fff; border-radius: 999px; padding: 8px 16px 8px 8px; font-size: 14px; }
+  .portrait .badge img { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; }
+  .portrait .sticker { position: absolute; right: 18px; top: 18px; width: 96px; transform: rotate(10deg); }
+  .marquee { margin-top: 60px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); overflow: hidden; white-space: nowrap; padding: 12px 0; font-weight: 600; letter-spacing: .14em; font-size: 13px; }
+  .marquee > div { display: inline-block; padding-right: 40px; }
+  .marquee em { color: var(--accent); font-style: normal; margin: 0 18px; }
+  .section { padding: 110px 40px 0; max-width: 1440px; margin: 0 auto; scroll-margin-top: 40px; }
+  .bigline { font-size: clamp(28px, 4vw, 60px); line-height: 1.2; letter-spacing: -.03em; font-weight: 700; margin: 16px 0 0; max-width: 1150px; }
+  .bigline :global(.w) { display: inline-block; opacity: .18; }
+  .bigline .acc { color: var(--accent); }
+  .lanes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 70px; }
+  .lane { position: relative; border: 1px solid var(--line); border-radius: 20px; padding: 24px; min-height: 300px; display: flex; flex-direction: column; transition: border-color .3s, transform .4s var(--ease); }
+  .lane:hover { border-color: var(--muted); transform: translateY(-6px); }
+  .lane .n, .lane .cnt { color: var(--muted); font-size: 13px; }
+  .lane .cnt { position: absolute; right: 22px; top: 20px; }
+  .lane img { width: 66px; margin: 22px 0 auto; transition: transform .5s var(--ease); }
+  .lane:hover img { transform: rotate(-8deg) scale(1.12); }
+  .lane h3 { font-size: 28px; margin: 20px 0 0; letter-spacing: -.02em; }
+  .lane p { color: var(--muted); margin: 8px 0 0; font-size: 15px; line-height: 1.6; }
+  @media (max-width: 1100px) {
+    .hero { grid-template-columns: 1fr; min-height: 0; }
+    .portrait { max-width: 520px; }
+    .lanes { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 640px) {
+    .hero, .section { padding-left: 20px; padding-right: 20px; }
+    h1 .line { white-space: normal; }
+  }
+</style>
+
+<script>
+  import { gsap } from 'gsap'
+  import { ScrollTrigger } from 'gsap/ScrollTrigger'
+  gsap.registerPlugin(ScrollTrigger)
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches
+
+  // 轮换动词
+  const verbEl = document.getElementById('verb')!
+  const verbs: string[] = JSON.parse(verbEl.dataset.verbs || '[]')
+  let vi = 0
+  if (!reduce) setInterval(() => {
+    gsap.to(verbEl, { yPercent: -110, opacity: 0, duration: .35, ease: 'power2.in', onComplete: () => {
+      vi = (vi + 1) % verbs.length; verbEl.textContent = verbs[vi]
+      gsap.fromTo(verbEl, { yPercent: 110, opacity: 0 }, { yPercent: 0, opacity: 1, duration: .6, ease: 'expo.out' })
+    } })
+  }, 2200)
+
+  // 关于我那段话：逐字切成 span，随滚动变亮
+  const bl = document.getElementById('bigline')!
+  const split = (el: Node) => {
+    [...el.childNodes].forEach((n) => {
+      if (n.nodeType === Node.TEXT_NODE) {
+        const frag = document.createDocumentFragment()
+        ;[...(n.textContent || '')].forEach((ch) => { const s = document.createElement('span'); s.className = 'w'; s.textContent = ch; frag.appendChild(s) })
+        n.replaceWith(frag)
+      } else split(n)
+    })
+  }
+  split(bl)
+
+  if (reduce) {
+    gsap.set('#bigline .w', { opacity: 1 })
+  } else {
+    gsap.from('.hero h1 .line > span', { yPercent: 110, duration: 1.1, stagger: .12, ease: 'expo.out' })
+    gsap.from('.hi, .bio, .cta', { y: 24, opacity: 0, duration: .9, stagger: .08, delay: .3, ease: 'expo.out' })
+    gsap.from('#portrait', { scale: .92, opacity: 0, duration: 1.2, delay: .15, ease: 'expo.out' })
+    gsap.to('#portrait .ill', { scale: 1.05, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } })
+    gsap.to('.marquee > div', { xPercent: -100, duration: 40, ease: 'none', repeat: -1 })
+    gsap.to('#bigline .w', { opacity: 1, stagger: .02, ease: 'none', scrollTrigger: { trigger: '#bigline', start: 'top 80%', end: 'bottom 45%', scrub: true } })
+    gsap.from('.lane', { y: 60, opacity: 0, stagger: .1, duration: 1, ease: 'expo.out', scrollTrigger: { trigger: '.lanes', start: 'top 85%' } })
+    gsap.from('#stage', { y: 80, opacity: 0, duration: 1.1, ease: 'expo.out', scrollTrigger: { trigger: '#stage', start: 'top 85%' } })
+
+    const portrait = document.getElementById('portrait')!
+    addEventListener('pointermove', (e) => {
+      if (e.pointerType !== 'mouse') return
+      const x = e.clientX / innerWidth - .5, y = e.clientY / innerHeight - .5
+      gsap.to(portrait, { rotateY: x * 8, rotateX: -y * 8, transformPerspective: 900, duration: .8, ease: 'power3.out' })
+      gsap.to('#portrait .sticker', { x: x * -30, y: y * -30, duration: .8, ease: 'power3.out' })
+    })
+  }
+</script>

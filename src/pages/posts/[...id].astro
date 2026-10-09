@@ -1,0 +1,31 @@
+---
+import { render } from 'astro:content'
+import Docs from '../../layouts/Docs.astro'
+import { getPosts, type Post } from '../../lib/content'
+
+export async function getStaticPaths() {
+  // 外链文章（知乎）直接跳原文，不生成站内页面
+  return (await getPosts()).filter((p) => !p.data.external).map((p) => ({ params: { id: p.id }, props: { post: p } }))
+}
+const { post } = Astro.props as { post: Post }
+const { Content, headings } = await render(post)
+const d = post.data
+---
+<Docs title={d.title} description={d.summary} nav="posts" toc={headings.filter((h) => h.depth <= 3).map((h) => ({ id: h.slug, text: h.text, depth: h.depth }))}>
+  <a class="back" href={`/posts/#${d.category}`}>← {d.category}</a>
+  <h1>{d.title}</h1>
+  {d.summary && <p class="lead">{d.summary}</p>}
+  <div class="meta">
+    {d.date && <span>{d.date.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })}</span>}
+    {d.tags.map((t) => <span class="tag">{t}</span>)}
+    {d.draft && <span class="draft-badge">草稿 · 仅本地可见</span>}
+  </div>
+  {d.cover && <img class="cover" src={d.cover} alt="" />}
+  <div class="prose"><Content /></div>
+</Docs>
+
+<style>
+  .back { color: var(--muted); font-size: 14px; display: inline-block; margin-bottom: 18px; }
+  .meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 16px; color: var(--muted); font-size: 14px; }
+  .cover { display: block; width: 100%; border-radius: 16px; margin-top: 28px; }
+</style>
