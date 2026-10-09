@@ -11,6 +11,8 @@
 - `redesign-prototype`: archive of the single-file prototype in `docs/prototypes/redesign-v2/` that the rebuild is based on.
 - `astro-v2` is live on Cloudflare Pages at https://pingyu-s-garden.pages.dev (project `pingyu-s-garden`, production branch `astro-v2`, `NODE_VERSION=24.14.1`, auto-deploys on push). Later move to the user's own domestic server once ICP filing is done. Vercel was tried earlier and failed; `.vercel/` is ignored.
 - Before merging `astro-v2` into `main`, the GitHub Pages workflow must be removed or updated: the new site assumes it is served from `/`, not `/Pingyu-s-Garden/`.
+- Cloudflare's GitHub App ("Cloudflare Workers and Pages") is installed on the user's account with access to this repository only. Framework preset is `None`; build command and output dir are set by hand.
+- `docs/superpowers/` holds specs and plans for the old React poster site; they are history, not the current design.
 - `~/dev/Pingyu-s-Garden-repo` is a stale older clone; do not work there.
 
 ## Commands (astro-v2)

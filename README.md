@@ -2,7 +2,8 @@
 
 花萍雨的个人网站：视频、图文教程和自己做的小工具。
 
-> 这个分支（`astro-v2`）是从零重写的新版本。线上旧版仍在 `main` 分支，部署在 GitHub Pages。
+> 这个分支（`astro-v2`）是从零重写的新版本，已上线：https://pingyu-s-garden.pages.dev （Cloudflare Pages，push 到 `astro-v2` 自动部署）。
+> 旧版仍在 `main` 分支，部署在 GitHub Pages：https://catteacher0515.github.io/Pingyu-s-Garden/ 。
 
 ## 本地运行
 
@@ -22,9 +23,9 @@ npm run build    # 输出到 dist/
 
 ## 怎么更新内容
 
-1. 打开 `你的网址/admin/`（本地是 `http://localhost:4321/admin/index.html`）。
-2. 选「Sign In Using Access Token」，按提示去 GitHub 生成一个只授权本仓库的令牌，粘贴登录。
-3. 新建或修改视频、图文、项目，点保存。内容会提交到 GitHub，网站重新构建后一两分钟内生效。
+1. 打开 https://pingyu-s-garden.pages.dev/admin/ （本地是 `http://localhost:4321/admin/index.html`）。
+2. 选「Sign In Using Access Token」。令牌在 https://github.com/settings/personal-access-tokens/new 生成：Repository access 只选 `Pingyu-s-Garden`，Permissions 里 Contents 设为 Read and write，生成后粘贴登录。
+3. 新建或修改视频、图文、项目，点保存。内容会提交到 GitHub 的 `astro-v2` 分支，Cloudflare 自动重新构建，几分钟内生效。
 
 几个开关：
 
