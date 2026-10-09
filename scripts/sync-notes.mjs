@@ -53,11 +53,18 @@ const slugify = (s) => s.trim().replace(/[\\/?#%"<>|:*\s]+/g, '-').replace(/-+/g
 
 // 2. 找出要发布的笔记
 const notes = []
+const warnings = []
 for (const file of mdFiles) {
   const src = fs.readFileSync(file, 'utf8')
   if (!/^publish\s*:/m.test(src)) continue
   const { data, body } = splitFrontmatter(src)
-  if (!isTrue(data.publish)) continue
+  if (!isTrue(data.publish)) {
+    // 写了 publish 却没被识别成属性（最常见：文件第一行是空行），提醒一下
+    if (/^publish\s*:\s*true\s*$/m.test(src) && !/^---\r?\n/.test(src)) {
+      warnings.push(`${path.relative(VAULT, file)}：写了 publish: true 但没生效。属性必须从文件第一行的 --- 开始，请删掉它前面的空行。`)
+    }
+    continue
+  }
   const name = path.basename(file, '.md')
   const rel = path.relative(VAULT, file)
   const folder = path.dirname(rel)
@@ -89,7 +96,6 @@ function assetUrl(absPath) {
   return `${MEDIA_URL}/${usedAssets.get(absPath)}`
 }
 const IMG = /\.(png|jpe?g|gif|webp|svg|avif|bmp)$/i
-const warnings = []
 
 function convert(n) {
   let s = n.body
