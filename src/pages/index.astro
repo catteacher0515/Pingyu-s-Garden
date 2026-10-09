@@ -1,12 +1,13 @@
 ---
 import Base from '../layouts/Base.astro'
 import Reel from '../components/Reel.astro'
-import { getReelItems, getVideos, getPosts, getProjects } from '../lib/content'
+import { getReelItems, getVideos, getPosts, getProjects, getNotes, noteHref, NOTE_STATUS } from '../lib/content'
 
-const [reel, videos, posts, projects] = await Promise.all([getReelItems(), getVideos(), getPosts(), getProjects()])
+const [reel, videos, posts, projects, notes] = await Promise.all([getReelItems(), getVideos(), getPosts(), getProjects(), getNotes()])
 const lanes = [
   { href: '/videos/', label: '视频', icon: 'star-square.png', desc: '主要的更新都在这里：工具上手、工作流演示和折腾记录。', count: videos.length },
   { href: '/posts/', label: '图文', icon: 'owl-square.png', desc: '来不及做成视频的教程和资料，还有以前写的文章。', count: posts.length },
+  { href: '/notes/', label: '笔记', icon: 'bird-square.png', desc: '一直在更新的学习笔记，写给自己看，也欢迎你翻。', count: notes.length },
   { href: '/projects/', label: '项目', icon: 'computer-square.png', desc: '从真实需求出发做的小工具，有的能直接打开用。', count: projects.length },
 ]
 const verbs = ['做视频', '写教程', '做工具', '记笔记']
@@ -50,6 +51,16 @@ const verbs = ['做视频', '写教程', '做工具', '记笔记']
         </a>
       ))}
     </div>
+    {notes.length > 0 && (
+      <div class="growing">
+        <div class="eyebrow">Growing · 最近在长的笔记</div>
+        <ul>
+          {notes.slice(0, 5).map((n) => (
+            <li><a href={noteHref(n)}><span>{NOTE_STATUS[n.data.status].icon}</span><b>{n.data.title}</b><em>{n.data.topic}</em><time>{n.data.updated.toLocaleDateString('zh-CN', { month: 'numeric', day: 'numeric' })}</time></a></li>
+          ))}
+        </ul>
+      </div>
+    )}
   </section>
 </Base>
 
@@ -75,7 +86,7 @@ const verbs = ['做视频', '写教程', '做工具', '记笔记']
   .bigline { font-size: clamp(28px, 4vw, 60px); line-height: 1.2; letter-spacing: -.03em; font-weight: 700; margin: 16px 0 0; max-width: 1150px; }
   .bigline :global(.w) { display: inline-block; opacity: .18; }
   .bigline .acc { color: var(--accent); }
-  .lanes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 70px; }
+  .lanes { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 70px; }
   .lane { position: relative; border: 1px solid var(--line); border-radius: 20px; padding: 24px; min-height: 300px; display: flex; flex-direction: column; transition: border-color .3s, transform .4s var(--ease); }
   .lane:hover { border-color: var(--muted); transform: translateY(-6px); }
   .lane .n, .lane .cnt { color: var(--muted); font-size: 13px; }
@@ -84,14 +95,22 @@ const verbs = ['做视频', '写教程', '做工具', '记笔记']
   .lane:hover img { transform: rotate(-8deg) scale(1.12); }
   .lane h3 { font-size: 28px; margin: 20px 0 0; letter-spacing: -.02em; }
   .lane p { color: var(--muted); margin: 8px 0 0; font-size: 15px; line-height: 1.6; }
+  .growing { margin-top: 70px; }
+  .growing ul { list-style: none; padding: 0; margin: 14px 0 0; border-top: 1px solid var(--line); }
+  .growing a { display: grid; grid-template-columns: 28px 1fr auto auto; gap: 14px; align-items: baseline; padding: 16px 4px; border-bottom: 1px solid var(--line); transition: padding .3s var(--ease), background .2s; }
+  .growing a:hover { padding-left: 14px; background: var(--bg2); }
+  .growing b { font-size: 18px; }
+  .growing em, .growing time { font-style: normal; color: var(--muted); font-size: 14px; }
   @media (max-width: 1100px) {
     .hero { grid-template-columns: 1fr; min-height: 0; }
     .portrait { max-width: 520px; }
-    .lanes { grid-template-columns: 1fr; }
+    .lanes { grid-template-columns: repeat(2, 1fr); }
   }
   @media (max-width: 640px) {
     .hero, .section { padding-left: 20px; padding-right: 20px; }
     h1 .line { white-space: normal; }
+    .lanes { grid-template-columns: 1fr; }
+    .growing em { display: none; }
   }
 </style>
 

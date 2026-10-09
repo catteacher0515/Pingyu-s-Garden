@@ -47,4 +47,27 @@ const projects = defineCollection({
   }),
 })
 
-export const collections = { videos, posts, projects }
+// 笔记由 scripts/sync-notes.mjs 从 Obsidian 生成，不在编辑后台里改
+const notes = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/notes' }),
+  schema: z.object({
+    title: z.string(),
+    topic: z.string(),
+    status: z.enum(['seedling', 'growing', 'evergreen']).default('growing'),
+    updated: z.coerce.date(),
+    summary: z.string().optional(),
+    tags: z.array(z.string()).default([]),
+  }),
+})
+
+// 发发神经：牢骚和小感悟，不需要标题
+const rants = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/rants' }),
+  schema: z.object({
+    date: z.coerce.date(),
+    mood: z.string().optional(),
+    draft: z.boolean().default(false),
+  }),
+})
+
+export const collections = { videos, posts, projects, notes, rants }

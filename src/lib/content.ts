@@ -3,6 +3,8 @@ import { getCollection, type CollectionEntry } from 'astro:content'
 export type Video = CollectionEntry<'videos'>
 export type Post = CollectionEntry<'posts'>
 export type Project = CollectionEntry<'projects'>
+export type Note = CollectionEntry<'notes'>
+export type Rant = CollectionEntry<'rants'>
 
 // 草稿只在本地 `npm run dev` 时出现，构建上线时自动隐藏。
 const visible = ({ data }: { data: { draft: boolean } }) => import.meta.env.DEV || !data.draft
@@ -23,6 +25,28 @@ export async function getProjects() {
   return (await getCollection('projects', visible)).sort((a, b) => a.data.order - b.data.order)
 }
 
+export async function getRants() {
+  return (await getCollection('rants', visible)).sort((a, b) => time(b.data.date) - time(a.data.date))
+}
+
+export async function getNotes() {
+  return (await getCollection('notes')).sort((a, b) => time(b.data.updated) - time(a.data.updated))
+}
+
+export const NOTE_STATUS = {
+  seedling: { icon: '🌱', label: '刚开始' },
+  growing: { icon: '🌿', label: '持续补充' },
+  evergreen: { icon: '🌳', label: '已成型' },
+} as const
+
+/** 按主题分组，主题按最近更新时间排序 */
+export function groupNotes(notes: Note[]) {
+  const map = new Map<string, Note[]>()
+  for (const n of notes) map.set(n.data.topic, [...(map.get(n.data.topic) ?? []), n])
+  return [...map.entries()].map(([topic, items]) => ({ topic, items }))
+}
+
+export const noteHref = (n: Note) => `/notes/${n.id}/`
 export const postHref = (p: Post) => p.data.external ?? `/posts/${p.id}/`
 export const videoHref = (v: Video) => `/videos/${v.id}/`
 export const projectHref = (p: Project) => p.data.link ?? p.data.repo ?? '/projects/'
@@ -76,10 +100,11 @@ export async function getReelItems(): Promise<ReelItem[]> {
 export type SearchItem = { title: string; label: string; href: string; cover?: string; text: string }
 
 export async function getSearchIndex(): Promise<SearchItem[]> {
-  const [videos, posts, projects] = await Promise.all([getVideos(), getPosts(), getProjects()])
+  const [videos, posts, projects, notes] = await Promise.all([getVideos(), getPosts(), getProjects(), getNotes()])
   return [
     ...videos.map((x) => ({ title: x.data.title, label: '视频', href: videoHref(x), cover: x.data.cover, text: [x.data.summary, ...x.data.tags].join(' ') })),
     ...posts.map((x) => ({ title: x.data.title, label: x.data.category, href: postHref(x), cover: x.data.cover, text: [x.data.summary, ...x.data.tags].join(' ') })),
     ...projects.map((x) => ({ title: x.data.title, label: '项目', href: projectHref(x), cover: x.data.cover, text: [x.data.summary, x.data.status, ...x.data.tags].join(' ') })),
+    ...notes.map((x) => ({ title: x.data.title, label: '笔记', href: noteHref(x), text: [x.data.topic, x.data.summary, ...x.data.tags].join(' ') })),
   ]
 }

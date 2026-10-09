@@ -80,3 +80,18 @@ collections:
       - { name: draft, label: 草稿（不发布）, widget: boolean, default: false }
       - { name: order, label: 排序（越小越靠前）, widget: number, value_type: int, default: 0, required: false }
       - { name: body, label: 详细介绍, widget: markdown, required: false }
+
+  - name: rants
+    label: 发发神经
+    label_singular: 一条神经
+    description: 牢骚、碎碎念和小感悟。不用写标题，写几句话就能发。
+    folder: src/content/rants
+    slug: '{{year}}{{month}}{{day}}-{{uuid_shorter}}'
+    create: true
+    sortable_fields: [date]
+    summary: '{{date}} {{mood}}'
+    fields:
+      - { name: date, label: 时间, widget: datetime, default: '{{now}}' }
+      - { name: mood, label: 心情, widget: select, required: false, options: ['🫠', '😤', '🙃', '😭', '😮‍💨', '🤔', '🥲', '😌', '🥳', '💡'] }
+      - { name: draft, label: 草稿（不发布）, widget: boolean, default: false }
+      - { name: body, label: 想说的话, widget: markdown }

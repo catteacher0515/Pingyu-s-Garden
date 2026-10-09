@@ -1,0 +1,44 @@
+---
+import Docs from '../../layouts/Docs.astro'
+import { getNotes, groupNotes, noteHref, NOTE_STATUS } from '../../lib/content'
+
+const notes = await getNotes()
+const groups = groupNotes(notes)
+const fmt = (d: Date) => d.toLocaleDateString('zh-CN', { year: 'numeric', month: 'numeric', day: 'numeric' })
+---
+<Docs title="笔记" nav="notes" toc={groups.map((g) => ({ id: g.topic, text: g.topic }))}>
+  <h1>笔记</h1>
+  <p class="lead">我的学习笔记，一直在更新。写给自己看的，不一定完整，欢迎随便翻。</p>
+  <p class="legend">
+    {Object.values(NOTE_STATUS).map((s) => <span>{s.icon} {s.label}</span>)}
+  </p>
+  {groups.length ? groups.map((g) => (
+    <section class="grp" id={g.topic}>
+      <h2>{g.topic}</h2>
+      <p class="sub">{g.items.length} 篇 · 最近更新于 {fmt(g.items[0].data.updated)}</p>
+      <ul class="notes">
+        {g.items.map((n) => (
+          <li>
+            <a href={noteHref(n)}>
+              <span class="st" title={NOTE_STATUS[n.data.status].label}>{NOTE_STATUS[n.data.status].icon}</span>
+              <span class="t">{n.data.title}</span>
+              {n.data.summary && <span class="s">{n.data.summary}</span>}
+              <time>{fmt(n.data.updated)}</time>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )) : <p class="empty" style="margin-top:40px">还没有公开的笔记。在 Obsidian 里给笔记加上属性 publish 并勾选，然后运行发布即可。</p>}
+</Docs>
+
+<style>
+  .legend { display: flex; gap: 18px; color: var(--muted); font-size: 14px; margin: 18px 0 0; }
+  .notes { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+  .notes a { display: grid; grid-template-columns: 28px minmax(0, auto) 1fr auto; align-items: baseline; gap: 12px; padding: 14px 6px; border-bottom: 1px solid var(--line); transition: background .2s, padding .3s var(--ease); }
+  .notes a:hover { background: var(--bg2); padding-left: 14px; }
+  .notes .t { font-size: 17px; font-weight: 600; }
+  .notes .s { color: var(--muted); font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .notes time { color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; }
+  @media (max-width: 640px) { .notes a { grid-template-columns: 24px 1fr auto; } .notes .s { display: none; } }
+</style>

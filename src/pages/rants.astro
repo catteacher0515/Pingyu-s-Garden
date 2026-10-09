@@ -1,0 +1,78 @@
+---
+import { render } from 'astro:content'
+import Base from '../layouts/Base.astro'
+import { getRants } from '../lib/content'
+
+const rants = await getRants()
+const items = await Promise.all(rants.map(async (r) => ({ r, Content: (await render(r)).Content })))
+const months = new Map<string, typeof items>()
+for (const it of items) {
+  const key = it.r.data.date.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', timeZone: 'Asia/Shanghai' })
+  months.set(key, [...(months.get(key) ?? []), it])
+}
+const day = (d: Date) => d.toLocaleDateString('zh-CN', { day: 'numeric', timeZone: 'Asia/Shanghai' }).replace('日', '')
+const hm = (d: Date) => d.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Shanghai' })
+// 每条卡片固定一个小角度，刷新页面不会跳
+const tilt = (id: string) => ((([...id].reduce((a, c) => a + c.charCodeAt(0), 0) % 7) - 3) * 0.35).toFixed(2)
+---
+<Base title="发发神经" nav="rants" description="花萍雨的牢骚、碎碎念和一些小感悟。">
+  <main class="wrap">
+    <header>
+      <div class="eyebrow">Murmurs · 碎碎念</div>
+      <h1>发发神经</h1>
+      <p class="lead">牢骚、碎碎念和偶尔冒出来的小感悟。情绪总得有个出口。</p>
+    </header>
+    {items.length === 0 && <p class="empty">今天很平静，还没有发神经。</p>}
+    {[...months].map(([month, list]) => (
+      <section>
+        <h2>{month}</h2>
+        <ol>
+          {list.map(({ r, Content }) => (
+            <li class="rant" style={`--tilt:${tilt(r.id)}deg`}>
+              <div class="when"><b>{day(r.data.date)}</b><span>{hm(r.data.date)}</span></div>
+              <div class="bubble">
+                {r.data.mood && <span class="mood">{r.data.mood}</span>}
+                {r.data.draft && <span class="draft-badge">草稿 · 仅本地可见</span>}
+                <div class="prose"><Content /></div>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </section>
+    ))}
+  </main>
+</Base>
+
+<style>
+  .wrap { max-width: 760px; margin: 0 auto; padding: 80px 24px 40px; }
+  h1 { font-size: clamp(44px, 7vw, 88px); letter-spacing: -.04em; margin: 10px 0 0; line-height: 1; }
+  .lead { color: var(--muted); font-size: 17px; margin: 18px 0 0; }
+  section { margin-top: 64px; }
+  h2 { font-size: 15px; color: var(--muted); font-weight: 600; letter-spacing: .06em; margin: 0 0 20px; position: sticky; top: 72px; background: var(--bg); padding: 12px 0; z-index: 2; }
+  ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 22px; }
+  .rant { display: grid; grid-template-columns: 64px 1fr; gap: 18px; align-items: start; }
+  .when { text-align: right; padding-top: 14px; }
+  .when b { display: block; font-size: 30px; line-height: 1; letter-spacing: -.03em; }
+  .when span { color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+  .bubble { position: relative; background: var(--card); border: 1px solid var(--line); border-radius: 6px 20px 20px 20px; padding: 18px 22px; transform: rotate(var(--tilt)); transition: transform .5s var(--ease), border-color .3s; }
+  .bubble:hover { transform: rotate(0deg) scale(1.01); border-color: var(--muted); }
+  .mood { position: absolute; right: -12px; top: -14px; font-size: 28px; filter: drop-shadow(0 4px 8px rgba(0,0,0,.25)); }
+  .bubble .draft-badge { display: inline-block; margin-bottom: 8px; }
+  .bubble .prose { margin-top: 0; font-size: 17px; line-height: 1.8; }
+  .bubble .prose :global(p) { margin: 0 0 .6em; }
+  .bubble .prose :global(p:last-child) { margin-bottom: 0; }
+  .bubble .prose :global(img) { border-radius: 12px; margin-top: 6px; }
+  @media (max-width: 640px) { .rant { grid-template-columns: 44px 1fr; gap: 12px; } .when b { font-size: 22px; } }
+</style>
+
+<script>
+  import { gsap } from 'gsap'
+  import { ScrollTrigger } from 'gsap/ScrollTrigger'
+  gsap.registerPlugin(ScrollTrigger)
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    gsap.from('.wrap header > *', { y: 30, opacity: 0, stagger: .08, duration: .9, ease: 'expo.out' })
+    document.querySelectorAll('.rant').forEach((el) => {
+      gsap.from(el, { y: 40, opacity: 0, rotate: -2, duration: .8, ease: 'back.out(1.6)', scrollTrigger: { trigger: el, start: 'top 90%' } })
+    })
+  }
+</script>

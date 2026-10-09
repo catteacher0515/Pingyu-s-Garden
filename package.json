@@ -5,10 +5,13 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "notes:sync": "node scripts/sync-notes.mjs",
+    "notes:publish": "scripts/publish-notes.sh"
   },
   "dependencies": {
     "astro": "^7.3.7",
-    "gsap": "^3.15.0"
+    "gsap": "^3.15.0",
+    "yaml": "^2.9.1"
   }
 }

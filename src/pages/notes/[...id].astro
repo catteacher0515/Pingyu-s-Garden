@@ -1,0 +1,46 @@
+---
+import { render } from 'astro:content'
+import Docs from '../../layouts/Docs.astro'
+import { getNotes, noteHref, NOTE_STATUS, type Note } from '../../lib/content'
+
+export async function getStaticPaths() {
+  const notes = await getNotes()
+  return notes.map((n) => ({ params: { id: n.id }, props: { note: n, siblings: notes.filter((x) => x.data.topic === n.data.topic && x.id !== n.id).slice(0, 6) } }))
+}
+const { note, siblings } = Astro.props as { note: Note; siblings: Note[] }
+const { Content, headings } = await render(note)
+const d = note.data
+const st = NOTE_STATUS[d.status]
+---
+<Docs title={d.title} description={d.summary ?? `${d.topic} 学习笔记`} nav="notes" toc={headings.filter((h) => h.depth <= 3).map((h) => ({ id: h.slug, text: h.text, depth: h.depth }))}>
+  <a class="back" href={`/notes/#${d.topic}`}>← {d.topic}</a>
+  <h1>{d.title}</h1>
+  <div class="meta">
+    <span class="badge">{st.icon} {st.label}</span>
+    <span>最后更新于 {d.updated.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+    {d.tags.map((t) => <span class="tag">{t}</span>)}
+  </div>
+  <p class="hint">这是我的学习笔记，会随着学习继续修改，难免有不完整或不准确的地方。</p>
+  <div class="prose"><Content /></div>
+  {siblings.length > 0 && (
+    <aside class="more">
+      <h3>同主题的其他笔记</h3>
+      <ul>{siblings.map((s) => <li><a href={noteHref(s)}>{NOTE_STATUS[s.data.status].icon} {s.data.title}</a></li>)}</ul>
+    </aside>
+  )}
+</Docs>
+
+<style>
+  .back { color: var(--muted); font-size: 14px; display: inline-block; margin-bottom: 18px; }
+  .meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-top: 16px; color: var(--muted); font-size: 14px; }
+  .badge { border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px; color: var(--text); }
+  .hint { margin: 22px 0 0; padding: 12px 16px; border-radius: 12px; background: var(--bg2); color: var(--muted); font-size: 14px; }
+  .prose :global(mark) { background: color-mix(in srgb, var(--accent) 30%, transparent); color: inherit; padding: 0 3px; border-radius: 3px; }
+  .prose :global(table) { border-collapse: collapse; display: block; overflow-x: auto; }
+  .prose :global(th), .prose :global(td) { border: 1px solid var(--line); padding: 6px 10px; }
+  .more { margin-top: 60px; border-top: 1px solid var(--line); padding-top: 24px; }
+  .more h3 { font-size: 16px; margin: 0 0 12px; }
+  .more ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+  .more a { color: var(--muted); }
+  .more a:hover { color: var(--text); }
+</style>

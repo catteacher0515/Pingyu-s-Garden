@@ -1,17 +1,20 @@
 ---
 import Base from './Base.astro'
+import { getNotes, groupNotes } from '../lib/content'
 
 export type TocItem = { id: string; text: string; depth?: number }
 interface Props {
   title: string
   description?: string
-  nav: 'videos' | 'posts' | 'projects'
+  nav: 'videos' | 'posts' | 'notes' | 'projects'
   toc: TocItem[]
 }
 const { title, description, nav, toc } = Astro.props
+const noteTopics = groupNotes(await getNotes()).map((g) => g.topic)
 const sideLinks = [
   { group: '视频', items: [{ href: '/videos/', text: '全部视频', id: 'videos' }] },
   { group: '图文', items: [{ href: '/posts/#教程', text: '教程' }, { href: '/posts/#文章', text: '文章' }] },
+  { group: '笔记', items: noteTopics.length ? noteTopics.map((t) => ({ href: `/notes/#${t}`, text: t })) : [{ href: '/notes/', text: '全部笔记', id: 'notes' }] },
   { group: '项目', items: [{ href: '/projects/', text: '全部项目', id: 'projects' }] },
 ]
 ---
@@ -52,7 +55,7 @@ const sideLinks = [
         if (!self.isActive) return
         tocLinks.forEach((x) => x.classList.toggle('on', x === a))
         document.querySelectorAll<HTMLAnchorElement>('.side a[data-hash]').forEach((x) => {
-          if (location.pathname.startsWith('/posts/') && x.dataset.hash) x.classList.toggle('on', x.dataset.hash === a.dataset.id)
+          if ((location.pathname.startsWith('/posts/') || location.pathname.startsWith('/notes/')) && x.dataset.hash) x.classList.toggle('on', x.dataset.hash === a.dataset.id)
         })
       },
     })

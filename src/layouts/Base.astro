@@ -5,7 +5,7 @@ import { getSearchIndex } from '../lib/content'
 interface Props {
   title?: string
   description?: string
-  nav?: 'home' | 'videos' | 'posts' | 'projects'
+  nav?: 'home' | 'videos' | 'posts' | 'notes' | 'projects' | 'rants'
   footer?: boolean
 }
 const { title, description = '花萍雨的个人网站：视频、图文教程和自己做的小工具。', nav, footer = true } = Astro.props
@@ -15,7 +15,9 @@ const links = [
   { id: 'home', href: '/', label: '首页' },
   { id: 'videos', href: '/videos/', label: '视频' },
   { id: 'posts', href: '/posts/', label: '图文' },
+  { id: 'notes', href: '/notes/', label: '笔记' },
   { id: 'projects', href: '/projects/', label: '项目' },
+  { id: 'rants', href: '/rants/', label: '发发神经' },
 ]
 ---
 <!doctype html>
@@ -37,7 +39,7 @@ const links = [
         {links.map((l) => <a href={l.href} class={nav === l.id ? 'on' : undefined}>{l.label}</a>)}
       </nav>
       <div class="sp"></div>
-      <button class="kbtn" data-open-search>⌕ <span>搜索视频、图文、项目…</span><kbd>⌘K</kbd></button>
+      <button class="kbtn" data-open-search>⌕ <span>搜索视频、图文、笔记…</span><kbd>⌘K</kbd></button>
       <button class="theme" id="theme" title="切换深浅色" aria-label="切换深浅色">◐</button>
       <a class="pill" href="https://github.com/catteacher0515" target="_blank" rel="noopener">GitHub ↗</a>
     </header>
@@ -47,15 +49,15 @@ const links = [
     {footer && (
       <footer class="foot">
         <div><div class="sig">Pingyu's<br />Garden.</div><p style="margin-top:18px">© {new Date().getFullYear()} 花萍雨 · Built slowly.</p></div>
-        <div><h4>内容</h4><a href="/videos/">视频</a><br /><a href="/posts/">图文</a><br /><a href="/projects/">项目</a></div>
-        <div><h4>关于</h4><a href="/#about">关于我</a></div>
+        <div><h4>内容</h4><a href="/videos/">视频</a><br /><a href="/posts/">图文</a><br /><a href="/notes/">笔记</a><br /><a href="/projects/">项目</a></div>
+        <div><h4>关于</h4><a href="/#about">关于我</a><br /><a href="/rants/">发发神经</a></div>
         <div><h4>在别处</h4><a href="https://github.com/catteacher0515" target="_blank" rel="noopener">GitHub</a></div>
       </footer>
     )}
 
     <div class="pal" id="pal">
       <div class="box">
-        <input id="q" placeholder="搜索视频、图文、项目…" autocomplete="off" />
+        <input id="q" placeholder="搜索视频、图文、笔记、项目…" autocomplete="off" />
         <div class="res" id="res"></div>
       </div>
     </div>
