@@ -88,9 +88,19 @@ const follow = site.follow.filter((f) => f.url)
           const t = el?.dataset.cursor
           gsap.to(cur, { width: el ? (t ? 84 : 36) : 12, height: el ? (t ? 84 : 36) : 12, margin: el ? (t ? -42 : -18) : -6, duration: .4, ease: 'expo.out' })
           label.textContent = t || ''
+          cur.classList.toggle('label', !!t)
           gsap.to(label, { opacity: t ? 1 : 0, duration: .2 })
         })
       }
+
+      // 往下滚收起顶栏，往上滚再出现
+      const bar = document.querySelector('.bar')!
+      let lastY = scrollY
+      addEventListener('scroll', () => {
+        const y = scrollY
+        bar.classList.toggle('hide', y > lastY && y > 120)
+        lastY = y
+      }, { passive: true })
 
       // 页脚「关注我」逐字出现
       if (!reduce) {

@@ -17,7 +17,7 @@ const videos = await getVideos()
         <a class="vcard reveal-scroll" href={videoHref(v)} data-cursor="播放">
           <div class="frame">
             {v.data.cover ? <img src={opt(v.data.cover)} alt="" loading="lazy" /> : <div class="bg" style={`background:${thumb(i)}`}></div>}
-            <span class="no">{String(videos.length - i).padStart(2, '0')}</span>
+            <span class="no">{String(videos.length - i).padStart(2, '0')}</span>{v.data.duration && <span class="len mono">{v.data.duration}</span>}
           </div>
           <div class="meta"><span>{v.data.tags[0] ?? v.data.platform}</span><span>{fmtDay(v.data.date)}{v.data.draft && ' · 草稿'}</span></div>
           <h3>{v.data.title}</h3>

@@ -1,12 +1,36 @@
 {
   "name": "花萍雨",
   "tagline": "用 AI 和代码做东西，把过程拍成视频、写成教程。",
-  "now": ["在给网站换新衣服", "在学 Python 工程化", "在整理 Obsidian 笔记"],
+  "now": [
+    "在给网站换新衣服",
+    "在学 Python 工程化",
+    "在整理 Obsidian 笔记"
+  ],
   "follow": [
-    { "name": "B 站", "handle": "", "url": "" },
-    { "name": "小红书", "handle": "", "url": "" },
-    { "name": "知乎", "handle": "", "url": "" },
-    { "name": "GitHub", "handle": "catteacher0515", "url": "https://github.com/catteacher0515" },
-    { "name": "邮箱", "handle": "", "url": "" }
+    {
+      "name": "B 站",
+      "handle": "花萍雨呀",
+      "url": "https://space.bilibili.com/3546939995982271"
+    },
+    {
+      "name": "小红书",
+      "handle": "",
+      "url": ""
+    },
+    {
+      "name": "知乎",
+      "handle": "",
+      "url": ""
+    },
+    {
+      "name": "GitHub",
+      "handle": "catteacher0515",
+      "url": "https://github.com/catteacher0515"
+    },
+    {
+      "name": "邮箱",
+      "handle": "",
+      "url": ""
+    }
   ]
 }

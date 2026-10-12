@@ -20,6 +20,7 @@ const videos = defineCollection({
     date: z.coerce.date(),
     url: z.string().url(),
     platform: z.string().default('B站'),
+    duration: z.string().optional(),
     preview: z.string().optional(),
   }),
 })

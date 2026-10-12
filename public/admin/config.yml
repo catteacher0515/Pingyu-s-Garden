@@ -28,6 +28,7 @@ collections:
       - { name: date, label: 发布日期, widget: datetime, time_format: false, format: YYYY-MM-DD }
       - { name: url, label: 视频链接, hint: '完整视频的地址，比如 B 站视频页链接。B 站链接会自动生成网页内播放器。' }
       - { name: platform, label: 平台, widget: select, options: [B站, YouTube, 小红书, 视频号, 抖音], default: B站 }
+      - { name: duration, label: 时长, required: false, hint: '例如 04:35' }
       - { name: summary, label: 一句话简介, widget: text, required: false }
       - { name: cover, label: 封面图, widget: image, required: false }
       - { name: preview, label: 预览片段, widget: file, required: false, hint: '可选：3 到 6 秒的静音 mp4，用于首页放映厅和列表悬停预览，建议小于 3MB。' }

@@ -23,7 +23,7 @@ const writing = rows.slice(0, 8)
         <div class="grain"></div>
         <div class="rec"><i></i>最新一期{latest.data.draft && <span class="draft-badge">草稿</span>}</div>
         <div class="title">{latest.data.title}</div>
-        <div class="hud mono"><span id="tc">00:00:00:00</span><span>{fmtDay(latest.data.date)}</span></div>
+        <div class="hud mono"><span id="tc">00:00:00:00</span><span>{latest.data.duration ?? fmtDay(latest.data.date)}</span></div>
       </a>
     ) : (
       <div class="screen idle">
@@ -46,7 +46,7 @@ const writing = rows.slice(0, 8)
                 <div class="frame">
                   {v.data.cover ? <img src={opt(v.data.cover)} alt="" loading="lazy" /> : <div class="bg" style={`background:${thumb(i)}`}></div>}
                   {v.data.preview && <video src={v.data.preview} muted loop playsinline preload="none" data-hover-preview></video>}
-                  <span class="no">{String(i + 1).padStart(2, '0')}</span>
+                  <span class="no">{String(i + 1).padStart(2, '0')}</span>{v.data.duration && <span class="len mono">{v.data.duration}</span>}
                 </div>
                 <div class="meta"><span>{v.data.tags[0] ?? v.data.platform}</span><span>{fmtDay(v.data.date)}{v.data.draft && ' · 草稿'}</span></div>
                 <h3>{v.data.title}</h3>
@@ -62,7 +62,7 @@ const writing = rows.slice(0, 8)
               <div class="frame">
                 {v.data.cover ? <img src={opt(v.data.cover)} alt="" loading="lazy" /> : <div class="bg" style={`background:${thumb(i)}`}></div>}
                 {v.data.preview && <video src={v.data.preview} muted loop playsinline preload="none" data-hover-preview></video>}
-                <span class="no">{String(i + 1).padStart(2, '0')}</span>
+                <span class="no">{String(i + 1).padStart(2, '0')}</span>{v.data.duration && <span class="len mono">{v.data.duration}</span>}
               </div>
               <div class="meta"><span>{v.data.tags[0] ?? v.data.platform}</span><span>{fmtDay(v.data.date)}{v.data.draft && ' · 草稿'}</span></div>
               <h3>{v.data.title}</h3>
