@@ -1,6 +1,6 @@
 ---
 import '../styles/global.css'
-import { getSearchIndex } from '../lib/content'
+import { getSearchIndex, getSectionPresence } from '../lib/content'
 
 interface Props {
   title?: string
@@ -11,14 +11,16 @@ interface Props {
 const { title, description = '花萍雨的个人网站：视频、图文教程和自己做的小工具。', nav, footer = true } = Astro.props
 const pageTitle = title ? `${title} · Pingyu's Garden` : "Pingyu's Garden · 花萍雨"
 const search = await getSearchIndex()
-const links = [
+const has = await getSectionPresence()
+const allLinks = [
   { id: 'home', href: '/', label: '首页' },
   { id: 'videos', href: '/videos/', label: '视频' },
   { id: 'posts', href: '/posts/', label: '图文' },
   { id: 'notes', href: '/notes/', label: '笔记' },
   { id: 'projects', href: '/projects/', label: '项目' },
   { id: 'rants', href: '/rants/', label: '发发神经' },
-]
+] as const
+const links = allLinks.filter((l) => l.id === 'home' || has[l.id])
 ---
 <!doctype html>
 <html lang="zh-CN" data-theme="dark">
@@ -49,8 +51,8 @@ const links = [
     {footer && (
       <footer class="foot">
         <div><div class="sig">Pingyu's<br />Garden.</div><p style="margin-top:18px">© {new Date().getFullYear()} 花萍雨 · Built slowly.</p></div>
-        <div><h4>内容</h4><a href="/videos/">视频</a><br /><a href="/posts/">图文</a><br /><a href="/notes/">笔记</a><br /><a href="/projects/">项目</a></div>
-        <div><h4>关于</h4><a href="/#about">关于我</a><br /><a href="/rants/">发发神经</a></div>
+        <div><h4>内容</h4>{links.filter((l) => ['videos', 'posts', 'notes', 'projects'].includes(l.id)).map((l) => <><a href={l.href}>{l.label}</a><br /></>)}</div>
+        <div><h4>关于</h4><a href="/#about">关于我</a>{has.rants && <><br /><a href="/rants/">发发神经</a></>}</div>
         <div><h4>在别处</h4><a href="https://github.com/catteacher0515" target="_blank" rel="noopener">GitHub</a></div>
       </footer>
     )}

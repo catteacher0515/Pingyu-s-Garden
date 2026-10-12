@@ -1,6 +1,6 @@
 ---
 import Base from './Base.astro'
-import { getNotes, groupNotes } from '../lib/content'
+import { getNotes, groupNotes, getSectionPresence } from '../lib/content'
 
 export type TocItem = { id: string; text: string; depth?: number }
 interface Props {
@@ -11,12 +11,13 @@ interface Props {
 }
 const { title, description, nav, toc } = Astro.props
 const noteTopics = groupNotes(await getNotes()).map((g) => g.topic)
+const has = await getSectionPresence()
 const sideLinks = [
-  { group: '视频', items: [{ href: '/videos/', text: '全部视频', id: 'videos' }] },
-  { group: '图文', items: [{ href: '/posts/#教程', text: '教程' }, { href: '/posts/#文章', text: '文章' }] },
-  { group: '笔记', items: noteTopics.length ? noteTopics.map((t) => ({ href: `/notes/#${t}`, text: t })) : [{ href: '/notes/', text: '全部笔记', id: 'notes' }] },
-  { group: '项目', items: [{ href: '/projects/', text: '全部项目', id: 'projects' }] },
-]
+  has.videos && { group: '视频', items: [{ href: '/videos/', text: '全部视频', id: 'videos' }] },
+  has.posts && { group: '图文', items: [has.tutorials && { href: '/posts/#教程', text: '教程' }, has.articles && { href: '/posts/#文章', text: '文章' }].filter((x) => !!x) },
+  has.notes && { group: '笔记', items: noteTopics.map((t) => ({ href: `/notes/#${t}`, text: t })) },
+  has.projects && { group: '项目', items: [{ href: '/projects/', text: '全部项目', id: 'projects' }] },
+].filter((g) => !!g) as { group: string; items: { href: string; text: string; id?: string }[] }[]
 ---
 <Base title={title} description={description} nav={nav} footer={false}>
   <div class="docs">
@@ -39,10 +40,7 @@ const sideLinks = [
 </Base>
 
 <script>
-  import { gsap } from 'gsap'
   import { ScrollTrigger } from 'gsap/ScrollTrigger'
-  gsap.registerPlugin(ScrollTrigger)
-  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches
 
   // 滚动时高亮右侧目录和左侧对应分组
   const tocLinks = [...document.querySelectorAll<HTMLAnchorElement>('.toc a')]
@@ -60,12 +58,6 @@ const sideLinks = [
       },
     })
   })
-  if (!reduce) {
-    gsap.from('.docmain > h1, .docmain > .lead', { y: 24, opacity: 0, stagger: .08, duration: .8, ease: 'expo.out' })
-    document.querySelectorAll('.cards').forEach((g) => {
-      gsap.from(g.querySelectorAll('.card'), { y: 40, opacity: 0, stagger: .05, duration: .8, ease: 'expo.out', scrollTrigger: { trigger: g, start: 'top 90%' } })
-    })
-  }
   // 卡片悬停时播放预览片段
   document.querySelectorAll<HTMLVideoElement>('video[data-hover-preview]').forEach((v) => {
     const card = v.closest('.card')!

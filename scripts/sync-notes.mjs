@@ -8,6 +8,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import crypto from 'node:crypto'
 import { parse as parseYaml, stringify as toYaml } from 'yaml'
+import sharp from 'sharp'
 
 const VAULT = process.env.OBSIDIAN_VAULT
   ?? path.join(process.env.HOME, 'Library/Mobile Documents/com~apple~CloudDocs/Obsidian')
@@ -89,13 +90,14 @@ const byName = new Map(notes.map((n) => [n.name, n]))
 const usedAssets = new Map() // 源路径 → 网站上的文件名
 function assetUrl(absPath) {
   if (!usedAssets.has(absPath)) {
-    const ext = path.extname(absPath)
+    const ext = RASTER.test(absPath) ? '.webp' : path.extname(absPath)
     const hash = crypto.createHash('md5').update(absPath).digest('hex').slice(0, 10)
     usedAssets.set(absPath, `${hash}${ext}`)
   }
   return `${MEDIA_URL}/${usedAssets.get(absPath)}`
 }
 const IMG = /\.(png|jpe?g|gif|webp|svg|avif|bmp)$/i
+const RASTER = /\.(png|jpe?g)$/i // 这两种转成压缩后的 WebP
 
 function convert(n) {
   let s = n.body
@@ -179,5 +181,9 @@ fs.mkdirSync(OUT_MEDIA, { recursive: true })
 fs.writeFileSync(path.join(OUT_NOTES, '.gitkeep'), '')
 fs.writeFileSync(path.join(OUT_MEDIA, '.gitkeep'), '')
 for (const o of outputs) fs.writeFileSync(o.file, o.text)
-for (const [src, name] of usedAssets) fs.copyFileSync(src, path.join(OUT_MEDIA, name))
+for (const [src, name] of usedAssets) {
+  const dest = path.join(OUT_MEDIA, name)
+  if (RASTER.test(src)) await sharp(src).resize({ width: 1600, withoutEnlargement: true }).webp({ quality: 78 }).toFile(dest)
+  else fs.copyFileSync(src, dest)
+}
 console.log(`已写入 ${outputs.length} 篇笔记到 src/content/notes/。`)

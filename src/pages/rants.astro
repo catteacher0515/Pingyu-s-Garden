@@ -17,7 +17,7 @@ const tilt = (id: string) => ((([...id].reduce((a, c) => a + c.charCodeAt(0), 0)
 ---
 <Base title="发发神经" nav="rants" description="花萍雨的牢骚、碎碎念和一些小感悟。">
   <main class="wrap">
-    <header>
+    <header class="reveal">
       <div class="eyebrow">Murmurs · 碎碎念</div>
       <h1>发发神经</h1>
       <p class="lead">牢骚、碎碎念和偶尔冒出来的小感悟。情绪总得有个出口。</p>
@@ -28,7 +28,7 @@ const tilt = (id: string) => ((([...id].reduce((a, c) => a + c.charCodeAt(0), 0)
         <h2>{month}</h2>
         <ol>
           {list.map(({ r, Content }) => (
-            <li class="rant" style={`--tilt:${tilt(r.id)}deg`}>
+            <li class="rant reveal-scroll" style={`--tilt:${tilt(r.id)}deg`}>
               <div class="when"><b>{day(r.data.date)}</b><span>{hm(r.data.date)}</span></div>
               <div class="bubble">
                 {r.data.mood && <span class="mood">{r.data.mood}</span>}
@@ -65,14 +65,3 @@ const tilt = (id: string) => ((([...id].reduce((a, c) => a + c.charCodeAt(0), 0)
   @media (max-width: 640px) { .rant { grid-template-columns: 44px 1fr; gap: 12px; } .when b { font-size: 22px; } }
 </style>
 
-<script>
-  import { gsap } from 'gsap'
-  import { ScrollTrigger } from 'gsap/ScrollTrigger'
-  gsap.registerPlugin(ScrollTrigger)
-  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    gsap.from('.wrap header > *', { y: 30, opacity: 0, stagger: .08, duration: .9, ease: 'expo.out' })
-    document.querySelectorAll('.rant').forEach((el) => {
-      gsap.from(el, { y: 40, opacity: 0, rotate: -2, duration: .8, ease: 'back.out(1.6)', scrollTrigger: { trigger: el, start: 'top 90%' } })
-    })
-  }
-</script>

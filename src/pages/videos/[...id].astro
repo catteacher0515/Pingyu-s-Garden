@@ -1,4 +1,5 @@
 ---
+import { opt } from '../../lib/img'
 import { render } from 'astro:content'
 import Docs from '../../layouts/Docs.astro'
 import BiliPlayer from '../../components/BiliPlayer.astro'
@@ -19,7 +20,7 @@ const bvid = bvidOf(d.url)
   <div class="player">
     {bvid ? <BiliPlayer bvid={bvid} cover={d.cover} title={d.title} /> : (
       <a class="fallback" href={d.url} target="_blank" rel="noopener">
-        {d.cover && <img src={d.cover} alt="" />}<span>▶ 去{d.platform}观看</span>
+        {d.cover && <img src={opt(d.cover)} alt="" />}<span>▶ 去{d.platform}观看</span>
       </a>
     )}
   </div>

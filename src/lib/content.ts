@@ -1,4 +1,5 @@
 import { getCollection, type CollectionEntry } from 'astro:content'
+import { opt } from './img'
 
 export type Video = CollectionEntry<'videos'>
 export type Post = CollectionEntry<'posts'>
@@ -55,6 +56,20 @@ export function bvidOf(url: string) {
   return url.match(/BV[0-9A-Za-z]{10}/)?.[0]
 }
 
+/** 各栏目是否有已发布内容；没有内容的栏目不在导航、侧边栏、首页入口里出现 */
+export async function getSectionPresence() {
+  const [videos, posts, notes, projects, rants] = await Promise.all([getVideos(), getPosts(), getNotes(), getProjects(), getRants()])
+  return {
+    videos: videos.length > 0,
+    posts: posts.length > 0,
+    tutorials: posts.some((p) => p.data.category === '教程'),
+    articles: posts.some((p) => p.data.category === '文章'),
+    notes: notes.length > 0,
+    projects: projects.length > 0,
+    rants: rants.length > 0,
+  }
+}
+
 export const STATUS_ORDER = ['可访问', '自用中', '实验中', '已归档'] as const
 export const CATEGORY_ORDER = ['教程', '文章'] as const
 
@@ -102,9 +117,9 @@ export type SearchItem = { title: string; label: string; href: string; cover?: s
 export async function getSearchIndex(): Promise<SearchItem[]> {
   const [videos, posts, projects, notes] = await Promise.all([getVideos(), getPosts(), getProjects(), getNotes()])
   return [
-    ...videos.map((x) => ({ title: x.data.title, label: '视频', href: videoHref(x), cover: x.data.cover, text: [x.data.summary, ...x.data.tags].join(' ') })),
-    ...posts.map((x) => ({ title: x.data.title, label: x.data.category, href: postHref(x), cover: x.data.cover, text: [x.data.summary, ...x.data.tags].join(' ') })),
-    ...projects.map((x) => ({ title: x.data.title, label: '项目', href: projectHref(x), cover: x.data.cover, text: [x.data.summary, x.data.status, ...x.data.tags].join(' ') })),
+    ...videos.map((x) => ({ title: x.data.title, label: '视频', href: videoHref(x), cover: opt(x.data.cover), text: [x.data.summary, ...x.data.tags].join(' ') })),
+    ...posts.map((x) => ({ title: x.data.title, label: x.data.category, href: postHref(x), cover: opt(x.data.cover), text: [x.data.summary, ...x.data.tags].join(' ') })),
+    ...projects.map((x) => ({ title: x.data.title, label: '项目', href: projectHref(x), cover: opt(x.data.cover), text: [x.data.summary, x.data.status, ...x.data.tags].join(' ') })),
     ...notes.map((x) => ({ title: x.data.title, label: '笔记', href: noteHref(x), text: [x.data.topic, x.data.summary, ...x.data.tags].join(' ') })),
   ]
 }

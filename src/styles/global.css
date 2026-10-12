@@ -127,3 +127,24 @@ img { max-width: 100%; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; }
 }
+
+/* 入场与滚动出现：纯 CSS，不依赖脚本，内容默认可见。
+   fill-mode 用 backwards：动画结束后元素回到正常样式，不影响 hover 等效果。 */
+@keyframes rise { from { opacity: 0; transform: translateY(24px); } }
+@keyframes line-up { from { transform: translateY(110%); } }
+@keyframes pop { from { opacity: 0; transform: scale(.94); } }
+.reveal { animation: rise .9s var(--ease) backwards; animation-delay: var(--d, 0s); }
+.reveal-scroll { animation: none; }
+@supports (animation-timeline: view()) {
+  .reveal-scroll { animation: rise linear backwards; animation-timeline: view(); animation-range: entry 0% entry 70%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal, .reveal-scroll { animation: none !important; }
+}
+.docmain > h1 { animation: rise .8s var(--ease) backwards; }
+.docmain > .lead { animation: rise .8s var(--ease) .08s backwards; }
+.cards .card, .notes li { animation: none; }
+@supports (animation-timeline: view()) {
+  .cards .card, .notes li { animation: rise linear backwards; animation-timeline: view(); animation-range: entry 0% entry 60%; }
+}
+@media (prefers-reduced-motion: reduce) { .docmain > h1, .docmain > .lead, .cards .card, .notes li { animation: none !important; } }

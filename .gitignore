@@ -32,3 +32,6 @@ dist-ssr
 
 # 误放进来的其他项目副本
 repos/
+
+# 构建时生成的压缩图片
+public/_opt/

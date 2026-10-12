@@ -16,6 +16,6 @@ const fmt = (d: Date) => d.toLocaleDateString('zh-CN', { year: 'numeric', month:
           <Card href={videoHref(v)} title={v.data.title} meta={`${fmt(v.data.date)} · ${v.data.platform}`} cover={v.data.cover} preview={v.data.preview} play draft={v.data.draft} tags={v.data.tags} />
         ))}
       </div>
-    ) : <p class="empty">还没有视频，在编辑后台新建第一条吧。</p>}
+    ) : <p class="empty">第一支视频还在剪，过阵子再来看看。</p>}
   </section>
 </Docs>

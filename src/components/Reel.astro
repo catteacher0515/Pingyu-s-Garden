@@ -1,4 +1,5 @@
 ---
+import { opt } from '../lib/img'
 import type { ReelItem } from '../lib/content'
 
 interface Props { items: ReelItem[] }
@@ -18,13 +19,13 @@ const tpl = (i: ReelItem) => (i.kind === 'post' ? 'article' : i.kind)
 </div>
 
 <div class="carouselWrap">
-  <div class="stage" id="stage">
-    {items.map((it) => (
+  <div class="stage reveal-scroll" id="stage">
+    {items.map((it, i) => (
       <a class={`slide t-${tpl(it)}`} href={it.href} data-label={it.label} data-title={it.title} target={it.external ? '_blank' : undefined} rel={it.external ? 'noopener' : undefined} draggable="false">
         {tpl(it) === 'video' && (
           <>
             <div class="frame">
-              {it.cover && <img src={it.cover} alt="" />}
+              {it.cover && <img src={opt(it.cover)} alt="" loading={i ? 'lazy' : undefined} decoding="async" />}
               {it.preview && <video src={it.preview} muted loop playsinline preload="none"></video>}
             </div>
             <div class="play">▶</div>
@@ -34,7 +35,7 @@ const tpl = (i: ReelItem) => (i.kind === 'post' ? 'article' : i.kind)
         {tpl(it) === 'project' && (
           <div class="browser">
             <div class="chrome"><i></i><i></i><i></i><span>{hostOf(it.href)}</span></div>
-            {it.cover ? <img src={it.cover} alt="" /> : <div class="noshot"><b>{it.title}</b><p>{it.summary}</p></div>}
+            {it.cover ? <img src={opt(it.cover)} alt="" loading={i ? 'lazy' : undefined} decoding="async" /> : <div class="noshot"><b>{it.title}</b><p>{it.summary}</p></div>}
           </div>
         )}
         {tpl(it) === 'article' && (
@@ -44,7 +45,7 @@ const tpl = (i: ReelItem) => (i.kind === 'post' ? 'article' : i.kind)
               {it.summary && <p>{it.summary}</p>}
               <div class="meta">{it.meta ? `${it.meta} · 阅读全文 ↗` : '阅读全文 →'}</div>
             </div>
-            <div class="cov">{it.cover ? <img src={it.cover} alt="" /> : <img class="ic" src="/images/doodles/owl-square.png" alt="" />}</div>
+            <div class="cov">{it.cover ? <img src={opt(it.cover)} alt="" loading={i ? 'lazy' : undefined} decoding="async" /> : <img class="ic" src="/images/doodles/owl-square.png" alt="" />}</div>
           </>
         )}
         <span class="type">{ICONS[it.label] ?? '•'} {it.label}</span>

@@ -1,11 +1,12 @@
 ---
+import { opt } from '../lib/img'
 // 先只显示封面，点击后才加载 B 站播放器，避免页面一打开就加载很重的 iframe。
 interface Props { bvid: string; cover?: string; title: string }
 const { bvid, cover, title } = Astro.props
 const src = `https://player.bilibili.com/player.html?bvid=${bvid}&autoplay=1&high_quality=1&danmaku=0`
 ---
 <div class="bili" data-src={src}>
-  {cover && <img src={cover} alt="" />}
+  {cover && <img src={opt(cover)} alt="" />}
   <button aria-label={`播放：${title}`}><span>▶</span></button>
 </div>
 
