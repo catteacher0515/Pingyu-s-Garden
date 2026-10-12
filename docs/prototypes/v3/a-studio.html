@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>原型 A · 片场</title>
+<style>
+:root{--paper:#f2efe9;--ink:#141414;--mute:#8a857c;--line:#d9d4ca;--hot:#ff4b1f;--ease:cubic-bezier(.2,.9,.2,1)}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--paper)}
+body{color:var(--ink);font-family:-apple-system,"SF Pro Display","PingFang SC",sans-serif;-webkit-font-smoothing:antialiased;cursor:none;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+.serif{font-family:"Songti SC","Noto Serif SC",serif;font-style:italic;font-weight:600}
+.badge-proto{position:fixed;left:16px;bottom:16px;z-index:99;background:var(--ink);color:var(--paper);font-size:12px;padding:6px 12px;border-radius:999px;opacity:.75}
+
+/* cursor */
+.cur{position:fixed;left:0;top:0;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;background:var(--ink);pointer-events:none;z-index:100;display:grid;place-items:center;color:var(--paper);font-size:12px;font-weight:700;mix-blend-mode:difference;background:#fff}
+.cur span{opacity:0;white-space:nowrap}
+
+/* top bar */
+.bar{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:22px 48px;mix-blend-mode:difference;color:#fff}
+.bar b{font-size:15px;letter-spacing:.02em}
+.bar nav{display:flex;gap:34px;font-size:14px}
+.bar nav a{position:relative}
+.bar nav a::after{content:"";position:absolute;left:0;right:0;bottom:-4px;height:1px;background:currentColor;transform:scaleX(0);transform-origin:right;transition:transform .4s var(--ease)}
+.bar nav a:hover::after{transform:scaleX(1);transform-origin:left}
+
+/* hero */
+.hero{height:100vh;min-height:760px;display:grid;grid-template-columns:1.25fr 1fr;align-items:end;gap:48px;padding:0 48px 64px;position:relative}
+.hero h1{font-size:clamp(120px,14vw,260px);line-height:.82;letter-spacing:-.06em;font-weight:850;white-space:nowrap}
+.hero h1 .dot{color:var(--hot)}
+.hero .sub{margin-top:28px;font-size:22px;line-height:1.5;max-width:560px}
+.hero .now{margin-top:22px;display:flex;align-items:center;gap:10px;color:var(--mute);font-size:15px}
+.hero .now i{width:8px;height:8px;border-radius:50%;background:var(--hot);animation:blink 1.4s infinite}
+@keyframes blink{50%{opacity:.25}}
+.screen{position:relative;aspect-ratio:16/10;border-radius:6px;overflow:hidden;background:#111;align-self:center}
+.screen .feed{position:absolute;inset:-20%;background:conic-gradient(from 0deg at 50% 50%,#ff4b1f,#ffb199,#3d5afe,#00a37a,#ff4b1f);filter:blur(40px) saturate(1.2);animation:spin 14s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.screen .grain{position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,.08) 0 1px,transparent 1px 3px);mix-blend-mode:multiply}
+.screen .hud{position:absolute;left:18px;right:18px;bottom:16px;display:flex;justify-content:space-between;color:#fff;font:600 13px/1 ui-monospace,Menlo,monospace}
+.screen .rec{position:absolute;left:18px;top:16px;color:#fff;font:600 13px ui-monospace,Menlo,monospace;display:flex;gap:8px;align-items:center}
+.screen .rec i{width:9px;height:9px;border-radius:50%;background:#ff2d2d;animation:blink 1s infinite}
+.screen .title{position:absolute;left:18px;bottom:44px;color:#fff;font-size:26px;font-weight:700;max-width:80%;line-height:1.25}
+
+/* section heads */
+.sh{display:flex;align-items:baseline;justify-content:space-between;padding:0 48px;border-top:1px solid var(--ink);padding-top:18px}
+.sh h2{font-size:15px;font-weight:600}
+.sh span{color:var(--mute);font-size:14px}
+.big{padding:40px 48px 0;font-size:clamp(64px,8vw,140px);line-height:.95;letter-spacing:-.045em;font-weight:800}
+
+/* horizontal video reel */
+.reel{height:100vh;overflow:hidden;position:relative;margin-top:20px}
+.track{display:flex;gap:28px;padding:0 48px;height:100%;align-items:center;will-change:transform}
+.vcard{flex:none;width:44vw;max-width:760px;display:block}
+.vcard .frame{position:relative;aspect-ratio:16/9;border-radius:6px;overflow:hidden}
+.vcard .bg{position:absolute;inset:-10%;transition:transform 1.2s var(--ease)}
+.vcard:hover .bg{transform:scale(1.08) rotate(-2deg)}
+.vcard .len{position:absolute;right:14px;bottom:12px;background:rgba(0,0,0,.6);color:#fff;font:600 12px ui-monospace,Menlo,monospace;padding:4px 8px;border-radius:4px}
+.vcard .no{position:absolute;left:16px;top:10px;color:#fff;font-size:72px;font-weight:850;letter-spacing:-.05em;opacity:.9}
+.vcard .meta{display:flex;justify-content:space-between;margin-top:16px;font-size:14px;color:var(--mute)}
+.vcard h3{font-size:28px;line-height:1.3;margin-top:6px;letter-spacing:-.01em}
+.reel-end{flex:none;width:30vw;font-size:56px;font-weight:800;letter-spacing:-.04em;line-height:1}
+.reel-end a{border-bottom:3px solid var(--hot)}
+
+/* hover list */
+.list{padding:30px 48px 0;position:relative}
+.row{display:grid;grid-template-columns:120px 1fr 160px 100px;align-items:center;padding:26px 0;border-bottom:1px solid var(--line);font-size:34px;letter-spacing:-.02em;font-weight:650;transition:padding .5s var(--ease),color .3s}
+.row small{font-size:14px;color:var(--mute);font-weight:500;letter-spacing:0}
+.row .k{font-size:14px;color:var(--mute);font-weight:500}
+.list:hover .row{color:#bdb7ac}
+.list .row:hover{color:var(--ink);padding-left:20px}
+.peek{position:fixed;left:0;top:0;width:340px;aspect-ratio:4/3;border-radius:6px;pointer-events:none;z-index:40;opacity:0;scale:.6;display:grid;place-items:center;color:#fff;font-size:30px;font-weight:800;text-align:center;padding:20px;line-height:1.2;box-shadow:0 30px 60px rgba(0,0,0,.25)}
+
+/* rants marquee */
+.rants{padding:110px 0 40px;overflow:hidden}
+.rline{display:flex;gap:80px;white-space:nowrap;width:max-content;font-size:64px;letter-spacing:-.02em}
+.rline span{display:inline-flex;gap:22px;align-items:center}
+.rline em{font-style:normal;font-size:44px}
+.rline small{font:500 14px ui-monospace,Menlo,monospace;color:var(--mute)}
+
+/* follow */
+.follow{padding:140px 48px 60px;background:var(--ink);color:var(--paper);margin-top:100px}
+.follow h2{font-size:clamp(90px,12vw,220px);line-height:.85;letter-spacing:-.06em;font-weight:850}
+.follow h2 .dot{color:var(--hot)}
+.plats{display:grid;grid-template-columns:repeat(5,1fr);margin-top:80px;border-top:1px solid #333}
+.plat{padding:26px 0 40px;border-right:1px solid #333;padding-left:20px;display:block;transition:background .4s,color .4s}
+.plat:last-child{border-right:0}
+.plat b{display:block;font-size:30px}
+.plat span{color:#8a857c;font-size:14px}
+.plat:hover{background:var(--hot);color:#fff}
+.plat:hover span{color:#fff}
+.foot{display:flex;justify-content:space-between;color:#8a857c;font-size:13px;margin-top:60px}
+</style>
+</head>
+<body>
+<div class="badge-proto">原型 A · 片场 · 内容均为示例</div>
+<div class="cur" id="cur"><span>播放</span></div>
+
+<header class="bar">
+  <b>花萍雨 / Pingyu</b>
+  <nav><a href="#videos">视频</a><a href="#writing">教程 & 笔记</a><a href="#rants">发发神经</a><a href="#follow">关注我</a></nav>
+</header>
+
+<section class="hero">
+  <div>
+    <h1 id="name">花萍雨<span class="dot">.</span></h1>
+    <p class="sub" id="sub"></p>
+    <p class="now"><i></i><span id="now"></span></p>
+  </div>
+  <a class="screen" href="#videos" data-cursor="看最新">
+    <div class="feed"></div><div class="grain"></div>
+    <div class="rec"><i></i>最新一期</div>
+    <div class="title" id="latestTitle"></div>
+    <div class="hud"><span id="tc">00:00:00</span><span id="latestLen"></span></div>
+  </a>
+</section>
+
+<div id="videos">
+  <div class="sh"><h2>01 · 视频</h2><span>主要的更新都在这里</span></div>
+  <section class="reel" id="reel"><div class="track" id="track"></div></section>
+</div>
+
+<div id="writing">
+  <div class="sh"><h2>02 · 教程 & 笔记</h2><span>来不及拍成视频的，写在这里</span></div>
+  <p class="big">写下来的<span class="serif">慢</span>东西</p>
+  <div class="list" id="list"></div>
+</div>
+
+<div id="rants">
+  <div class="sh" style="margin-top:120px"><h2>03 · 发发神经</h2><span>情绪总得有个出口</span></div>
+  <section class="rants"><div class="rline" id="rline"></div></section>
+</div>
+
+<section class="follow" id="follow">
+  <h2>关注我<span class="dot">.</span></h2>
+  <div class="plats" id="plats"></div>
+  <div class="foot"><span>© 2026 花萍雨</span><span>Built slowly.</span></div>
+</section>
+
+<script src="assets/data.js"></script>
+<script src="assets/gsap.min.js"></script>
+<script src="assets/ScrollTrigger.min.js"></script>
+<script src="assets/SplitText.min.js"></script>
+<script>
+gsap.registerPlugin(ScrollTrigger, SplitText)
+const S = window.SITE
+const $ = (s) => document.querySelector(s)
+
+// 内容填充
+$('#sub').textContent = S.tagline
+const v0 = S.videos[0]
+$('#latestTitle').textContent = v0.title
+$('#latestLen').textContent = v0.len
+$('#track').innerHTML = S.videos.map((v, i) => `
+  <a class="vcard" href="#" data-cursor="播放">
+    <div class="frame"><div class="bg" style="background:${thumb(i)}"></div><span class="no">0${i + 1}</span><span class="len">${v.len}</span></div>
+    <div class="meta"><span>${v.tag}</span><span>${v.date} · ${v.views} 播放</span></div>
+    <h3>${v.title}</h3>
+  </a>`).join('') + `<div class="reel-end">全部视频<br>在 <a href="#">B 站 ↗</a></div>`
+const rows = [...S.tutorials.map((t, i) => ({ k: '教程', title: t.title, small: `${t.mins} 分钟读完`, i })), ...S.notes.map((n, i) => ({ k: `笔记 ${n.status}`, title: n.title, small: `${n.topic} · ${n.updated}`, i: i + 3 }))]
+$('#list').innerHTML = rows.map((r) => `<a class="row" href="#" data-peek="${r.i}" data-peek-text="${r.title}"><span class="k">${r.k}</span><span>${r.title}</span><small>${r.small}</small><small style="text-align:right">→</small></a>`).join('') + '<div class="peek" id="peek"></div>'
+const rantHTML = S.rants.map((r) => `<span><em>${r.mood}</em>${r.text}<small>${r.t}</small></span>`).join('')
+$('#rline').innerHTML = rantHTML + rantHTML
+$('#plats').innerHTML = S.follow.map((f) => `<a class="plat" href="${f.url}" data-cursor="去关注"><b>${f.name}</b><span>${f.handle}</span></a>`).join('')
+
+// 自定义光标
+const cur = $('#cur'), curLabel = cur.querySelector('span')
+const xTo = gsap.quickTo(cur, 'x', { duration: .35, ease: 'power3' }), yTo = gsap.quickTo(cur, 'y', { duration: .35, ease: 'power3' })
+addEventListener('pointermove', (e) => { xTo(e.clientX); yTo(e.clientY) })
+document.querySelectorAll('a, [data-cursor]').forEach((el) => {
+  el.addEventListener('mouseenter', () => {
+    const t = el.dataset.cursor
+    gsap.to(cur, { width: t ? 84 : 36, height: t ? 84 : 36, margin: t ? -42 : -18, duration: .4, ease: 'expo.out' })
+    curLabel.textContent = t || ''; gsap.to(curLabel, { opacity: t ? 1 : 0, duration: .2 })
+  })
+  el.addEventListener('mouseleave', () => { gsap.to(cur, { width: 12, height: 12, margin: -6, duration: .4, ease: 'expo.out' }); gsap.to(curLabel, { opacity: 0, duration: .2 }) })
+})
+
+// 首屏：名字逐字落下
+const split = new SplitText('#name', { type: 'chars' })
+gsap.from(split.chars, { yPercent: 110, rotate: 8, opacity: 0, stagger: .07, duration: 1.2, ease: 'expo.out' })
+gsap.from('.sub, .now', { y: 20, opacity: 0, stagger: .1, delay: .5, duration: 1, ease: 'expo.out' })
+gsap.from('.screen', { clipPath: 'inset(0 0 100% 0)', delay: .3, duration: 1.4, ease: 'expo.inOut' })
+
+// 正在做：轮换
+let ni = 0; const nowEl = $('#now'); nowEl.textContent = S.now[0]
+setInterval(() => { gsap.to(nowEl, { y: -10, opacity: 0, duration: .3, onComplete: () => { ni = (ni + 1) % S.now.length; nowEl.textContent = S.now[ni]; gsap.fromTo(nowEl, { y: 10, opacity: 0 }, { y: 0, opacity: 1, duration: .5 }) } }) }, 2600)
+// 时间码
+let f = 0; setInterval(() => { f++; const s = Math.floor(f / 25); $('#tc').textContent = `00:${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}:${String(f % 25).padStart(2, '0')}` }, 40)
+
+// 视频：竖向滚动驱动横向移动
+const track = $('#track')
+gsap.to(track, { x: () => -(track.scrollWidth - innerWidth), ease: 'none', scrollTrigger: { trigger: '#reel', start: 'top top', end: () => '+=' + (track.scrollWidth - innerWidth), pin: true, scrub: 1, invalidateOnRefresh: true } })
+gsap.utils.toArray('.vcard').forEach((c) => gsap.from(c, { y: 80, opacity: 0, duration: 1, ease: 'expo.out', scrollTrigger: { trigger: '#reel', start: 'top 70%' } }))
+
+// 大标题逐字
+const bigSplit = new SplitText('.big', { type: 'chars' })
+gsap.from(bigSplit.chars, { yPercent: 100, opacity: 0, stagger: .03, duration: .9, ease: 'expo.out', scrollTrigger: { trigger: '.big', start: 'top 80%' } })
+
+// 列表悬停：跟随光标的预览
+const peek = $('#peek')
+const px = gsap.quickTo(peek, 'x', { duration: .5, ease: 'power3' }), py = gsap.quickTo(peek, 'y', { duration: .5, ease: 'power3' })
+document.querySelectorAll('.row').forEach((r) => {
+  r.addEventListener('mouseenter', () => { peek.style.background = thumb(+r.dataset.peek); peek.textContent = r.dataset.peekText; gsap.to(peek, { opacity: 1, scale: 1, rotate: gsap.utils.random(-6, 6), duration: .5, ease: 'expo.out' }) })
+  r.addEventListener('mouseleave', () => gsap.to(peek, { opacity: 0, scale: .6, duration: .3 }))
+})
+addEventListener('pointermove', (e) => { px(e.clientX + 30); py(e.clientY - 120) })
+addEventListener('scroll', () => gsap.to(peek, { opacity: 0, scale: .6, duration: .2 }), { passive: true })
+gsap.from('.row', { y: 40, opacity: 0, stagger: .06, duration: .9, ease: 'expo.out', scrollTrigger: { trigger: '#list', start: 'top 80%' } })
+
+// 发发神经：跑马灯，滚动时加速
+const loop = gsap.to('#rline', { xPercent: -50, duration: 40, ease: 'none', repeat: -1 })
+ScrollTrigger.create({ onUpdate: (self) => { gsap.to(loop, { timeScale: 1 + Math.min(Math.abs(self.getVelocity()) / 300, 6), duration: .2, overwrite: true }); gsap.to(loop, { timeScale: 1, duration: 1.2, delay: .2 }) } })
+
+// 关注我
+const fSplit = new SplitText('.follow h2', { type: 'chars' })
+gsap.from(fSplit.chars, { yPercent: 120, stagger: .05, duration: 1.1, ease: 'expo.out', scrollTrigger: { trigger: '.follow', start: 'top 70%' } })
+gsap.from('.plat', { y: 40, opacity: 0, stagger: .08, duration: .9, ease: 'expo.out', scrollTrigger: { trigger: '.plats', start: 'top 90%' } })
+</script>
+</body>
+</html>

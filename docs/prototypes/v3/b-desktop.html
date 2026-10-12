@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>原型 B · 桌面</title>
+<style>
+:root{--desk:#dfe4ec;--win:#fbfbfa;--ink:#1d1f24;--mute:#7b818c;--line:#e3e5ea;--blue:#3d5afe;--ease:cubic-bezier(.2,.9,.2,1)}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{font-family:-apple-system,"SF Pro Text","PingFang SC",sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased;background:var(--desk);background-image:radial-gradient(circle at 1px 1px,rgba(0,0,0,.08) 1px,transparent 0);background-size:22px 22px;user-select:none}
+a{color:inherit;text-decoration:none}
+.badge-proto{position:fixed;left:16px;bottom:16px;z-index:999;background:var(--ink);color:#fff;font-size:12px;padding:6px 12px;border-radius:999px;opacity:.75}
+
+/* menubar */
+.menubar{position:fixed;top:0;left:0;right:0;height:34px;display:flex;align-items:center;gap:22px;padding:0 18px;font-size:13px;background:rgba(255,255,255,.55);backdrop-filter:blur(20px);z-index:500}
+.menubar b{font-weight:700}
+.menubar .sp{flex:1}
+.menubar .now{color:var(--mute)}
+
+/* desktop wallpaper text */
+.wall{position:fixed;left:48px;bottom:110px;pointer-events:none}
+.wall h1{font-size:min(170px,13vw);letter-spacing:-.06em;line-height:.85;font-weight:850;color:rgba(29,31,36,.9)}
+.wall p{font-size:20px;color:var(--mute);margin-top:18px}
+
+/* desktop icons */
+.icons{position:fixed;right:28px;top:60px;display:grid;gap:22px;z-index:5}
+.dicon{width:92px;text-align:center;font-size:12px;cursor:pointer}
+.dicon .g{width:64px;height:64px;margin:0 auto 6px;border-radius:16px;display:grid;place-items:center;font-size:30px;box-shadow:0 8px 20px rgba(0,0,0,.12);transition:transform .3s var(--ease)}
+.dicon:hover .g{transform:translateY(-4px) scale(1.05)}
+.dicon span{background:rgba(255,255,255,.6);padding:2px 6px;border-radius:5px}
+
+/* windows */
+.win{position:fixed;background:var(--win);border-radius:14px;box-shadow:0 30px 80px rgba(20,30,60,.22),0 0 0 1px rgba(0,0,0,.06);overflow:hidden;display:flex;flex-direction:column}
+.win.focus{box-shadow:0 40px 100px rgba(20,30,60,.3),0 0 0 1px rgba(0,0,0,.08)}
+.tb{height:40px;flex:none;display:flex;align-items:center;gap:8px;padding:0 14px;background:linear-gradient(#f4f4f3,#ececeb);border-bottom:1px solid var(--line);cursor:grab}
+.tb:active{cursor:grabbing}
+.tb i{width:12px;height:12px;border-radius:50%;background:#ff5f57;cursor:pointer}
+.tb i:nth-child(2){background:#febc2e}.tb i:nth-child(3){background:#28c840}
+.tb b{flex:1;text-align:center;font-size:13px;font-weight:600;margin-right:52px}
+.body{flex:1;overflow:auto;padding:18px}
+
+/* video window */
+.vgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.vg{cursor:pointer}
+.vg .th{position:relative;aspect-ratio:16/9;border-radius:10px;overflow:hidden}
+.vg .th div{position:absolute;inset:-10%;transition:transform .8s var(--ease)}
+.vg:hover .th div{transform:scale(1.1)}
+.vg .th span{position:absolute;right:8px;bottom:6px;background:rgba(0,0,0,.6);color:#fff;font:600 11px ui-monospace,Menlo,monospace;padding:2px 6px;border-radius:4px}
+.vg .play{position:absolute;inset:0;display:grid;place-items:center;opacity:0;transition:opacity .3s}
+.vg .play::after{content:"▶";width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.92);display:grid;place-items:center;font-size:16px}
+.vg:hover .play{opacity:1}
+.vg b{display:block;font-size:14px;margin-top:8px;line-height:1.4}
+.vg small{color:var(--mute);font-size:12px}
+.vg.hero{grid-column:span 2}
+.vg.hero b{font-size:18px}
+
+/* notes window: finder-like */
+.finder{display:grid;grid-template-columns:150px 1fr;height:100%;margin:-18px}
+.finder aside{background:#f1f2f4;padding:14px 10px;font-size:13px;border-right:1px solid var(--line)}
+.finder aside p{color:var(--mute);font-size:11px;margin:4px 8px 6px}
+.finder aside a{display:block;padding:5px 8px;border-radius:6px;cursor:pointer}
+.finder aside a.on{background:var(--blue);color:#fff}
+.finder ul{list-style:none;padding:8px}
+.finder li{display:grid;grid-template-columns:28px 1fr 70px;gap:8px;align-items:center;padding:9px 10px;border-radius:8px;font-size:14px;cursor:pointer}
+.finder li:nth-child(odd){background:#f6f6f7}
+.finder li:hover{background:#e6ebff}
+.finder li small{color:var(--mute);font-size:12px;text-align:right}
+
+/* rants: sticky notes */
+.stickies{position:fixed;left:48px;top:64px;z-index:10}
+.sticky{position:absolute;width:190px;min-height:150px;padding:16px 15px;background:#fff5a8;box-shadow:0 14px 30px rgba(0,0,0,.15);font-size:15px;line-height:1.6;cursor:grab;border-radius:2px}
+.sticky:nth-child(2){background:#ffd9e6}.sticky:nth-child(3){background:#d6f5e3}.sticky:nth-child(4){background:#dbe6ff}
+.sticky em{font-style:normal;font-size:26px;display:block;margin-bottom:6px}
+.sticky small{display:block;margin-top:10px;color:rgba(0,0,0,.45);font:500 11px ui-monospace,Menlo,monospace}
+
+/* about window */
+.about h2{font-size:30px;letter-spacing:-.02em}
+.about p{color:var(--mute);margin-top:8px;line-height:1.7}
+.about .links{display:grid;gap:8px;margin-top:18px}
+.about .links a{display:flex;justify-content:space-between;padding:12px 14px;border-radius:10px;background:#f3f4f6;font-size:14px;transition:background .2s,transform .2s}
+.about .links a:hover{background:var(--blue);color:#fff;transform:translateX(4px)}
+.about .links span{color:var(--mute)}
+.about .links a:hover span{color:#fff}
+
+/* dock */
+.dock{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);display:flex;gap:10px;align-items:flex-end;padding:9px 12px;background:rgba(255,255,255,.5);backdrop-filter:blur(24px);border-radius:22px;box-shadow:0 0 0 1px rgba(255,255,255,.6),0 20px 40px rgba(0,0,0,.12);z-index:600}
+.dk{width:54px;height:54px;border-radius:14px;display:grid;place-items:center;font-size:28px;cursor:pointer;position:relative;transform-origin:bottom}
+.dk::after{content:"";position:absolute;bottom:-6px;left:50%;width:4px;height:4px;margin-left:-2px;border-radius:50%;background:var(--ink);opacity:0}
+.dk.open::after{opacity:.7}
+.dk .tip{position:absolute;bottom:68px;left:50%;transform:translateX(-50%);background:rgba(30,30,30,.85);color:#fff;font-size:12px;padding:4px 10px;border-radius:6px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .2s}
+.dk:hover .tip{opacity:1}
+</style>
+</head>
+<body>
+<div class="badge-proto">原型 B · 桌面 · 内容均为示例 · 窗口和便利贴都能拖</div>
+
+<div class="menubar"><b>🌸 萍雨 OS</b><span>视频</span><span>笔记</span><span>发发神经</span><span>关于我</span><span class="sp"></span><span class="now" id="now"></span><span id="clock"></span></div>
+
+<div class="wall"><h1 id="wname">花萍雨</h1><p id="wtag"></p></div>
+
+<section class="win" id="w-video">
+  <div class="tb"><i data-close></i><i></i><i></i><b>视频 — 最近 5 期</b></div>
+  <div class="body"><div class="vgrid" id="vgrid"></div></div>
+</section>
+
+<section class="win" id="w-notes">
+  <div class="tb"><i data-close></i><i></i><i></i><b>笔记 / 教程</b></div>
+  <div class="body"><div class="finder"><aside id="side"></aside><ul id="flist"></ul></div></div>
+</section>
+
+<section class="win about" id="w-about" data-closed="1" style="display:none">
+  <div class="tb"><i data-close></i><i></i><i></i><b>关于我</b></div>
+  <div class="body"><h2>你好，我是花萍雨</h2><p id="atag"></p><div class="links" id="links"></div></div>
+</section>
+
+<div class="stickies" id="stickies"></div>
+
+<nav class="dock" id="dock">
+  <div class="dk" data-open="w-video" style="background:linear-gradient(135deg,#ff5a1f,#ffb199)">▶<span class="tip">视频</span></div>
+  <div class="dk" data-open="w-notes" style="background:linear-gradient(135deg,#3d5afe,#9aa8ff)">📓<span class="tip">笔记 / 教程</span></div>
+  <div class="dk" data-open="stickies" style="background:linear-gradient(135deg,#ffd54f,#fff5a8)">🗯️<span class="tip">发发神经</span></div>
+  <div class="dk" data-open="w-about" style="background:linear-gradient(135deg,#00a37a,#9be7c8)">👋<span class="tip">关于我</span></div>
+</nav>
+
+<script src="assets/data.js"></script>
+<script src="assets/gsap.min.js"></script>
+<script src="assets/Draggable.min.js"></script>
+<script src="assets/InertiaPlugin.min.js"></script>
+<script src="assets/SplitText.min.js"></script>
+<script>
+gsap.registerPlugin(Draggable, InertiaPlugin, SplitText)
+const S = window.SITE, $ = (s) => document.querySelector(s)
+
+$('#wtag').textContent = S.tagline
+$('#atag').textContent = S.tagline
+$('#vgrid').innerHTML = S.videos.map((v, i) => `<div class="vg ${i ? '' : 'hero'}"><div class="th"><div style="background:${thumb(i)}"></div><span>${v.len}</span><i class="play"></i></div><b>${v.title}</b><small>${v.date} · ${v.views} 播放 · ${v.tag}</small></div>`).join('')
+const topics = ['全部', '教程', ...new Set(S.notes.map((n) => n.topic))]
+$('#side').innerHTML = '<p>分类</p>' + topics.map((t, i) => `<a data-t="${t}" class="${i ? '' : 'on'}">${t}</a>`).join('')
+const items = [...S.tutorials.map((t) => ({ icon: '📘', title: t.title, k: '教程', right: t.mins + ' 分钟' })), ...S.notes.map((n) => ({ icon: n.status, title: n.title, k: n.topic, right: n.updated }))]
+const drawList = (t) => { $('#flist').innerHTML = items.filter((x) => t === '全部' || x.k === t).map((x) => `<li><span>${x.icon}</span><span>${x.title}</span><small>${x.right}</small></li>`).join(''); gsap.from('#flist li', { x: -10, opacity: 0, stagger: .03, duration: .3 }) }
+drawList('全部')
+$('#side').addEventListener('click', (e) => { const a = e.target.closest('a'); if (!a) return; document.querySelectorAll('#side a').forEach((x) => x.classList.toggle('on', x === a)); drawList(a.dataset.t) })
+$('#links').innerHTML = S.follow.map((f) => `<a href="${f.url}">${f.name}<span>${f.handle} →</span></a>`).join('')
+$('#stickies').innerHTML = S.rants.map((r, i) => `<div class="sticky" style="left:${[0, 170, 40, 220][i]}px;top:${[0, 20, 150, 175][i]}px;rotate:${[-4, 3, -2, 5][i]}deg"><em>${r.mood}</em>${r.text}<small>${r.t}</small></div>`).join('')
+
+// 时钟和「正在做」
+const tick = () => { const d = new Date(); $('#clock').textContent = d.toLocaleString('zh-CN', { weekday: 'short', hour: '2-digit', minute: '2-digit' }) }
+tick(); setInterval(tick, 10000)
+let ni = 0; $('#now').textContent = '● ' + S.now[0]; setInterval(() => { ni = (ni + 1) % S.now.length; $('#now').textContent = '● ' + S.now[ni] }, 3000)
+
+// 窗口布局：按视口大小计算，右侧层叠
+const W = innerWidth, H = innerHeight
+const place = (id, x, y, w, h) => Object.assign(document.getElementById(id).style, { left: x + 'px', top: y + 'px', width: w + 'px', height: h + 'px' })
+place('w-video', W * .44, 56, W * .36, H * .62)
+place('w-notes', W * .58, H * .38, W * .38, H * .46)
+place('w-about', W * .62, 80, 360, Math.min(440, H - 200))
+
+// 窗口：拖动、置顶、关闭、从程序坞打开
+let z = 20
+const focus = (w) => { w.style.zIndex = ++z; document.querySelectorAll('.win').forEach((x) => x.classList.toggle('focus', x === w)) }
+document.querySelectorAll('.win').forEach((w) => {
+  Draggable.create(w, { trigger: w.querySelector('.tb'), inertia: true, bounds: { top: 34, left: -W * .5, width: W * 2, height: H * 1.5 }, onPress: () => focus(w) })
+  w.addEventListener('pointerdown', () => focus(w))
+  w.querySelector('[data-close]').addEventListener('click', (e) => { e.stopPropagation(); close(w) })
+})
+Draggable.create('.sticky', { inertia: true, onPress() { this.target.style.zIndex = ++z; gsap.to(this.target, { scale: 1.05, rotate: 0, duration: .2 }) }, onRelease() { gsap.to(this.target, { scale: 1, rotate: gsap.utils.random(-5, 5), duration: .4, ease: 'back.out(2)' }) } })
+
+const dockOf = (id) => document.querySelector(`.dk[data-open="${id}"]`)
+function close(w) {
+  const d = dockOf(w.id).getBoundingClientRect(), r = w.getBoundingClientRect()
+  gsap.to(w, { x: '+=' + (d.left + d.width / 2 - (r.left + r.width / 2)), y: '+=' + (d.top - r.top), scale: .1, opacity: 0, duration: .45, ease: 'power3.in', onComplete: () => { w.style.display = 'none'; w.dataset.closed = 1 } })
+  dockOf(w.id).classList.remove('open')
+}
+function open(id) {
+  const w = document.getElementById(id)
+  dockOf(id)?.classList.add('open')
+  gsap.fromTo(dockOf(id), { y: 0 }, { y: -18, duration: .25, yoyo: true, repeat: 1, ease: 'power2.out' })
+  if (id === 'stickies') { gsap.fromTo('.sticky', { y: 60, opacity: 0 }, { y: 0, opacity: 1, stagger: .08, duration: .6, ease: 'back.out(1.6)' }); return }
+  const hidden = w.dataset.closed || gsap.isTweening(w)
+  gsap.killTweensOf(w)
+  if (hidden) { w.style.display = ''; delete w.dataset.closed; gsap.fromTo(w, { x: 0, y: 200, scale: .2, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: .55, ease: 'back.out(1.4)' }) }
+  else gsap.fromTo(w, { scale: .97 }, { scale: 1, duration: .3, ease: 'back.out(3)' })
+  focus(w)
+}
+document.querySelectorAll('[data-open]').forEach((el) => el.addEventListener('click', () => open(el.dataset.open)))
+document.querySelectorAll('.dk').forEach((d) => d.classList.toggle('open', !document.getElementById(d.dataset.open)?.dataset.closed))
+
+// 程序坞放大效果
+const docks = [...document.querySelectorAll('.dk')]
+$('#dock').addEventListener('mousemove', (e) => docks.forEach((d) => { const r = d.getBoundingClientRect(); const dist = Math.abs(e.clientX - (r.left + r.width / 2)); gsap.to(d, { scale: 1 + Math.max(0, 1 - dist / 140) * .55, duration: .2 }) }))
+$('#dock').addEventListener('mouseleave', () => gsap.to(docks, { scale: 1, duration: .3 }))
+
+// 开机动画
+const sp = new SplitText('#wname', { type: 'chars' })
+const tl = gsap.timeline()
+tl.from(sp.chars, { yPercent: 100, opacity: 0, stagger: .08, duration: 1, ease: 'expo.out' })
+  .from('.wall p', { opacity: 0, y: 10, duration: .6 }, '-=.6')
+  .from('.dock', { y: 120, duration: .8, ease: 'expo.out' }, '-=.6')
+  .from('.win:not([data-closed])', { scale: .85, opacity: 0, y: 40, stagger: .12, duration: .7, ease: 'back.out(1.4)' }, '-=.4')
+  .from('.sticky', { y: 80, opacity: 0, stagger: .08, duration: .6, ease: 'back.out(1.6)' }, '-=.3')
+  
+</script>
+</body>
+</html>
