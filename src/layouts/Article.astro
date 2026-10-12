@@ -1,0 +1,58 @@
+---
+import Base from './Base.astro'
+
+export type TocItem = { id: string; text: string; depth: number }
+interface Props {
+  title: string
+  description?: string
+  nav: 'videos' | 'writing'
+  back: { href: string; label: string }
+  toc?: TocItem[]
+}
+const { title, description, nav, back, toc = [] } = Astro.props
+---
+<Base title={title} description={description} nav={nav}>
+  <header class="page-head art-head">
+    <a class="eyebrow ulink" href={back.href}>← {back.label}</a>
+    <h1>{title}</h1>
+    <div class="meta"><slot name="meta" /></div>
+  </header>
+  <slot name="hero" />
+  <div class="art">
+    <article class="prose"><slot /></article>
+    {toc.length > 0 && (
+      <aside class="toc">
+        <p>本页目录</p>
+        {toc.map((t) => <a href={`#${t.id}`} data-id={t.id} class:list={[{ sub: t.depth === 3 }]}>{t.text}</a>)}
+      </aside>
+    )}
+  </div>
+  <slot name="after" />
+</Base>
+
+<style>
+  .art-head h1 { font-size: clamp(48px, 6vw, 104px); line-height: 1.02; letter-spacing: -.045em; max-width: 1200px; }
+  .art-head .meta { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; margin-top: 26px; color: var(--mute); font-size: 15px; }
+  .art { display: grid; grid-template-columns: minmax(0, 760px) 240px; justify-content: space-between; gap: 60px; padding: 30px var(--pad) 0; }
+  .toc { position: sticky; top: 110px; align-self: start; font-size: 14px; }
+  .toc p { color: var(--mute); margin-bottom: 12px; }
+  .toc a { display: block; padding: 6px 0 6px 14px; border-left: 1px solid var(--line); color: var(--mute); transition: color .2s, border-color .2s; }
+  .toc a.sub { padding-left: 26px; font-size: 13px; }
+  .toc a:hover { color: var(--ink); }
+  .toc a.on { color: var(--ink); border-left-color: var(--hot); }
+</style>
+
+<script>
+  // 滚动时高亮当前小节
+  const links = [...document.querySelectorAll<HTMLAnchorElement>('.toc a')]
+  if (links.length) {
+    const heads = links.map((a) => document.getElementById(decodeURIComponent(a.dataset.id || ''))).filter((h): h is HTMLElement => !!h)
+    const update = () => {
+      let cur = heads[0]
+      for (const h of heads) if (h.getBoundingClientRect().top < 160) cur = h
+      links.forEach((a) => a.classList.toggle('on', decodeURIComponent(a.dataset.id || '') === cur?.id))
+    }
+    addEventListener('scroll', update, { passive: true })
+    update()
+  }
+</script>

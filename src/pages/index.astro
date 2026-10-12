@@ -1,166 +1,198 @@
 ---
-import { opt } from '../lib/img'
 import Base from '../layouts/Base.astro'
-import Reel from '../components/Reel.astro'
-import { getReelItems, getVideos, getPosts, getProjects, getNotes, noteHref, NOTE_STATUS } from '../lib/content'
+import site from '../data/site.json'
+import { opt } from '../lib/img'
+import { getVideos, getRants, getWritingRows, videoHref, thumb, fmtDay } from '../lib/content'
 
-const [reel, videos, posts, projects, notes] = await Promise.all([getReelItems(), getVideos(), getPosts(), getProjects(), getNotes()])
-const lanes = [
-  { href: '/videos/', label: '视频', icon: 'star-square.png', desc: '主要的更新都在这里：工具上手、工作流演示和折腾记录。', count: videos.length },
-  { href: '/posts/', label: '图文', icon: 'owl-square.png', desc: '来不及做成视频的教程和资料，还有以前写的文章。', count: posts.length },
-  { href: '/notes/', label: '笔记', icon: 'bird-square.png', desc: '一直在更新的学习笔记，写给自己看，也欢迎你翻。', count: notes.length },
-  { href: '/projects/', label: '项目', icon: 'computer-square.png', desc: '从真实需求出发做的小工具，有的能直接打开用。', count: projects.length },
-]
-const verbs = ['做视频', '写教程', '做工具', '记笔记']
+const [videos, rants, rows] = await Promise.all([getVideos(), getRants(), getWritingRows()])
+const latest = videos[0]
+const pinned = videos.length >= 3 // 视频够多才用横向滚动
+const writing = rows.slice(0, 8)
 ---
-<Base nav="home">
+<Base>
   <section class="hero">
     <div>
-      <div class="hi reveal" style="--d:.3s"><span class="dot"></span>准大三 · AI + Code · 内容创作</div>
-      <h1>
-        <span class="line"><span>你好，我是花萍雨。</span></span>
-        <span class="line"><span>我在<span class="verb" id="verb" data-verbs={JSON.stringify(verbs)}>{verbs[0]}</span></span></span>
-      </h1>
-      <p class="bio reveal" style="--d:.38s">用 AI 和代码做小工具，把学习、试错和搭工作流的过程做成视频和教程。相信重要的事情值得慢慢做，做很久很久。</p>
-      <div class="cta reveal" style="--d:.46s"><a class="btn solid" href="#reel">看看我最近在做什么 ↓</a><a class="btn" href="#about">关于我</a></div>
+      <h1 id="name">{site.name}<span class="dot">.</span></h1>
+      <p class="sub reveal" style="--d:.5s">{site.tagline}</p>
+      <p class="now reveal" style="--d:.6s"><i></i><span id="now" data-now={JSON.stringify(site.now)}>{site.now[0]}</span></p>
     </div>
-    <div class="portrait" id="portrait">
-      <img class="ill" src={opt('/images/main-poster.png')} alt="花萍雨的手绘插画" />
-      <img class="sticker" src="/images/doodles/cat-doodle.png" alt="" />
-      <div class="badge"><img src={opt('/avatar.jpg')} alt="" />花萍雨 · Creative Developer</div>
-    </div>
-  </section>
-
-  {reel.length > 0 && <Reel items={reel} />}
-
-  <div class="marquee" aria-hidden="true">
-    {[0, 1].map(() => (
-      <div>{Array.from({ length: 6 }).map(() => <>重要的事情值得慢慢做<em>✦</em>视频<em>✦</em>教程<em>✦</em>小工具<em>✦</em>AI + Code<em>✦</em></>)}</div>
-    ))}
-  </div>
-
-  <section class="section" id="about">
-    <div class="eyebrow">About · 关于我</div>
-    <p class="bigline" id="bigline">我用 AI 和代码做一些小工具，把怎么学、怎么试错、怎么搭工作流<span class="acc">做成视频和教程</span>，也把真正有用的开源项目介绍给更多人。</p>
-    <div class="lanes">
-      {lanes.filter((l) => l.count > 0).map((l, i) => (
-        <a class="lane reveal-scroll" href={l.href}>
-          <span class="n">0{i + 1}</span><span class="cnt">{l.count} 项</span>
-          <img src={`/images/doodles/${l.icon}`} alt="" />
-          <h3>{l.label} →</h3>
-          <p>{l.desc}</p>
-        </a>
-      ))}
-    </div>
-    {notes.length > 0 && (
-      <div class="growing">
-        <div class="eyebrow">Growing · 最近在长的笔记</div>
-        <ul>
-          {notes.slice(0, 5).map((n) => (
-            <li><a href={noteHref(n)}><span>{NOTE_STATUS[n.data.status].icon}</span><b>{n.data.title}</b><em>{n.data.topic}</em><time>{n.data.updated.toLocaleDateString('zh-CN', { month: 'numeric', day: 'numeric' })}</time></a></li>
-          ))}
-        </ul>
+    {latest ? (
+      <a class="screen" href={videoHref(latest)} data-cursor="看最新">
+        {latest.data.cover ? <img src={opt(latest.data.cover)} alt="" /> : <div class="feed"></div>}
+        {latest.data.preview && <video src={latest.data.preview} muted loop playsinline autoplay></video>}
+        <div class="grain"></div>
+        <div class="rec"><i></i>最新一期{latest.data.draft && <span class="draft-badge">草稿</span>}</div>
+        <div class="title">{latest.data.title}</div>
+        <div class="hud mono"><span id="tc">00:00:00:00</span><span>{fmtDay(latest.data.date)}</span></div>
+      </a>
+    ) : (
+      <div class="screen idle">
+        <div class="feed"></div><div class="grain"></div>
+        <div class="rec"><i></i>频道筹备中</div>
+        <div class="title">第一支视频正在剪，<br />很快就来。</div>
+        <div class="hud mono"><span id="tc">00:00:00:00</span><span>STANDBY</span></div>
       </div>
     )}
   </section>
+
+  {videos.length > 0 && (
+    <section id="videos">
+      <div class="sh"><h2>01 · 视频</h2><a class="ulink" href="/videos/">全部 {videos.length} 支 →</a></div>
+      {pinned ? (
+        <div class="reel" id="reel">
+          <div class="track" id="track">
+            {videos.map((v, i) => (
+              <a class="vcard" href={videoHref(v)} data-cursor="播放">
+                <div class="frame">
+                  {v.data.cover ? <img src={opt(v.data.cover)} alt="" loading="lazy" /> : <div class="bg" style={`background:${thumb(i)}`}></div>}
+                  {v.data.preview && <video src={v.data.preview} muted loop playsinline preload="none" data-hover-preview></video>}
+                  <span class="no">{String(i + 1).padStart(2, '0')}</span>
+                </div>
+                <div class="meta"><span>{v.data.tags[0] ?? v.data.platform}</span><span>{fmtDay(v.data.date)}{v.data.draft && ' · 草稿'}</span></div>
+                <h3>{v.data.title}</h3>
+              </a>
+            ))}
+            <div class="reel-end">全部视频<br />都在 <a href="/videos/">这里 →</a></div>
+          </div>
+        </div>
+      ) : (
+        <div class="vgrid">
+          {videos.map((v, i) => (
+            <a class="vcard reveal-scroll" href={videoHref(v)} data-cursor="播放">
+              <div class="frame">
+                {v.data.cover ? <img src={opt(v.data.cover)} alt="" loading="lazy" /> : <div class="bg" style={`background:${thumb(i)}`}></div>}
+                {v.data.preview && <video src={v.data.preview} muted loop playsinline preload="none" data-hover-preview></video>}
+                <span class="no">{String(i + 1).padStart(2, '0')}</span>
+              </div>
+              <div class="meta"><span>{v.data.tags[0] ?? v.data.platform}</span><span>{fmtDay(v.data.date)}{v.data.draft && ' · 草稿'}</span></div>
+              <h3>{v.data.title}</h3>
+            </a>
+          ))}
+        </div>
+      )}
+    </section>
+  )}
+
+  {writing.length > 0 && (
+    <section id="writing" class="block">
+      <div class="sh"><h2>{videos.length ? '02' : '01'} · 教程 & 笔记</h2><a class="ulink" href="/writing/">全部 →</a></div>
+      <p class="big">写下来的<span class="serif">慢</span>东西</p>
+      <div class="list">
+        {writing.map((r, i) => (
+          <a class="row reveal-scroll" href={r.href} data-title={r.title} data-bg={thumb(i + 1)} data-img={r.cover} target={r.external ? '_blank' : undefined} rel={r.external ? 'noopener' : undefined}>
+            <span class="k">{r.kind}{r.draft && ' · 草稿'}</span><span>{r.title}</span><small>{r.meta}</small><small class="go">{r.external ? '↗' : '→'}</small>
+          </a>
+        ))}
+      </div>
+    </section>
+  )}
+
+  {rants.length > 0 && (
+    <section id="rants" class="block">
+      <div class="sh"><h2>发发神经</h2><a class="ulink" href="/rants/">全部 →</a></div>
+      <a class="rants" href="/rants/" data-cursor="去看看">
+        <div class="rline" id="rline">
+          {[0, 1].map(() => rants.slice(0, 6).map((r) => (
+            <span><em>{r.data.mood ?? '💬'}</em>{r.body?.trim().split('\n')[0]}<small class="mono">{fmtDay(r.data.date)}</small></span>
+          )))}
+        </div>
+      </a>
+    </section>
+  )}
 </Base>
 
 <style>
-  .hero { display: grid; grid-template-columns: 1.1fr .9fr; gap: 40px; align-items: center; padding: 70px 40px 40px; max-width: 1440px; margin: 0 auto; min-height: calc(100vh - 72px); }
-  .hi { color: var(--muted); font-size: 16px; display: flex; align-items: center; gap: 10px; }
-  .hi .dot { width: 8px; height: 8px; border-radius: 50%; background: #3ccf6e; box-shadow: 0 0 0 4px color-mix(in srgb, #3ccf6e 25%, transparent); }
-  h1 { font-size: clamp(38px, 5.4vw, 88px); line-height: 1.04; letter-spacing: -.045em; margin: 22px 0 0; font-weight: 800; }
-  h1 .line { display: block; overflow: hidden; padding-bottom: .06em; white-space: nowrap; }
-  h1 .line > span { display: inline-block; animation: line-up 1.1s var(--ease) backwards; }
-  h1 .line:nth-child(2) > span { animation-delay: .12s; }
-  .portrait { animation: pop 1.2s var(--ease) .15s backwards; }
-  @media (prefers-reduced-motion: reduce) { h1 .line > span, .portrait { animation: none; } }
-  .verb { display: inline-block; color: var(--accent); }
-  .bio { color: var(--muted); font-size: 18px; line-height: 1.8; max-width: 540px; margin: 28px 0 0; }
-  .cta { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 34px; }
-  .portrait { position: relative; aspect-ratio: 1 / 1.02; border-radius: 28px; overflow: hidden; background: #fbefe4; box-shadow: var(--shadow); }
-  .portrait .ill { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 88% 50%; transform: scale(1.25); transform-origin: 70% 60%; }
-  .portrait .badge { position: absolute; left: 20px; bottom: 20px; display: flex; align-items: center; gap: 12px; background: rgba(20, 20, 20, .72); backdrop-filter: blur(10px); color: #fff; border-radius: 999px; padding: 8px 16px 8px 8px; font-size: 14px; }
-  .portrait .badge img { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; }
-  .portrait .sticker { position: absolute; right: 18px; top: 18px; width: 96px; transform: rotate(10deg); }
-  .marquee { margin-top: 60px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); overflow: hidden; white-space: nowrap; padding: 12px 0; font-weight: 600; letter-spacing: .14em; font-size: 13px; }
-  .marquee > div { display: inline-block; padding-right: 40px; }
-  .marquee em { color: var(--accent); font-style: normal; margin: 0 18px; }
-  .section { padding: 110px 40px 0; max-width: 1440px; margin: 0 auto; scroll-margin-top: 40px; }
-  .bigline { font-size: clamp(28px, 4vw, 60px); line-height: 1.2; letter-spacing: -.03em; font-weight: 700; margin: 16px 0 0; max-width: 1150px; }
-  .bigline :global(.w) { display: inline-block; opacity: .18; }
-  .bigline .acc { color: var(--accent); }
-  .lanes { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-top: 70px; }
-  .lane { position: relative; border: 1px solid var(--line); border-radius: 20px; padding: 24px; min-height: 300px; display: flex; flex-direction: column; transition: border-color .3s, transform .4s var(--ease); }
-  .lane:hover { border-color: var(--muted); transform: translateY(-6px); }
-  .lane .n, .lane .cnt { color: var(--muted); font-size: 13px; }
-  .lane .cnt { position: absolute; right: 22px; top: 20px; }
-  .lane img { width: 66px; margin: 22px 0 auto; transition: transform .5s var(--ease); }
-  .lane:hover img { transform: rotate(-8deg) scale(1.12); }
-  .lane h3 { font-size: 28px; margin: 20px 0 0; letter-spacing: -.02em; }
-  .lane p { color: var(--muted); margin: 8px 0 0; font-size: 15px; line-height: 1.6; }
-  .growing { margin-top: 70px; }
-  .growing ul { list-style: none; padding: 0; margin: 14px 0 0; border-top: 1px solid var(--line); }
-  .growing a { display: grid; grid-template-columns: 28px 1fr auto auto; gap: 14px; align-items: baseline; padding: 16px 4px; border-bottom: 1px solid var(--line); transition: padding .3s var(--ease), background .2s; }
-  .growing a:hover { padding-left: 14px; background: var(--bg2); }
-  .growing b { font-size: 18px; }
-  .growing em, .growing time { font-style: normal; color: var(--muted); font-size: 14px; }
-  @media (max-width: 1100px) {
-    .hero { grid-template-columns: 1fr; min-height: 0; }
-    .portrait { max-width: 520px; }
-    .lanes { grid-template-columns: repeat(2, 1fr); }
-  }
-  @media (max-width: 640px) {
-    .hero, .section { padding-left: 20px; padding-right: 20px; }
-    h1 .line { white-space: normal; }
-    .lanes { grid-template-columns: 1fr; }
-    .growing em { display: none; }
-  }
+  .hero { height: 100vh; min-height: 720px; display: grid; grid-template-columns: 1.2fr 1fr; align-items: end; gap: 48px; padding: 0 var(--pad) 64px; }
+  .hero h1 { font-size: clamp(120px, 14vw, 260px); line-height: .82; letter-spacing: -.06em; font-weight: 850; white-space: nowrap; }
+  .sub { margin-top: 28px; font-size: 22px; line-height: 1.5; max-width: 560px; }
+  .now { margin-top: 22px; display: flex; align-items: center; gap: 10px; color: var(--mute); font-size: 15px; }
+  .now i { width: 8px; height: 8px; border-radius: 50%; background: var(--hot); animation: blink 1.4s infinite; }
+  @keyframes blink { 50% { opacity: .25; } }
+  .screen { position: relative; aspect-ratio: 16/10; border-radius: 6px; overflow: hidden; background: #111; align-self: center; color: #fff; animation: unclip 1.4s var(--ease) .3s backwards; }
+  @keyframes unclip { from { clip-path: inset(0 0 100% 0); } }
+  .screen img, .screen video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .screen .feed { position: absolute; inset: -20%; background: conic-gradient(from 0deg at 50% 50%, #ff4b1f, #ffb199, #3d5afe, #00a37a, #ff4b1f); filter: blur(40px) saturate(1.2); animation: spin 14s linear infinite; }
+  .screen.idle .feed { filter: blur(50px) saturate(.9) brightness(.85); }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .screen::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.65) 0%, rgba(0,0,0,0) 45%), linear-gradient(to bottom, rgba(0,0,0,.35) 0%, rgba(0,0,0,0) 20%); pointer-events: none; }
+  .screen .rec, .screen .title, .screen .hud { z-index: 1; }
+  .screen .grain { position: absolute; inset: 0; background: repeating-linear-gradient(0deg, rgba(0, 0, 0, .08) 0 1px, transparent 1px 3px); mix-blend-mode: multiply; }
+  .screen .rec { position: absolute; left: 18px; top: 16px; font: 600 13px ui-monospace, Menlo, monospace; display: flex; gap: 8px; align-items: center; }
+  .screen .rec i { width: 9px; height: 9px; border-radius: 50%; background: #ff2d2d; animation: blink 1s infinite; }
+  .screen .title { position: absolute; left: 18px; right: 18px; bottom: 44px; font-size: 28px; font-weight: 700; line-height: 1.25; text-shadow: 0 2px 20px rgba(0, 0, 0, .3); }
+  .screen .hud { position: absolute; left: 18px; right: 18px; bottom: 16px; display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; }
+  .block { margin-top: 140px; }
+  .reel { height: 100vh; overflow: hidden; margin-top: 20px; }
+  .track { display: flex; gap: 28px; padding: 0 var(--pad); height: 100%; align-items: center; will-change: transform; }
+  .track .vcard { flex: none; width: 44vw; max-width: 760px; }
+  .reel-end { flex: none; width: 30vw; font-size: 56px; font-weight: 800; letter-spacing: -.04em; line-height: 1.05; }
+  .reel-end a { border-bottom: 3px solid var(--hot); }
+  .vgrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 40px 28px; padding: 40px var(--pad) 0; }
+  .rants { display: block; padding: 70px 0 20px; overflow: hidden; }
+  .rline { display: flex; gap: 80px; white-space: nowrap; width: max-content; font-size: 56px; letter-spacing: -.02em; }
+  .rline span { display: inline-flex; gap: 22px; align-items: center; }
+  .rline em { font-style: normal; font-size: 40px; }
+  .rline small { font-size: 14px; color: var(--mute); }
 </style>
 
 <script>
   import { gsap } from 'gsap'
   import { ScrollTrigger } from 'gsap/ScrollTrigger'
-  gsap.registerPlugin(ScrollTrigger)
+  import { SplitText } from 'gsap/SplitText'
+  gsap.registerPlugin(ScrollTrigger, SplitText)
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches
 
-  // 轮换动词
-  const verbEl = document.getElementById('verb')!
-  const verbs: string[] = JSON.parse(verbEl.dataset.verbs || '[]')
-  let vi = 0
-  if (!reduce) setInterval(() => {
-    gsap.to(verbEl, { yPercent: -110, opacity: 0, duration: .35, ease: 'power2.in', onComplete: () => {
-      vi = (vi + 1) % verbs.length; verbEl.textContent = verbs[vi]
-      gsap.fromTo(verbEl, { yPercent: 110, opacity: 0 }, { yPercent: 0, opacity: 1, duration: .6, ease: 'expo.out' })
+  // 名字逐字落下
+  if (!reduce) {
+    const split = new SplitText('#name', { type: 'chars' })
+    gsap.from(split.chars, { yPercent: 110, rotate: 8, opacity: 0, stagger: .07, duration: 1.2, ease: 'expo.out' })
+  }
+
+  // 「正在做」轮换
+  const nowEl = document.getElementById('now')!
+  const nows: string[] = JSON.parse(nowEl.dataset.now || '[]')
+  let ni = 0
+  if (nows.length > 1 && !reduce) setInterval(() => {
+    gsap.to(nowEl, { y: -10, opacity: 0, duration: .3, onComplete: () => {
+      ni = (ni + 1) % nows.length; nowEl.textContent = nows[ni]
+      gsap.fromTo(nowEl, { y: 10, opacity: 0 }, { y: 0, opacity: 1, duration: .5 })
     } })
-  }, 2200)
+  }, 2600)
 
-  // 关于我那段话：逐字切成 span，随滚动变亮
-  const bl = document.getElementById('bigline')!
-  const split = (el: Node) => {
-    [...el.childNodes].forEach((n) => {
-      if (n.nodeType === Node.TEXT_NODE) {
-        const frag = document.createDocumentFragment()
-        ;[...(n.textContent || '')].forEach((ch) => { const s = document.createElement('span'); s.className = 'w'; s.textContent = ch; frag.appendChild(s) })
-        n.replaceWith(frag)
-      } else split(n)
-    })
+  // 屏幕上的时间码
+  const tc = document.getElementById('tc')
+  let f = 0
+  if (tc && !reduce) setInterval(() => {
+    f++; const s = Math.floor(f / 25)
+    tc.textContent = `00:${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}:${String(f % 25).padStart(2, '0')}`
+  }, 40)
+
+  // 视频：竖向滚动驱动横向移动
+  const track = document.getElementById('track')
+  if (track && !reduce) {
+    gsap.to(track, { x: () => -(track.scrollWidth - innerWidth), ease: 'none', scrollTrigger: { trigger: '#reel', start: 'top top', end: () => '+=' + (track.scrollWidth - innerWidth), pin: true, scrub: 1, invalidateOnRefresh: true } })
   }
-  split(bl)
 
-  if (reduce) {
-    gsap.set('#bigline .w', { opacity: 1 })
-  } else {
-    gsap.to('#portrait .ill', { scale: 1.05, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } })
-    gsap.to('.marquee > div', { xPercent: -100, duration: 40, ease: 'none', repeat: -1 })
-    gsap.to('#bigline .w', { opacity: 1, stagger: .02, ease: 'none', scrollTrigger: { trigger: '#bigline', start: 'top 80%', end: 'bottom 45%', scrub: true } })
-
-    const portrait = document.getElementById('portrait')!
-    addEventListener('pointermove', (e) => {
-      if (e.pointerType !== 'mouse') return
-      const x = e.clientX / innerWidth - .5, y = e.clientY / innerHeight - .5
-      gsap.to(portrait, { rotateY: x * 8, rotateX: -y * 8, transformPerspective: 900, duration: .8, ease: 'power3.out' })
-      gsap.to('#portrait .sticker', { x: x * -30, y: y * -30, duration: .8, ease: 'power3.out' })
-    })
+  // 大标题逐字
+  if (document.querySelector('.big') && !reduce) {
+    const big = new SplitText('.big', { type: 'chars' })
+    gsap.from(big.chars, { yPercent: 100, opacity: 0, stagger: .03, duration: .9, ease: 'expo.out', scrollTrigger: { trigger: '.big', start: 'top 85%' } })
   }
+
+  // 发发神经跑马灯：滚动越快转得越快
+  const rline = document.getElementById('rline')
+  if (rline && !reduce) {
+    const loop = gsap.to(rline, { xPercent: -50, duration: 40, ease: 'none', repeat: -1 })
+    ScrollTrigger.create({ onUpdate: (self) => {
+      gsap.to(loop, { timeScale: 1 + Math.min(Math.abs(self.getVelocity()) / 300, 6), duration: .2, overwrite: true })
+      gsap.to(loop, { timeScale: 1, duration: 1.2, delay: .2 })
+    } })
+  }
+
+  // 视频卡片悬停播放预览片段
+  document.querySelectorAll<HTMLVideoElement>('video[data-hover-preview]').forEach((v) => {
+    const card = v.closest('.vcard')!
+    card.addEventListener('mouseenter', () => { v.preload = 'auto'; v.play().catch(() => {}) })
+    card.addEventListener('mouseleave', () => v.pause())
+  })
 </script>

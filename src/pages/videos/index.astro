@@ -1,21 +1,32 @@
 ---
-import Docs from '../../layouts/Docs.astro'
-import Card from '../../components/Card.astro'
-import { getVideos, videoHref } from '../../lib/content'
+import Base from '../../layouts/Base.astro'
+import { opt } from '../../lib/img'
+import { getVideos, videoHref, thumb, fmtDay } from '../../lib/content'
 
 const videos = await getVideos()
-const fmt = (d: Date) => d.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })
 ---
-<Docs title="视频" nav="videos" toc={[]}>
-  <h1>视频</h1>
-  <p class="lead">工具上手、工作流演示和折腾记录。点开可以在这里直接看，也可以去平台看高清和评论。</p>
-  <section class="grp">
-    {videos.length ? (
-      <div class="cards">
-        {videos.map((v) => (
-          <Card href={videoHref(v)} title={v.data.title} meta={`${fmt(v.data.date)} · ${v.data.platform}`} cover={v.data.cover} preview={v.data.preview} play draft={v.data.draft} tags={v.data.tags} />
-        ))}
-      </div>
-    ) : <p class="empty">第一支视频还在剪，过阵子再来看看。</p>}
-  </section>
-</Docs>
+<Base title="视频" nav="videos">
+  <header class="page-head">
+    <p class="eyebrow">视频 · {videos.length} 支</p>
+    <h1>视频<span class="dot">.</span></h1>
+    <p>工具上手、工作流演示和折腾记录。点开可以在这里直接看，也可以去平台看高清和评论。</p>
+  </header>
+  {videos.length ? (
+    <div class="vgrid">
+      {videos.map((v, i) => (
+        <a class="vcard reveal-scroll" href={videoHref(v)} data-cursor="播放">
+          <div class="frame">
+            {v.data.cover ? <img src={opt(v.data.cover)} alt="" loading="lazy" /> : <div class="bg" style={`background:${thumb(i)}`}></div>}
+            <span class="no">{String(videos.length - i).padStart(2, '0')}</span>
+          </div>
+          <div class="meta"><span>{v.data.tags[0] ?? v.data.platform}</span><span>{fmtDay(v.data.date)}{v.data.draft && ' · 草稿'}</span></div>
+          <h3>{v.data.title}</h3>
+        </a>
+      ))}
+    </div>
+  ) : <p class="empty">第一支视频正在剪，过阵子再来看看。</p>}
+</Base>
+
+<style>
+  .vgrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 56px 28px; padding: 20px var(--pad) 0; }
+</style>

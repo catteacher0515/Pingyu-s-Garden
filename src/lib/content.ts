@@ -50,7 +50,7 @@ export function groupNotes(notes: Note[]) {
 export const noteHref = (n: Note) => `/notes/${n.id}/`
 export const postHref = (p: Post) => p.data.external ?? `/posts/${p.id}/`
 export const videoHref = (v: Video) => `/videos/${v.id}/`
-export const projectHref = (p: Project) => p.data.link ?? p.data.repo ?? '/projects/'
+export const projectHref = (p: Project) => p.data.link ?? p.data.repo ?? '/'
 
 export function bvidOf(url: string) {
   return url.match(/BV[0-9A-Za-z]{10}/)?.[0]
@@ -73,43 +73,30 @@ export async function getSectionPresence() {
 export const STATUS_ORDER = ['可访问', '自用中', '实验中', '已归档'] as const
 export const CATEGORY_ORDER = ['教程', '文章'] as const
 
-export const ICON = '/images/doodles/'
-
-export type ReelItem = {
-  kind: 'video' | 'project' | 'post'
-  label: string
-  title: string
-  summary?: string
-  cover?: string
-  preview?: string
-  href: string
-  external: boolean
-  draft: boolean
-  meta?: string
-  category?: string
+/** 没有封面时的统一缩略图：渐变色块，按序号轮换 */
+const PALETTE = [['#ff4b1f', '#ffb199'], ['#3d5afe', '#9aa8ff'], ['#00a37a', '#9be7c8'], ['#ffb300', '#ffe08a'], ['#c2185b', '#f48fb1']]
+export function thumb(i: number) {
+  const [a, b] = PALETTE[i % PALETTE.length]
+  return `radial-gradient(120% 90% at ${20 + (i * 23) % 60}% ${30 + (i * 17) % 40}%, ${b} 0%, ${a} 55%, #111 140%)`
 }
 
-export async function getReelItems(): Promise<ReelItem[]> {
-  const [videos, posts, projects] = await Promise.all([getVideos(), getPosts(), getProjects()])
-  const v: ReelItem[] = videos.filter((x) => x.data.featured).map((x) => ({
-    kind: 'video', label: '视频', title: x.data.title, summary: x.data.summary, cover: x.data.cover,
-    preview: x.data.preview, href: videoHref(x), external: false, draft: x.data.draft, meta: x.data.platform,
-  }))
-  const p: ReelItem[] = posts.filter((x) => x.data.featured).map((x) => ({
-    kind: 'post', label: x.data.category, title: x.data.title, summary: x.data.summary, cover: x.data.cover,
-    href: postHref(x), external: !!x.data.external, draft: x.data.draft, category: x.data.category,
-    meta: x.data.external ? '知乎' : undefined,
-  }))
-  const j: ReelItem[] = projects.filter((x) => x.data.featured).map((x) => ({
-    kind: 'project', label: '项目', title: x.data.title, summary: x.data.summary, cover: x.data.cover,
-    href: projectHref(x), external: !!(x.data.link || x.data.repo), draft: x.data.draft, meta: x.data.status,
-  }))
-  // 交错排列，让放映厅里不同类型的内容轮流出现
-  const out: ReelItem[] = []
-  for (let i = 0; i < Math.max(v.length, p.length, j.length); i++) {
-    for (const list of [v, j, p]) if (list[i]) out.push(list[i])
-  }
-  return out
+export const fmtDay = (d: Date) => `${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`
+
+export type WritingRow = { kind: '教程' | '笔记' | '文章'; title: string; href: string; meta: string; cover?: string; draft: boolean; external: boolean; date: number }
+
+/** 教程（含文章）和笔记合成一个按时间倒序的列表 */
+export async function getWritingRows(): Promise<WritingRow[]> {
+  const [posts, notes] = await Promise.all([getPosts(), getNotes()])
+  return [
+    ...posts.map((p) => ({
+      kind: p.data.category, title: p.data.title, href: postHref(p), cover: opt(p.data.cover), draft: p.data.draft, external: !!p.data.external,
+      meta: [p.data.tags[0], p.data.date && fmtDay(p.data.date)].filter(Boolean).join(' · '), date: time(p.data.date),
+    })),
+    ...notes.map((n) => ({
+      kind: '笔记' as const, title: n.data.title, href: noteHref(n), draft: false, external: false,
+      meta: `${NOTE_STATUS[n.data.status].icon} ${n.data.topic} · ${fmtDay(n.data.updated)}`, date: time(n.data.updated),
+    })),
+  ].sort((a, b) => b.date - a.date)
 }
 
 export type SearchItem = { title: string; label: string; href: string; cover?: string; text: string }

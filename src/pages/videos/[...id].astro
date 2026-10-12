@@ -1,9 +1,9 @@
 ---
-import { opt } from '../../lib/img'
 import { render } from 'astro:content'
-import Docs from '../../layouts/Docs.astro'
+import Article from '../../layouts/Article.astro'
 import BiliPlayer from '../../components/BiliPlayer.astro'
-import { getVideos, bvidOf, type Video } from '../../lib/content'
+import { opt } from '../../lib/img'
+import { getVideos, bvidOf, fmtDay, type Video } from '../../lib/content'
 
 export async function getStaticPaths() {
   return (await getVideos()).map((v) => ({ params: { id: v.id }, props: { video: v } }))
@@ -13,29 +13,28 @@ const { Content, headings } = await render(video)
 const d = video.data
 const bvid = bvidOf(d.url)
 ---
-<Docs title={d.title} description={d.summary} nav="videos" toc={headings.filter((h) => h.depth <= 3).map((h) => ({ id: h.slug, text: h.text, depth: h.depth }))}>
-  <a class="back" href="/videos/">← 全部视频</a>
-  <h1>{d.title}</h1>
-  {d.summary && <p class="lead">{d.summary}</p>}
-  <div class="player">
+<Article title={d.title} description={d.summary} nav="videos" back={{ href: '/videos/', label: '全部视频' }} toc={headings.filter((h) => h.depth <= 3).map((h) => ({ id: h.slug, text: h.text, depth: h.depth }))}>
+  <Fragment slot="meta">
+    <span>{fmtDay(d.date)}</span><span>{d.platform}</span>{d.tags.map((t) => <span>#{t}</span>)}
+    {d.draft && <span class="draft-badge">草稿 · 仅本地可见</span>}
+  </Fragment>
+  <div slot="hero" class="player">
     {bvid ? <BiliPlayer bvid={bvid} cover={d.cover} title={d.title} /> : (
-      <a class="fallback" href={d.url} target="_blank" rel="noopener">
+      <a class="fallback" href={d.url} target="_blank" rel="noopener" data-cursor="去看">
         {d.cover && <img src={opt(d.cover)} alt="" />}<span>▶ 去{d.platform}观看</span>
       </a>
     )}
+    <a class="watch ulink" href={d.url} target="_blank" rel="noopener">去{d.platform}看高清 / 一键三连 ↗</a>
   </div>
-  <div class="actions">
-    <a class="btn solid" href={d.url} target="_blank" rel="noopener">去{d.platform}看高清 / 一键三连 ↗</a>
-    {d.draft && <span class="draft-badge">草稿 · 仅本地可见</span>}
-  </div>
-  <div class="prose"><Content /></div>
-</Docs>
+  {d.summary && <p class="lead">{d.summary}</p>}
+  <Content />
+</Article>
 
 <style>
-  .back { color: var(--muted); font-size: 14px; display: inline-block; margin-bottom: 18px; }
-  .player { margin-top: 28px; }
-  .fallback { position: relative; display: grid; place-items: center; aspect-ratio: 16/9; border-radius: 16px; overflow: hidden; background: var(--bg2); }
-  .fallback img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .6; }
-  .fallback span { position: relative; background: rgba(0,0,0,.65); color: #fff; padding: 12px 22px; border-radius: 999px; }
-  .actions { display: flex; align-items: center; gap: 14px; margin-top: 20px; }
+  .player { padding: 0 var(--pad); }
+  .fallback { position: relative; display: grid; place-items: center; aspect-ratio: 16/9; border-radius: 6px; overflow: hidden; background: #111; color: #fff; }
+  .fallback img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .7; }
+  .fallback span { position: relative; font-size: 22px; font-weight: 700; }
+  .watch { display: inline-block; margin-top: 18px; font-size: 15px; }
+  .lead { font-size: 22px; line-height: 1.6; }
 </style>

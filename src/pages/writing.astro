@@ -1,0 +1,42 @@
+---
+import Base from '../layouts/Base.astro'
+import { getWritingRows, thumb } from '../lib/content'
+
+const rows = await getWritingRows()
+const kinds = ['全部', ...new Set(rows.map((r) => r.kind))]
+---
+<Base title="教程 & 笔记" nav="writing">
+  <header class="page-head">
+    <p class="eyebrow">教程 & 笔记 · {rows.length} 篇</p>
+    <h1>写下来的<span class="serif">慢</span>东西</h1>
+    <p>来不及拍成视频的，整理成教程；边学边记的，放在笔记里。笔记会一直更新，不一定完整。</p>
+  </header>
+  {kinds.length > 2 && (
+    <div class="tabs">{kinds.map((k, i) => <button class:list={['ulink', { on: i === 0 }]} data-kind={k}>{k}</button>)}</div>
+  )}
+  {rows.length ? (
+    <div class="list">
+      {rows.map((r, i) => (
+        <a class="row" href={r.href} data-kind={r.kind} data-title={r.title} data-bg={thumb(i + 1)} data-img={r.cover} target={r.external ? '_blank' : undefined} rel={r.external ? 'noopener' : undefined}>
+          <span class="k">{r.kind}{r.draft && ' · 草稿'}</span><span>{r.title}</span><small>{r.meta}</small><small class="go">{r.external ? '↗' : '→'}</small>
+        </a>
+      ))}
+    </div>
+  ) : <p class="empty">还在整理，过阵子再来看看。</p>}
+</Base>
+
+<style>
+  .tabs { display: flex; gap: 30px; padding: 0 var(--pad) 10px; font-size: 16px; color: var(--mute); }
+  .tabs .on { color: var(--ink); }
+</style>
+
+<script>
+  import { gsap } from 'gsap'
+  const rows = [...document.querySelectorAll<HTMLElement>('.row')]
+  document.querySelectorAll<HTMLButtonElement>('.tabs button').forEach((b) => b.addEventListener('click', () => {
+    document.querySelectorAll('.tabs button').forEach((x) => x.classList.toggle('on', x === b))
+    const show = rows.filter((r) => b.dataset.kind === '全部' || r.dataset.kind === b.dataset.kind)
+    rows.forEach((r) => (r.style.display = show.includes(r) ? '' : 'none'))
+    gsap.from(show, { y: 24, opacity: 0, stagger: .04, duration: .6, ease: 'expo.out' })
+  }))
+</script>

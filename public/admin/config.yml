@@ -59,28 +59,6 @@ collections:
       - { name: order, label: 排序（没有日期时生效，越小越靠前）, widget: number, value_type: int, default: 0, required: false }
       - { name: body, label: 正文, widget: markdown, required: false }
 
-  - name: projects
-    label: 项目
-    label_singular: 项目
-    folder: src/content/projects
-    slug: '{{year}}{{month}}{{day}}-{{uuid_shorter}}'
-    create: true
-    sortable_fields: [order, title]
-    summary: '{{title}}（{{status}}）'
-    fields:
-      - { name: title, label: 名称 }
-      - { name: summary, label: 一句话简介, widget: text, required: false }
-      - { name: status, label: 状态, widget: select, options: [可访问, 自用中, 实验中, 已归档], default: 实验中 }
-      - { name: form, label: 形态, required: false, hint: '比如：网站、脚本、Skill、桌面应用' }
-      - { name: link, label: 在线地址, required: false }
-      - { name: repo, label: GitHub 仓库, required: false }
-      - { name: cover, label: 截图, widget: image, required: false }
-      - { name: tags, label: 标签, widget: list, required: false }
-      - { name: featured, label: 放进首页放映厅, widget: boolean, default: false }
-      - { name: draft, label: 草稿（不发布）, widget: boolean, default: false }
-      - { name: order, label: 排序（越小越靠前）, widget: number, value_type: int, default: 0, required: false }
-      - { name: body, label: 详细介绍, widget: markdown, required: false }
-
   - name: rants
     label: 发发神经
     label_singular: 一条神经
@@ -95,3 +73,21 @@ collections:
       - { name: mood, label: 心情, widget: select, required: false, options: ['🫠', '😤', '🙃', '😭', '😮‍💨', '🤔', '🥲', '😌', '🥳', '💡'] }
       - { name: draft, label: 草稿（不发布）, widget: boolean, default: false }
       - { name: body, label: 想说的话, widget: markdown }
+
+  - name: settings
+    label: 网站设置
+    files:
+      - name: site
+        label: 首页文字和关注我
+        file: src/data/site.json
+        fields:
+          - { name: name, label: 名字 }
+          - { name: tagline, label: 一句话介绍, widget: text }
+          - { name: now, label: 正在做（首页轮换显示）, widget: list }
+          - name: follow
+            label: 关注我（填了链接的才会显示）
+            widget: list
+            fields:
+              - { name: name, label: 平台 }
+              - { name: handle, label: 账号名, required: false }
+              - { name: url, label: 链接, required: false, hint: '主页地址，例如 https://space.bilibili.com/你的UID ；邮箱写 mailto:你的邮箱' }

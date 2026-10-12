@@ -15,19 +15,17 @@ npm run build    # 输出到 dist/
 
 ## 页面
 
-- `/` 首页：自我介绍、「最近在做」放映厅、关于我
+- `/` 首页：名字、最新一期视频、视频、教程 & 笔记、发发神经、关注我
 - `/videos/` 视频列表和详情（嵌入 B 站播放器）
-- `/posts/` 图文：教程、文章（含已停更的 GitHub 周刊）
-- `/notes/` 笔记：从 Obsidian 发布的学习笔记
-- `/projects/` 项目
-- `/rants/` 发发神经：牢骚和小感悟
-- `/admin/` 编辑后台
+- `/writing/` 教程 & 笔记（教程在后台写，笔记从 Obsidian 发布）
+- `/rants/` 发发神经
+- `/admin/` 编辑后台；「网站设置」里可以改首页文字和关注我的链接
 
 ## 怎么更新内容
 
 1. 打开 https://pingyu-s-garden.pages.dev/admin/ （本地是 `http://localhost:4321/admin/index.html`）。
 2. 选「Sign In Using Access Token」。令牌在 https://github.com/settings/personal-access-tokens/new 生成：Repository access 只选 `Pingyu-s-Garden`，Permissions 里 Contents 设为 Read and write，生成后粘贴登录。
-3. 新建或修改视频、图文、项目，点保存。内容会提交到 GitHub 的 `astro-v2` 分支，Cloudflare 自动重新构建，几分钟内生效。
+3. 新建或修改视频、教程、发发神经，点保存。内容会提交到 GitHub 的 `astro-v2` 分支，Cloudflare 自动重新构建，几分钟内生效。
 
 几个开关：
 

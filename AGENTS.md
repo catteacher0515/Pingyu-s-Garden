@@ -22,7 +22,7 @@
 
 ## Content model
 
-- Content collections in `src/content/`: `videos`, `notes`, `rants`, `posts` (category 教程 / 文章; the GitHub weekly series stopped on 2026-10-09 and its 5 issues are kept as 文章 tagged `GitHub 周刊`), `projects`. Schemas live in `src/content.config.ts`.
+- Content collections in `src/content/`: `videos`, `notes`, `rants`, `posts` (category 教程 / 文章; old Zhihu articles are archived, not live), `projects` (empty; old tools archived, no page). Schemas live in `src/content.config.ts`.
 - `public/admin/config.yml` (Sveltia CMS) mirrors those schemas field by field. Change both together.
 - `draft: true` entries show only in `npm run dev`; `featured: true` entries go into the homepage showreel (`src/components/Reel.astro`, one card template per content type).
 - Full videos are not hosted here: they live on B站 etc. Video pages embed the B站 player behind a click-to-load cover. Optional short silent `preview` clips are the only video files in the repo.
@@ -32,19 +32,21 @@
 
 ## Rendering conventions
 
-- Sections (videos, posts/教程/文章, notes, projects, rants) appear in nav, sidebar, footer and homepage lanes only when they have published content (`getSectionPresence()` in `src/lib/content.ts`). Empty-state copy is written for visitors, never admin instructions.
+- Sections (videos, 教程 & 笔记 at `/writing/`, rants) appear in nav and on the homepage only when they have published content (`getSectionPresence()` in `src/lib/content.ts`). Empty-state copy is written for visitors, never admin instructions.
 - Images: `npm run build`/`dev` first run `scripts/optimize-images.mjs`, which writes WebP copies (max 1600px) of `public/media`, `public/images` and `avatar.jpg` into `public/_opt/` (gitignored). Reference images through `opt()` from `src/lib/img.ts`. Note images are converted to WebP by `sync-notes.mjs`.
-- Load and scroll reveals are pure CSS (`.reveal`, `.reveal-scroll`, scroll-driven `animation-timeline: view()`, `fill-mode: backwards`) so content never depends on JS to become visible. GSAP is only for interactive motion (showreel, verb rotation, scrub text, tilt, search palette). Headless or background-tab screenshots freeze these animations; verify motion in a foreground tab.
+- Load and scroll reveals are pure CSS (`.reveal`, `.reveal-scroll`, scroll-driven `animation-timeline: view()`, `fill-mode: backwards`) so content never depends on JS to become visible. GSAP is for interactive motion (SplitText name/titles, pinned horizontal reel, hover preview, cursor, marquee, search palette). Headless or background-tab screenshots freeze these animations; verify motion in a foreground tab.
 
 ## Editing content
 
 - The user edits content at `/admin/` (Sveltia CMS, GitHub backend, currently `branch: astro-v2`). Sign-in uses a GitHub personal access token for now; an OAuth authenticator on Cloudflare Workers can be added later.
 - Saving in the CMS commits to GitHub; the host rebuilds the site.
 
-## Design direction
+## Design direction (decided 2026-10-12)
 
-- Desktop only (decided 2026-10-12): design, test and screenshot at desktop widths. Do not spend effort on mobile layouts or mobile QA unless the user asks again; existing responsive CSS can stay but is not maintained.
-
-- Based on GSAP Showcase and HyperFrames Showcase: person-first homepage hero, showreel carousel, docs-style list pages with sidebar + on-page TOC, ⌘K search, dark/light toggle, GSAP motion with `prefers-reduced-motion` respected.
-- The user cares about UI/UX and motion, not just color. Propose visual changes as clickable prototypes.
-- Astro 7 compiler is strict about unclosed/invalid HTML. `compressHTML: true` is set on purpose to keep HTML whitespace rules for mixed Chinese/English text.
+- The live design is prototype A「片场」 from `docs/prototypes/v3/a-studio.html`: light paper `#f2efe9`, ink `#141414`, hot orange `#ff4b1f`, huge name hero with a "screen" showing the latest video, scroll-pinned horizontal video reel (only when ≥3 videos), hover list with cursor-following preview for 教程 & 笔记, rants marquee, black 「关注我」 footer, custom cursor, ⌘K search. Single light theme, no dark mode.
+- The user rejected prototype C (colour blocks) outright, and B (desktop/windows) because its interaction felt bad, though they liked the sticky-note idea.
+- Desktop only (decided 2026-10-12): design, test and screenshot at desktop widths; no mobile work unless asked.
+- Never reuse old-site visuals (poster illustration, red line doodles, Zhihu covers). Old posts/projects are archived in `archive/old-site-content/` and offline.
+- Homepage text (name, tagline, rotating 「正在做」, follow links) lives in `src/data/site.json`, editable in the CMS under 网站设置. Follow links without a URL are hidden.
+- The user cares about UI/UX and motion, not just colour. Propose visual changes as clickable prototypes and verify them in a foreground Chrome window.
+- Astro 7 compiler is strict about unclosed/invalid HTML. `compressHTML: true` is set on purpose for mixed Chinese/English whitespace.
