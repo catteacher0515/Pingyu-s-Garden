@@ -1,4 +1,5 @@
 ---
+slug: "BV1uZYr6nEcT"
 title: "AI 是怎么从几百篇资料里，找到正确答案的？"
 date: 2026-09-14
 url: "https://www.bilibili.com/video/BV1uZYr6nEcT/"

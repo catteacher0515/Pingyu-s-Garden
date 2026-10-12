@@ -33,7 +33,9 @@
 ## Rendering conventions
 
 - Sections (videos, 教程 & 笔记 at `/writing/`, rants) appear in nav and on the homepage only when they have published content (`getSectionPresence()` in `src/lib/content.ts`). Empty-state copy is written for visitors, never admin instructions.
-- Images: `npm run build`/`dev` first run `scripts/optimize-images.mjs`, which writes WebP copies (max 1600px) of `public/media`, `public/images` and `avatar.jpg` into `public/_opt/` (gitignored). Reference images through `opt()` from `src/lib/img.ts`. Note images are converted to WebP by `sync-notes.mjs`.
+- Images: `npm run build`/`dev` first run `scripts/optimize-images.mjs`, which writes WebP copies (max 1600px) of `public/media` into `public/_opt/` (gitignored). Old-site illustrations, doodles and Zhihu covers live in `archive/old-site-content/assets/` and are not deployed.
+- Video entries imported from Bilibili carry `slug: "BV…"` so URLs keep the BV id's case. Covers are downloaded to `public/media/videos/`.
+- `public/favicon.svg`, `public/og.png` (share card), `src/pages/sitemap.xml.ts` and `public/robots.txt` are part of the A design; detail pages pass their cover as the share image. Reference images through `opt()` from `src/lib/img.ts`. Note images are converted to WebP by `sync-notes.mjs`.
 - Load and scroll reveals are pure CSS (`.reveal`, `.reveal-scroll`, scroll-driven `animation-timeline: view()`, `fill-mode: backwards`) so content never depends on JS to become visible. GSAP is for interactive motion (SplitText name/titles, pinned horizontal reel, hover preview, cursor, marquee, search palette). Headless or background-tab screenshots freeze these animations; verify motion in a foreground tab.
 
 ## Editing content

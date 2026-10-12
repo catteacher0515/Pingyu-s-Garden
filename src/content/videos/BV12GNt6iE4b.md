@@ -1,4 +1,5 @@
 ---
+slug: "BV12GNt6iE4b"
 title: "当代程序员 be like"
 date: 2026-07-14
 url: "https://www.bilibili.com/video/BV12GNt6iE4b/"

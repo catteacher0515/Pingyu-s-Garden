@@ -6,7 +6,7 @@ import sharp from 'sharp'
 
 const PUBLIC = path.resolve(import.meta.dirname, '../public')
 const OUT = path.join(PUBLIC, '_opt')
-const DIRS = ['media', 'images', 'avatar.jpg']
+const DIRS = ['media']
 const MAX_WIDTH = 1600
 
 const files = []

@@ -1,4 +1,5 @@
 ---
+slug: "BV1muts6nEJ9"
 title: "AI 根本学不完，什么才值得学？"
 date: 2026-08-31
 url: "https://www.bilibili.com/video/BV1muts6nEJ9/"

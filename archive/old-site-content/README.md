@@ -6,3 +6,4 @@
 - `projects/`：12 个旧工具
 
 这里不在 Astro 的内容目录里，不会被构建。想恢复某一条，把文件移回 `src/content/posts/` 或 `src/content/projects/` 即可。
+旧站封面和插画已从 public 移到这里，不再随网站部署。

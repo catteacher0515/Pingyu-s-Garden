@@ -1,4 +1,5 @@
 ---
+slug: "BV1c9hj6FEte"
 title: "3分钟搞定 Jev：安装配置 + Codex 调用｜零基础教程"
 date: 2026-09-22
 url: "https://www.bilibili.com/video/BV1c9hj6FEte/"

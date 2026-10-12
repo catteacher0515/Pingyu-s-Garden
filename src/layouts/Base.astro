@@ -7,8 +7,11 @@ interface Props {
   title?: string
   description?: string
   nav?: 'videos' | 'writing' | 'rants'
+  image?: string
 }
-const { title, description = site.tagline, nav } = Astro.props
+const { title, description = site.tagline, nav, image = '/og.png' } = Astro.props
+const canonical = new URL(Astro.url.pathname, Astro.site)
+const ogImage = new URL(image, Astro.site)
 const pageTitle = title ? `${title} · 花萍雨` : '花萍雨 · Pingyu'
 const search = await getSearchIndex()
 const has = await getSectionPresence()
@@ -27,6 +30,15 @@ const follow = site.follow.filter((f) => f.url)
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
     <link rel="icon" href="/favicon.svg" />
+    <link rel="canonical" href={canonical} />
+    <link rel="sitemap" href="/sitemap.xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="花萍雨 · Pingyu" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
   </head>
   <body>
     <div class="cur" id="cur"><span></span></div>

@@ -1,4 +1,5 @@
 ---
+slug: "BV12S8x6fExf"
 title: "零基础小白，4分钟安装 Codex 并接入 DeepSeek！"
 date: 2026-08-23
 url: "https://www.bilibili.com/video/BV12S8x6fExf/"

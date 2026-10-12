@@ -1,4 +1,5 @@
 ---
+slug: "BV1ShLb6BEdU"
 title: "离四六级只剩 21 天，我做了一个免费、无广、免登录的真题网站"
 date: 2026-05-21
 url: "https://www.bilibili.com/video/BV1ShLb6BEdU/"

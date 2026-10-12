@@ -1,4 +1,5 @@
 ---
+slug: "BV1FdHf6xEyJ"
 title: "AI 时代，文科生的出路在哪？"
 date: 2026-10-07
 url: "https://www.bilibili.com/video/BV1FdHf6xEyJ/"

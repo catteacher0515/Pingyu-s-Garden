@@ -13,7 +13,7 @@ const { Content, headings } = await render(video)
 const d = video.data
 const bvid = bvidOf(d.url)
 ---
-<Article title={d.title} description={d.summary} nav="videos" back={{ href: '/videos/', label: '全部视频' }} toc={headings.filter((h) => h.depth <= 3).map((h) => ({ id: h.slug, text: h.text, depth: h.depth }))}>
+<Article title={d.title} description={d.summary} image={opt(d.cover)} nav="videos" back={{ href: '/videos/', label: '全部视频' }} toc={headings.filter((h) => h.depth <= 3).map((h) => ({ id: h.slug, text: h.text, depth: h.depth }))}>
   <Fragment slot="meta">
     <span>{fmtDay(d.date)}</span><span>{d.platform}</span>{d.tags.map((t) => <span>#{t}</span>)}
     {d.draft && <span class="draft-badge">草稿 · 仅本地可见</span>}

@@ -1,4 +1,5 @@
 ---
+slug: "BV1dGpi6JEwL"
 title: "电脑一合盖 AI 就罢工？问题出在这一个勾上"
 date: 2026-10-10
 url: "https://www.bilibili.com/video/BV1dGpi6JEwL/"

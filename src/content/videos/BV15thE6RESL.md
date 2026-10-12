@@ -1,4 +1,5 @@
 ---
+slug: "BV15thE6RESL"
 title: "受够 X 的广告和垃圾内容？这个插件能自动过滤"
 date: 2026-09-23
 url: "https://www.bilibili.com/video/BV15thE6RESL/"

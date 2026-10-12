@@ -1,4 +1,5 @@
 ---
+slug: "BV1CMHf6tEHr"
 title: "从 0 开始，4 步学会用好 AI"
 date: 2026-10-06
 url: "https://www.bilibili.com/video/BV1CMHf6tEHr/"
