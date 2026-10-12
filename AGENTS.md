@@ -37,6 +37,8 @@
 
 ## Design direction
 
+- Desktop only (decided 2026-10-12): design, test and screenshot at desktop widths. Do not spend effort on mobile layouts or mobile QA unless the user asks again; existing responsive CSS can stay but is not maintained.
+
 - Based on GSAP Showcase and HyperFrames Showcase: person-first homepage hero, showreel carousel, docs-style list pages with sidebar + on-page TOC, ⌘K search, dark/light toggle, GSAP motion with `prefers-reduced-motion` respected.
 - The user cares about UI/UX and motion, not just color. Propose visual changes as clickable prototypes.
 - Astro 7 compiler is strict about unclosed/invalid HTML. `compressHTML: true` is set on purpose to keep HTML whitespace rules for mixed Chinese/English text.
