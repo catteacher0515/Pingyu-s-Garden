@@ -11,6 +11,20 @@ interface Props {
   image?: string
 }
 const { title, description, nav, back, toc = [], image } = Astro.props
+// 目录按「相对层级」显示：笔记里最高一级标题算第 1 层，往下最多 3 层
+const levels = [...new Set(toc.map((t) => t.depth))].sort((a, b) => a - b).slice(0, 3)
+const items: (TocItem & { rank: number; parent: number })[] = []
+const lastAt: number[] = []
+for (const t of toc) {
+  const rank = levels.indexOf(t.depth)
+  if (rank < 0) continue
+  lastAt.length = rank
+  // 父级取最近的上一层；中间跳级（如 h3 下直接是 h5）时往上找
+  let parent = -1
+  for (let r = rank - 1; r >= 0; r--) if (lastAt[r] !== undefined) { parent = lastAt[r]; break }
+  lastAt[rank] = items.length
+  items.push({ ...t, rank, parent })
+}
 ---
 <Base title={title} description={description} nav={nav} image={image}>
   <div class="progress" aria-hidden="true"><i id="progress"></i></div>
@@ -22,10 +36,12 @@ const { title, description, nav, back, toc = [], image } = Astro.props
   <slot name="hero" />
   <div class="art">
     <article class="prose"><slot /></article>
-    {toc.length > 0 && (
+    {items.length > 0 && (
       <aside class="toc">
         <p>本页目录</p>
-        {toc.map((t) => <a href={`#${t.id}`} data-id={t.id} class:list={[{ sub: t.depth === 3 }]}>{t.text}</a>)}
+        <nav>
+          {items.map((t, i) => <a href={`#${t.id}`} data-id={t.id} data-i={i} data-rank={t.rank} data-parent={t.parent} class:list={[`r${t.rank}`, { hidden: t.rank > 0 }]}>{t.text}</a>)}
+        </nav>
       </aside>
     )}
   </div>
@@ -38,12 +54,16 @@ const { title, description, nav, back, toc = [], image } = Astro.props
   .art-head h1 { font-size: clamp(48px, 6vw, 104px); line-height: 1.02; letter-spacing: -.045em; max-width: 1200px; }
   .art-head .meta { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; margin-top: 26px; color: var(--mute); font-size: 15px; }
   .art { display: grid; grid-template-columns: minmax(0, 760px) 240px; justify-content: space-between; gap: 60px; padding: 30px var(--pad) 0; }
-  .toc { position: sticky; top: 110px; align-self: start; font-size: 14px; }
-  .toc p { color: var(--mute); margin-bottom: 12px; }
-  .toc a { display: block; padding: 6px 0 6px 14px; border-left: 1px solid var(--line); color: var(--mute); transition: color .2s, border-color .2s; }
-  .toc a.sub { padding-left: 26px; font-size: 13px; }
+  .toc { position: sticky; top: 110px; align-self: start; font-size: 14px; max-height: calc(100vh - 150px); display: flex; flex-direction: column; }
+  .toc p { color: var(--mute); margin-bottom: 12px; flex: none; }
+  .toc nav { overflow-y: auto; overscroll-behavior: contain; padding-right: 6px; scrollbar-width: thin; }
+  .toc a { display: block; padding: 6px 0 6px 14px; border-left: 1px solid var(--line); color: var(--mute); line-height: 1.45; transition: color .2s, border-color .2s; }
+  .toc a.r1 { padding-left: 28px; font-size: 13px; }
+  .toc a.r2 { padding-left: 42px; font-size: 12.5px; }
+  .toc a.hidden { display: none; }
   .toc a:hover { color: var(--ink); }
-  .toc a.on { color: var(--ink); border-left-color: var(--hot); }
+  .toc a.trail { color: var(--ink); }
+  .toc a.on { color: var(--ink); font-weight: 600; border-left-color: var(--hot); }
 </style>
 
 <script>
@@ -56,14 +76,28 @@ const { title, description, nav, back, toc = [], image } = Astro.props
   addEventListener('scroll', setProgress, { passive: true })
   setProgress()
 
-  // 滚动时高亮当前小节
-  const links = [...document.querySelectorAll<HTMLAnchorElement>('.toc a')]
+  // 滚动时高亮当前小节，并只展开当前所在章节的子标题
+  const links = [...document.querySelectorAll<HTMLAnchorElement>('.toc nav a')]
   if (links.length) {
-    const heads = links.map((a) => document.getElementById(decodeURIComponent(a.dataset.id || ''))).filter((h): h is HTMLElement => !!h)
+    const nav = document.querySelector<HTMLElement>('.toc nav')!
+    const heads = links.map((a) => document.getElementById(decodeURIComponent(a.dataset.id || '')))
+    const parentOf = links.map((a) => Number(a.dataset.parent))
+    let last = -2
     const update = () => {
-      let cur = heads[0]
-      for (const h of heads) if (h.getBoundingClientRect().top < 160) cur = h
-      links.forEach((a) => a.classList.toggle('on', decodeURIComponent(a.dataset.id || '') === cur?.id))
+      let cur = 0
+      heads.forEach((h, i) => { if (h && h.getBoundingClientRect().top < 160) cur = i })
+      if (cur === last) return
+      last = cur
+      const trail = new Set<number>()
+      for (let i = cur; i >= 0; i = parentOf[i]) trail.add(i)
+      links.forEach((a, i) => {
+        a.classList.toggle('on', i === cur)
+        a.classList.toggle('trail', trail.has(i) && i !== cur)
+        a.classList.toggle('hidden', parentOf[i] >= 0 && !trail.has(parentOf[i]))
+      })
+      const active = links[cur]
+      const top = active.offsetTop - nav.offsetTop
+      if (top < nav.scrollTop + 20 || top > nav.scrollTop + nav.clientHeight - 40) nav.scrollTo({ top: top - nav.clientHeight / 3, behavior: 'smooth' })
     }
     addEventListener('scroll', update, { passive: true })
     update()

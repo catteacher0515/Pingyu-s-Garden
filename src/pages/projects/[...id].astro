@@ -13,7 +13,7 @@ const { project, notes } = Astro.props as { project: Project; notes: Awaited<Ret
 const { Content, headings } = await render(project)
 const d = project.data
 ---
-<Article title={d.title} description={d.tagline} image={opt(d.cover)} nav="projects" back={{ href: '/#projects', label: '全部项目' }} toc={headings.filter((h) => h.depth <= 3).map((h) => ({ id: h.slug, text: h.text, depth: h.depth }))}>
+<Article title={d.title} description={d.tagline} image={opt(d.cover)} nav="projects" back={{ href: '/#projects', label: '全部项目' }} toc={headings.map((h) => ({ id: h.slug, text: h.text, depth: h.depth }))}>
   <Fragment slot="meta">
     {d.period && <span>{d.period}</span>}{d.role && <span>{d.role}</span>}
     {d.draft && <span class="draft-badge">草稿 · 仅本地可见</span>}
