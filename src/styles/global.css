@@ -14,13 +14,13 @@ img { max-width: 100%; display: block; }
 .mono { font-family: ui-monospace, Menlo, monospace; }
 .dot { color: var(--hot); }
 
-/* 鼠标设备才启用自定义光标 */
-@media (hover: hover) and (pointer: fine) { body.has-cursor, body.has-cursor a, body.has-cursor button { cursor: none; } }
-.cur { position: fixed; left: 0; top: 0; width: 34px; height: 31px; margin: -3px 0 0 -2px; pointer-events: none; z-index: 100; opacity: 0; transform-origin: 6% 10%; }
-.cur img { width: 100%; height: 100%; display: block; filter: drop-shadow(0 3px 6px rgba(19, 28, 70, .25)); transition: transform .35s var(--ease); }
-.cur.hover img { transform: rotate(-12deg) scale(1.15); }
-.cur span { position: absolute; left: 30px; top: 26px; background: var(--night); color: var(--paper); font-size: 13px; font-weight: 700; padding: 5px 11px; border-radius: 999px; white-space: nowrap; opacity: 0; transform: scale(.8); transform-origin: left top; transition: opacity .2s, transform .3s var(--ease); }
-.cur.label span { opacity: 1; transform: none; }
+/* 光标：用浏览器原生光标显示徽章鼠标（不跟随延迟；装了自定义光标插件的访客只会看到插件的光标，不会出现两个） */
+html { cursor: url(/brand/cursor-32.png) 1 6, auto; cursor: -webkit-image-set(url(/brand/cursor-32.png) 1x, url(/brand/cursor-64.png) 2x) 1 6, auto; }
+a, button, [data-cursor], label, summary { cursor: url(/brand/cursor-hover-38.png) 1 14, pointer; cursor: -webkit-image-set(url(/brand/cursor-hover-38.png) 1x, url(/brand/cursor-hover-76.png) 2x) 1 14, pointer; }
+input, textarea { cursor: text; }
+/* 悬停提示文字，跟在光标右下方 */
+.cur-label { position: fixed; left: 0; top: 0; z-index: 100; pointer-events: none; background: var(--night); color: var(--paper); font-size: 13px; font-weight: 700; padding: 5px 11px; border-radius: 999px; white-space: nowrap; opacity: 0; transform: scale(.8); transform-origin: left top; transition: opacity .2s, transform .3s var(--ease); }
+.cur-label.on { opacity: 1; transform: none; }
 
 /* 顶栏：差值混合，压在任何底色上都清楚 */
 .bar { transition: transform .5s var(--ease); }

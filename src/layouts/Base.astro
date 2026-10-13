@@ -43,7 +43,7 @@ const follow = site.follow.filter((f) => f.url)
     <meta name="twitter:card" content="summary_large_image" />
   </head>
   <body>
-    <div class="cur" id="cur"><img src="/brand/cursor.png" alt="" /><span></span></div>
+    <div class="cur-label" id="cur-label"></div>
 
     <header class="bar">
       <a class="brand" href="/">{site.name} / Pingyu</a>
@@ -88,21 +88,14 @@ const follow = site.follow.filter((f) => f.url)
       const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches
       const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches
 
-      // 自定义光标：悬停在带 data-cursor 的元素上会放大并显示文字
-      const cur = document.getElementById('cur')!
-      const label = cur.querySelector('span')!
-      if (finePointer && !reduce) {
-        document.body.classList.add('has-cursor')
-        const xTo = gsap.quickTo(cur, 'x', { duration: .08, ease: 'power2' })
-        const yTo = gsap.quickTo(cur, 'y', { duration: .08, ease: 'power2' })
-        addEventListener('pointermove', (e) => { xTo(e.clientX); yTo(e.clientY); gsap.to(cur, { opacity: 1, duration: .2 }) })
-        document.addEventListener('mouseleave', () => gsap.to(cur, { opacity: 0, duration: .2 }))
+      // 悬停在带 data-cursor 的元素上时，光标旁显示提示文字
+      const label = document.getElementById('cur-label')!
+      if (finePointer) {
+        addEventListener('pointermove', (e) => { label.style.left = e.clientX + 26 + 'px'; label.style.top = e.clientY + 24 + 'px' })
         document.addEventListener('mouseover', (e) => {
-          const el = (e.target as HTMLElement).closest<HTMLElement>('a, button, [data-cursor]')
-          const t = el?.dataset.cursor
-          cur.classList.toggle('hover', !!el)
-          cur.classList.toggle('label', !!t)
-          label.textContent = t || ''
+          const t = (e.target as HTMLElement).closest<HTMLElement>('[data-cursor]')?.dataset.cursor
+          if (t) label.textContent = t
+          label.classList.toggle('on', !!t)
         })
       }
 

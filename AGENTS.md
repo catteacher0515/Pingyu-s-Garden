@@ -53,7 +53,7 @@
 ## IP identity
 
 - Palette comes from the user's IP character (`/Users/huapingyu/IP 形象/`): cream `--paper #fbf7ee`, ink `#1c2140`, navy `#23357d`, night `#131c46` (footer, code blocks), gold `--hot #f2b22c` (dots, highlights, hover fills; not for body text).
-- The custom cursor is the gold winged-cursor badge (`public/brand/cursor.png`); favicon is the badge on navy. IP poses are exported to `public/brand/*.webp`; regenerate from the IP folder rather than editing them.
+- The cursor is the gold winged-cursor badge applied as a native CSS cursor (`public/brand/cursor-*.png`, hotspots 1 6 / hover 1 14), not a JS-drawn element: cursor extensions (the user runs Custom Cursor) override native cursors, and a DOM cursor would stack on top of theirs. Only the hover label (`.cur-label`) is a DOM element. Favicon is the badge on navy. IP poses are exported to `public/brand/*.webp`; regenerate from the IP folder rather than editing them.
 
 ## Design direction (decided 2026-10-12)
 
