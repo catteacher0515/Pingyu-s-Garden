@@ -1,0 +1,61 @@
+---
+import { render } from 'astro:content'
+import Article from '../../layouts/Article.astro'
+import { opt } from '../../lib/img'
+import { getProjects, getNotes, noteHref, fmtDay, NOTE_STATUS, type Project } from '../../lib/content'
+
+export async function getStaticPaths() {
+  const [projects, notes] = await Promise.all([getProjects(), getNotes()])
+  return projects.map((p) => ({ params: { id: p.id }, props: { project: p, notes: p.data.noteTopic ? notes.filter((n) => n.data.topic === p.data.noteTopic) : [] } }))
+}
+const { project, notes } = Astro.props as { project: Project; notes: Awaited<ReturnType<typeof getNotes>> }
+const { Content, headings } = await render(project)
+const d = project.data
+---
+<Article title={d.title} description={d.tagline} image={opt(d.cover)} nav="projects" back={{ href: '/#projects', label: '全部项目' }} toc={headings.filter((h) => h.depth <= 3).map((h) => ({ id: h.slug, text: h.text, depth: h.depth }))}>
+  <Fragment slot="meta">
+    {d.period && <span>{d.period}</span>}{d.role && <span>{d.role}</span>}
+    {d.draft && <span class="draft-badge">草稿 · 仅本地可见</span>}
+  </Fragment>
+  <section slot="hero" class="intro">
+    <div class="lead-col">
+      <p class="tagline">{d.tagline}</p>
+      {d.stack.length > 0 && <div class="stack">{d.stack.map((s) => <span>{s}</span>)}</div>}
+      <div class="links">
+        {d.repo && <a class="btn" href={d.repo} target="_blank" rel="noopener" data-cursor="看代码">GitHub ↗</a>}
+        {d.demo && <a class="btn ghost" href={d.demo} target="_blank" rel="noopener" data-cursor="去体验">在线演示 ↗</a>}
+      </div>
+    </div>
+    {d.cover && <img class="cover" src={opt(d.cover)} alt="" />}
+  </section>
+  {d.highlights.length > 0 && (
+    <ol class="hl">{d.highlights.map((h, i) => <li><b>{String(i + 1).padStart(2, '0')}</b><span>{h}</span></li>)}</ol>
+  )}
+  <Content />
+  {notes.length > 0 && (
+    <Fragment slot="after">
+      <div class="more">
+        <div class="sh"><h2>这个项目的笔记 · {notes.length} 篇</h2></div>
+        <div class="list">
+          {notes.map((n) => <a class="row" href={noteHref(n)} data-title={n.data.title}><span class="k">{NOTE_STATUS[n.data.status].icon} 笔记</span><span>{n.data.title}</span><small>{fmtDay(n.data.updated)}</small><small class="go">→</small></a>)}
+        </div>
+      </div>
+    </Fragment>
+  )}
+</Article>
+
+<style>
+  .intro { display: grid; grid-template-columns: 1.3fr 1fr; gap: 60px; align-items: center; padding: 0 var(--pad) 20px; }
+  .tagline { font-size: 24px; line-height: 1.6; }
+  .stack { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px; }
+  .stack span { border: 1px solid var(--ink); border-radius: 999px; padding: 5px 14px; font-size: 14px; font-weight: 600; }
+  .links { display: flex; gap: 12px; margin-top: 30px; }
+  .btn { background: var(--night); color: var(--paper); padding: 12px 22px; border-radius: 999px; font-weight: 600; font-size: 15px; transition: background .3s, color .3s; }
+  .btn:hover { background: var(--hot); color: var(--ink); }
+  .btn.ghost { background: transparent; color: var(--ink); border: 1.5px solid var(--ink); }
+  .cover { width: 100%; max-height: 320px; object-fit: contain; }
+  .hl { list-style: none; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 0 0 40px !important; padding: 0 !important; }
+  .hl li { background: var(--paper2); border-radius: 10px; padding: 22px; font-size: 16px; line-height: 1.6; }
+  .hl b { display: block; font-size: 30px; color: var(--navy); letter-spacing: -.03em; margin-bottom: 8px; }
+  .more { margin-top: 120px; }
+</style>

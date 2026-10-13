@@ -43,9 +43,21 @@
 - The user edits content at `/admin/` (Sveltia CMS, GitHub backend, currently `branch: astro-v2`). Sign-in uses a GitHub personal access token for now; an OAuth authenticator on Cloudflare Workers can be added later.
 - Saving in the CMS commits to GitHub; the host rebuilds the site.
 
+## Purpose (decided 2026-10-13)
+
+- The site serves the user's 2027 winter-break internship search first: target role is **Agent development** (not Java backend; AI app dev only secondarily). Visitors to optimise for are interviewers.
+- Homepage order: hero (name, role, status pill, IP character) → 项目 (the three resume projects, big cards linking to `/projects/[id]/`) → 视频 → 笔记 → 发发神经 → 关注我.
+- The three resume projects: AI 超级智能体, AI 修图智能体, 实习时做的内容运营工作台 (新通教育). They live in `src/content/projects/` and stay `draft: true` until the user supplies real details; never invent results, metrics or responsibilities. `noteTopic` links Obsidian notes (same `topic`) to a project page.
+- Do not put a resume PDF or phone number on the site; the user applies via recruiting platforms.
+
+## IP identity
+
+- Palette comes from the user's IP character (`/Users/huapingyu/IP 形象/`): cream `--paper #fbf7ee`, ink `#1c2140`, navy `#23357d`, night `#131c46` (footer, code blocks), gold `--hot #f2b22c` (dots, highlights, hover fills; not for body text).
+- The custom cursor is the gold winged-cursor badge (`public/brand/cursor.png`); favicon is the badge on navy. IP poses are exported to `public/brand/*.webp`; regenerate from the IP folder rather than editing them.
+
 ## Design direction (decided 2026-10-12)
 
-- The live design is prototype A「片场」 from `docs/prototypes/v3/a-studio.html`: light paper `#f2efe9`, ink `#141414`, hot orange `#ff4b1f`, huge name hero with a "screen" showing the latest video, scroll-pinned horizontal video reel (only when ≥3 videos), hover list with cursor-following preview for 教程 & 笔记, rants marquee, black 「关注我」 footer, custom cursor, ⌘K search. Single light theme, no dark mode.
+- The layout language is prototype A「片场」 from `docs/prototypes/v3/a-studio.html` (colours since replaced by the IP palette above): huge name hero, scroll-pinned horizontal video reel (only when ≥3 videos), hover list with cursor-following preview for 教程 & 笔记, rants marquee, black 「关注我」 footer, custom cursor, ⌘K search. Single light theme, no dark mode.
 - The user rejected prototype C (colour blocks) outright, and B (desktop/windows) because its interaction felt bad, though they liked the sticky-note idea.
 - Desktop only (decided 2026-10-12): design, test and screenshot at desktop widths; no mobile work unless asked.
 - Never reuse old-site visuals (poster illustration, red line doodles, Zhihu covers). Old posts/projects are archived in `archive/old-site-content/` and offline.

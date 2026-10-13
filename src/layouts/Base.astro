@@ -6,7 +6,7 @@ import { getSearchIndex, getSectionPresence } from '../lib/content'
 interface Props {
   title?: string
   description?: string
-  nav?: 'videos' | 'writing' | 'rants'
+  nav?: 'projects' | 'videos' | 'writing' | 'rants'
   image?: string
 }
 const { title, description = site.tagline, nav, image = '/og.png' } = Astro.props
@@ -16,8 +16,9 @@ const pageTitle = title ? `${title} · 花萍雨` : '花萍雨 · Pingyu'
 const search = await getSearchIndex()
 const has = await getSectionPresence()
 const links = [
+  has.projects && { id: 'projects', href: '/#projects', label: '项目' },
   has.videos && { id: 'videos', href: '/videos/', label: '视频' },
-  (has.posts || has.notes) && { id: 'writing', href: '/writing/', label: '教程 & 笔记' },
+  (has.posts || has.notes) && { id: 'writing', href: '/writing/', label: '笔记' },
   has.rants && { id: 'rants', href: '/rants/', label: '发发神经' },
 ].filter((l) => !!l)
 const follow = site.follow.filter((f) => f.url)
@@ -29,7 +30,8 @@ const follow = site.follow.filter((f) => f.url)
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
-    <link rel="icon" href="/favicon.svg" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="canonical" href={canonical} />
     <link rel="sitemap" href="/sitemap.xml" />
     <meta property="og:type" content="website" />
@@ -41,7 +43,7 @@ const follow = site.follow.filter((f) => f.url)
     <meta name="twitter:card" content="summary_large_image" />
   </head>
   <body>
-    <div class="cur" id="cur"><span></span></div>
+    <div class="cur" id="cur"><img src="/brand/cursor.png" alt="" /><span></span></div>
 
     <header class="bar">
       <a class="brand" href="/">{site.name} / Pingyu</a>
@@ -91,17 +93,16 @@ const follow = site.follow.filter((f) => f.url)
       const label = cur.querySelector('span')!
       if (finePointer && !reduce) {
         document.body.classList.add('has-cursor')
-        const xTo = gsap.quickTo(cur, 'x', { duration: .35, ease: 'power3' })
-        const yTo = gsap.quickTo(cur, 'y', { duration: .35, ease: 'power3' })
+        const xTo = gsap.quickTo(cur, 'x', { duration: .08, ease: 'power2' })
+        const yTo = gsap.quickTo(cur, 'y', { duration: .08, ease: 'power2' })
         addEventListener('pointermove', (e) => { xTo(e.clientX); yTo(e.clientY); gsap.to(cur, { opacity: 1, duration: .2 }) })
         document.addEventListener('mouseleave', () => gsap.to(cur, { opacity: 0, duration: .2 }))
         document.addEventListener('mouseover', (e) => {
           const el = (e.target as HTMLElement).closest<HTMLElement>('a, button, [data-cursor]')
           const t = el?.dataset.cursor
-          gsap.to(cur, { width: el ? (t ? 84 : 36) : 12, height: el ? (t ? 84 : 36) : 12, margin: el ? (t ? -42 : -18) : -6, duration: .4, ease: 'expo.out' })
-          label.textContent = t || ''
+          cur.classList.toggle('hover', !!el)
           cur.classList.toggle('label', !!t)
-          gsap.to(label, { opacity: t ? 1 : 0, duration: .2 })
+          label.textContent = t || ''
         })
       }
 
@@ -129,7 +130,7 @@ const follow = site.follow.filter((f) => f.url)
         const py = gsap.quickTo(peek, 'y', { duration: .5, ease: 'power3' })
         list.querySelectorAll<HTMLElement>('.row').forEach((r) => {
           r.addEventListener('mouseenter', () => {
-            peek.style.background = r.dataset.bg || '#141414'
+            peek.style.background = r.dataset.bg || '#131c46'
             peek.innerHTML = r.dataset.img ? `<img src="${r.dataset.img}" alt="">` : ''
             if (!r.dataset.img) peek.textContent = r.dataset.title || ''
             gsap.to(peek, { opacity: 1, scale: 1, rotate: gsap.utils.random(-6, 6), duration: .5, ease: 'expo.out' })

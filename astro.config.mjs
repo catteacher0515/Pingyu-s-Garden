@@ -9,6 +9,6 @@ export default defineConfig({
   redirects: {
     '/posts': '/writing/',
     '/notes': '/writing/',
-    '/projects': '/',
+    '/projects': '/#projects',
   },
 })

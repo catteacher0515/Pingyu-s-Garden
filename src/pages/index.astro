@@ -2,42 +2,53 @@
 import Base from '../layouts/Base.astro'
 import site from '../data/site.json'
 import { opt } from '../lib/img'
-import { getVideos, getRants, getWritingRows, videoHref, thumb, fmtDay } from '../lib/content'
+import { getVideos, getRants, getWritingRows, getProjects, projectPageHref, videoHref, thumb, fmtDay } from '../lib/content'
 
-const [videos, rants, rows] = await Promise.all([getVideos(), getRants(), getWritingRows()])
-const latest = videos[0]
+const [videos, rants, rows, projects] = await Promise.all([getVideos(), getRants(), getWritingRows(), getProjects()])
+let n = 0
+const no = () => String(++n).padStart(2, '0')
 const pinned = videos.length >= 3 // 视频够多才用横向滚动
 const writing = rows.slice(0, 8)
 ---
 <Base>
   <section class="hero">
     <div>
+      <p class="role reveal">{site.role}</p>
       <h1 id="name">{site.name}<span class="dot">.</span></h1>
       <p class="sub reveal" style="--d:.5s">{site.tagline}</p>
-      <p class="now reveal" style="--d:.6s"><i></i><span id="now" data-now={JSON.stringify(site.now)}>{site.now[0]}</span></p>
+      {site.status && <a class="status reveal" style="--d:.6s" href="#projects" data-cursor="看项目"><i></i>{site.status}<span>→</span></a>}
+      <p class="now reveal" style="--d:.7s"><span id="now" data-now={JSON.stringify(site.now)}>{site.now[0]}</span></p>
     </div>
-    {latest ? (
-      <a class="screen" href={videoHref(latest)} data-cursor="看最新">
-        {latest.data.cover ? <img src={opt(latest.data.cover)} alt="" /> : <div class="feed"></div>}
-        {latest.data.preview && <video src={latest.data.preview} muted loop playsinline autoplay></video>}
-        <div class="grain"></div>
-        <div class="rec"><i></i>最新一期{latest.data.draft && <span class="draft-badge">草稿</span>}</div>
-        <div class="title">{latest.data.title}</div>
-        <div class="hud mono"><span id="tc">00:00:00:00</span><span>{latest.data.duration ?? fmtDay(latest.data.date)}</span></div>
-      </a>
-    ) : (
-      <div class="screen idle">
-        <div class="feed"></div><div class="grain"></div>
-        <div class="rec"><i></i>频道筹备中</div>
-        <div class="title">第一支视频正在剪，<br />很快就来。</div>
-        <div class="hud mono"><span id="tc">00:00:00:00</span><span>STANDBY</span></div>
-      </div>
-    )}
+    <div class="ip" id="ip">
+      <img class="ip-img" src="/brand/chin.webp" alt="花萍雨的 IP 形象" />
+      <img class="ip-badge" src="/brand/logo.webp" alt="" />
+    </div>
   </section>
 
+  {projects.length > 0 && (
+    <section id="projects" class="block first">
+      <div class="sh"><h2>{no()} · 项目</h2><span>做过的 Agent 和工程项目</span></div>
+      <div class="projects">
+        {projects.map((p, i) => (
+          <a class="proj reveal-scroll" href={projectPageHref(p)} data-cursor="看详情">
+            <div class="pmeta">
+              <span class="pno">{String(i + 1).padStart(2, '0')}</span>
+              <h3>{p.data.title}{p.data.draft && <span class="draft-badge">草稿</span>}</h3>
+              <p class="ptag">{p.data.tagline}</p>
+              {p.data.stack.length > 0 && <div class="pstack">{p.data.stack.map((t) => <span>{t}</span>)}</div>}
+              {p.data.highlights.length > 0 && <ul class="phl">{p.data.highlights.slice(0, 3).map((h) => <li>{h}</li>)}</ul>}
+              <span class="pgo">项目详情 →</span>
+            </div>
+            <div class="pcover">{p.data.cover ? <img src={opt(p.data.cover)} alt="" loading="lazy" /> : <div class="bg" style={`background:${thumb(i)}`}></div>}</div>
+          </a>
+        ))}
+      </div>
+    </section>
+  )}
+
   {videos.length > 0 && (
-    <section id="videos">
-      <div class="sh"><h2>01 · 视频</h2><a class="ulink" href="/videos/">全部 {videos.length} 支 →</a></div>
+    <section id="videos" class="block">
+      <div class="sh"><h2>{no()} · 视频</h2><a class="ulink" href="/videos/">全部 {videos.length} 支 →</a></div>
       {pinned ? (
         <div class="reel" id="reel">
           <div class="track" id="track">
@@ -75,7 +86,7 @@ const writing = rows.slice(0, 8)
 
   {writing.length > 0 && (
     <section id="writing" class="block">
-      <div class="sh"><h2>{videos.length ? '02' : '01'} · 教程 & 笔记</h2><a class="ulink" href="/writing/">全部 →</a></div>
+      <div class="sh"><h2>{no()} · 笔记</h2><a class="ulink" href="/writing/">全部 →</a></div>
       <p class="big">写下来的<span class="serif">慢</span>东西</p>
       <div class="list">
         {writing.map((r, i) => (
@@ -102,25 +113,43 @@ const writing = rows.slice(0, 8)
 </Base>
 
 <style>
-  .hero { height: 100vh; min-height: 720px; display: grid; grid-template-columns: 1.2fr 1fr; align-items: end; gap: 48px; padding: 0 var(--pad) 64px; }
-  .hero h1 { font-size: clamp(120px, 14vw, 260px); line-height: .82; letter-spacing: -.06em; font-weight: 850; white-space: nowrap; }
+  .hero { height: 100vh; min-height: 760px; display: grid; grid-template-columns: 1.3fr 1fr; align-items: end; gap: 48px; padding: 110px var(--pad) 56px; }
+  .role { font-size: 16px; font-weight: 600; color: var(--navy); margin-bottom: 18px; letter-spacing: .02em; }
+  .status { display: inline-flex; align-items: center; gap: 10px; margin-top: 26px; background: var(--night); color: var(--paper); padding: 11px 18px 11px 14px; border-radius: 999px; font-size: 15px; font-weight: 600; transition: background .3s, color .3s; }
+  .status i { width: 9px; height: 9px; border-radius: 50%; background: var(--hot); box-shadow: 0 0 0 4px color-mix(in srgb, var(--hot) 35%, transparent); animation: blink 1.4s infinite; }
+  .status span { transition: transform .3s var(--ease); }
+  .status:hover { background: var(--hot); color: var(--ink); }
+  .status:hover span { transform: translateX(4px); }
+  .ip { position: relative; align-self: end; justify-self: center; width: min(30vw, 480px); max-height: calc(100vh - 180px); animation: pop 1.2s var(--ease) .2s backwards; }
+  @keyframes pop { from { opacity: 0; transform: translateY(40px) scale(.94); } }
+  .ip::before { content: ''; position: absolute; left: 8%; right: 8%; bottom: 2%; height: 70%; border-radius: 50%; background: radial-gradient(closest-side, color-mix(in srgb, var(--hot) 45%, transparent), transparent); filter: blur(30px); z-index: -1; }
+  .ip-img { width: 100%; max-height: calc(100vh - 180px); object-fit: contain; animation: float 6s ease-in-out infinite; }
+  .ip-badge { position: absolute; width: 21%; right: 2%; top: 4%; animation: float 5s ease-in-out -1.5s infinite; filter: drop-shadow(0 10px 18px rgba(19, 28, 70, .25)); }
+  @keyframes float { 50% { transform: translateY(-14px); } }
+  .block.first { margin-top: 40px; }
+  .projects { display: grid; gap: 28px; padding: 30px var(--pad) 0; }
+  .proj { display: grid; grid-template-columns: 1.15fr 1fr; gap: 50px; align-items: center; background: var(--paper2); border-radius: 18px; padding: 44px; transition: transform .5s var(--ease), box-shadow .5s var(--ease); }
+  .proj:nth-child(even) { grid-template-columns: 1fr 1.15fr; }
+  .proj:nth-child(even) .pcover { order: -1; }
+  .proj:hover { transform: translateY(-6px); box-shadow: 0 30px 60px rgba(19, 28, 70, .12); }
+  .pno { font-size: 15px; font-weight: 700; color: var(--navy); }
+  .proj h3 { font-size: clamp(40px, 4.4vw, 72px); letter-spacing: -.04em; line-height: 1.05; margin-top: 10px; display: flex; align-items: center; gap: 14px; }
+  .ptag { font-size: 18px; line-height: 1.7; margin-top: 18px; max-width: 640px; }
+  .pstack { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+  .pstack span { border: 1px solid var(--ink); border-radius: 999px; padding: 4px 12px; font-size: 13px; font-weight: 600; }
+  .phl { margin-top: 22px; padding-left: 0; list-style: none; display: grid; gap: 8px; font-size: 15px; color: #4b4f66; }
+  .phl li { padding-left: 22px; position: relative; line-height: 1.6; }
+  .phl li::before { content: ''; position: absolute; left: 0; top: .6em; width: 10px; height: 10px; border-radius: 50%; background: var(--hot); }
+  .pgo { display: inline-block; margin-top: 26px; font-weight: 700; border-bottom: 2px solid var(--hot); padding-bottom: 2px; }
+  .pcover { position: relative; height: 340px; display: grid; place-items: center; overflow: hidden; }
+  .pcover img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; transition: transform .8s var(--ease); }
+  .pcover .bg { position: absolute; inset: 0; border-radius: 12px; }
+  .proj:hover .pcover img { transform: scale(1.04) rotate(-1.5deg); }
+  .hero h1 { font-size: clamp(110px, 12.5vw, 230px); line-height: .82; letter-spacing: -.06em; font-weight: 850; white-space: nowrap; }
   .sub { margin-top: 28px; font-size: 22px; line-height: 1.5; max-width: 560px; }
   .now { margin-top: 22px; display: flex; align-items: center; gap: 10px; color: var(--mute); font-size: 15px; }
   .now i { width: 8px; height: 8px; border-radius: 50%; background: var(--hot); animation: blink 1.4s infinite; }
   @keyframes blink { 50% { opacity: .25; } }
-  .screen { position: relative; aspect-ratio: 16/10; border-radius: 6px; overflow: hidden; background: #111; align-self: center; color: #fff; animation: unclip 1.4s var(--ease) .3s backwards; }
-  @keyframes unclip { from { clip-path: inset(0 0 100% 0); } }
-  .screen img, .screen video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-  .screen .feed { position: absolute; inset: -20%; background: conic-gradient(from 0deg at 50% 50%, #ff4b1f, #ffb199, #3d5afe, #00a37a, #ff4b1f); filter: blur(40px) saturate(1.2); animation: spin 14s linear infinite; }
-  .screen.idle .feed { filter: blur(50px) saturate(.9) brightness(.85); }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .screen::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.65) 0%, rgba(0,0,0,0) 45%), linear-gradient(to bottom, rgba(0,0,0,.35) 0%, rgba(0,0,0,0) 20%); pointer-events: none; }
-  .screen .rec, .screen .title, .screen .hud { z-index: 1; }
-  .screen .grain { position: absolute; inset: 0; background: repeating-linear-gradient(0deg, rgba(0, 0, 0, .08) 0 1px, transparent 1px 3px); mix-blend-mode: multiply; }
-  .screen .rec { position: absolute; left: 18px; top: 16px; font: 600 13px ui-monospace, Menlo, monospace; display: flex; gap: 8px; align-items: center; }
-  .screen .rec i { width: 9px; height: 9px; border-radius: 50%; background: #ff2d2d; animation: blink 1s infinite; }
-  .screen .title { position: absolute; left: 18px; right: 18px; bottom: 44px; font-size: 28px; font-weight: 700; line-height: 1.25; text-shadow: 0 2px 20px rgba(0, 0, 0, .3); }
-  .screen .hud { position: absolute; left: 18px; right: 18px; bottom: 16px; display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; }
   .block { margin-top: 140px; }
   .reel { height: 100vh; overflow: hidden; margin-top: 20px; }
   .track { display: flex; gap: 28px; padding: 0 var(--pad); height: 100%; align-items: center; will-change: transform; }
@@ -159,13 +188,13 @@ const writing = rows.slice(0, 8)
     } })
   }, 2600)
 
-  // 屏幕上的时间码
-  const tc = document.getElementById('tc')
-  let f = 0
-  if (tc && !reduce) setInterval(() => {
-    f++; const s = Math.floor(f / 25)
-    tc.textContent = `00:${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}:${String(f % 25).padStart(2, '0')}`
-  }, 40)
+  // 角色跟随鼠标轻微视差
+  const ip = document.getElementById('ip')
+  if (ip && !reduce) addEventListener('pointermove', (e) => {
+    if (e.pointerType !== 'mouse') return
+    const x = e.clientX / innerWidth - .5, y = e.clientY / innerHeight - .5
+    gsap.to(ip, { x: x * -24, y: y * -16, rotate: x * 2, duration: 1, ease: 'power3.out' })
+  })
 
   // 视频：竖向滚动驱动横向移动
   const track = document.getElementById('track')

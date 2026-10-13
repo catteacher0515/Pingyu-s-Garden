@@ -36,15 +36,22 @@ const posts = defineCollection({
   }),
 })
 
+// 简历上的项目：首页「项目」区和 /projects/[id] 详情页
 const projects = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/projects' }),
   schema: z.object({
-    ...common,
-    status: z.enum(['可访问', '自用中', '实验中', '已归档']),
-    form: z.string().optional(),
-    link: z.string().url().optional(),
+    title: z.string(),
+    tagline: z.string(),
+    period: z.string().optional(),
+    role: z.string().optional(),
+    stack: z.array(z.string()).default([]),
+    highlights: z.array(z.string()).default([]),
+    cover: z.string().optional(),
     repo: z.string().url().optional(),
+    demo: z.string().url().optional(),
+    noteTopic: z.string().optional(),
     order: z.number().default(0),
+    draft: z.boolean().default(false),
   }),
 })
 

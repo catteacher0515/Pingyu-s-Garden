@@ -60,6 +60,29 @@ collections:
       - { name: order, label: 排序（没有日期时生效，越小越靠前）, widget: number, value_type: int, default: 0, required: false }
       - { name: body, label: 正文, widget: markdown, required: false }
 
+  - name: projects
+    label: 项目
+    label_singular: 项目
+    folder: src/content/projects
+    slug: '{{slug}}'
+    create: true
+    sortable_fields: [order, title]
+    summary: '{{order}}. {{title}}'
+    fields:
+      - { name: title, label: 项目名 }
+      - { name: tagline, label: 一句话介绍, widget: text }
+      - { name: period, label: 时间, required: false, hint: '例如 2026.02' }
+      - { name: role, label: 我的角色, required: false, hint: '例如：独立开发 / 后端负责人' }
+      - { name: stack, label: 技术栈, widget: list, required: false }
+      - { name: highlights, label: 三条亮点, widget: list, required: false, hint: '面试官最该看到的三件事，最好带数据' }
+      - { name: cover, label: 封面或截图, widget: image, required: false }
+      - { name: repo, label: GitHub 地址, required: false }
+      - { name: demo, label: 在线演示地址, required: false }
+      - { name: noteTopic, label: 关联笔记的主题, required: false, hint: '和 Obsidian 笔记的 topic 一致，这些笔记会自动列在项目页底部' }
+      - { name: order, label: 排序（越小越靠前）, widget: number, value_type: int, default: 1 }
+      - { name: draft, label: 草稿（不发布）, widget: boolean, default: false }
+      - { name: body, label: 项目详情, widget: markdown, required: false, hint: '建议分「背景 / 我做了什么 / 技术难点 / 结果」四节' }
+
   - name: rants
     label: 发发神经
     label_singular: 一条神经
@@ -83,7 +106,9 @@ collections:
         file: src/data/site.json
         fields:
           - { name: name, label: 名字 }
+          - { name: role, label: 身份, hint: '例如：Agent 开发 · 准大三' }
           - { name: tagline, label: 一句话介绍, widget: text }
+          - { name: status, label: 求职状态, required: false, hint: '首页名字下方的高亮条；留空就不显示' }
           - { name: now, label: 正在做（首页轮换显示）, widget: list }
           - name: follow
             label: 关注我（填了链接的才会显示）

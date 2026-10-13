@@ -5,7 +5,7 @@ export type TocItem = { id: string; text: string; depth: number }
 interface Props {
   title: string
   description?: string
-  nav: 'videos' | 'writing'
+  nav: 'videos' | 'writing' | 'projects'
   back: { href: string; label: string }
   toc?: TocItem[]
   image?: string

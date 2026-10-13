@@ -26,6 +26,8 @@ export async function getProjects() {
   return (await getCollection('projects', visible)).sort((a, b) => a.data.order - b.data.order)
 }
 
+export const projectPageHref = (p: Project) => `/projects/${p.id}/`
+
 export async function getRants() {
   return (await getCollection('rants', visible)).sort((a, b) => time(b.data.date) - time(a.data.date))
 }
@@ -50,7 +52,6 @@ export function groupNotes(notes: Note[]) {
 export const noteHref = (n: Note) => `/notes/${n.id}/`
 export const postHref = (p: Post) => p.data.external ?? `/posts/${p.id}/`
 export const videoHref = (v: Video) => `/videos/${v.id}/`
-export const projectHref = (p: Project) => p.data.link ?? p.data.repo ?? '/'
 
 export function bvidOf(url: string) {
   return url.match(/BV[0-9A-Za-z]{10}/)?.[0]
@@ -74,10 +75,10 @@ export const STATUS_ORDER = ['可访问', '自用中', '实验中', '已归档']
 export const CATEGORY_ORDER = ['教程', '文章'] as const
 
 /** 没有封面时的统一缩略图：渐变色块，按序号轮换 */
-const PALETTE = [['#ff4b1f', '#ffb199'], ['#3d5afe', '#9aa8ff'], ['#00a37a', '#9be7c8'], ['#ffb300', '#ffe08a'], ['#c2185b', '#f48fb1']]
+const PALETTE = [['#23357d', '#6f84d6'], ['#f2b22c', '#ffe3a0'], ['#131c46', '#4b5a9e'], ['#3f6fd8', '#b9cbff'], ['#c98a14', '#f7d27a']]
 export function thumb(i: number) {
   const [a, b] = PALETTE[i % PALETTE.length]
-  return `radial-gradient(120% 90% at ${20 + (i * 23) % 60}% ${30 + (i * 17) % 40}%, ${b} 0%, ${a} 55%, #111 140%)`
+  return `radial-gradient(120% 90% at ${20 + (i * 23) % 60}% ${30 + (i * 17) % 40}%, ${b} 0%, ${a} 55%, #131c46 140%)`
 }
 
 export const fmtDay = (d: Date) => `${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`
@@ -106,7 +107,7 @@ export async function getSearchIndex(): Promise<SearchItem[]> {
   return [
     ...videos.map((x) => ({ title: x.data.title, label: '视频', href: videoHref(x), cover: opt(x.data.cover), text: [x.data.summary, ...x.data.tags].join(' ') })),
     ...posts.map((x) => ({ title: x.data.title, label: x.data.category, href: postHref(x), cover: opt(x.data.cover), text: [x.data.summary, ...x.data.tags].join(' ') })),
-    ...projects.map((x) => ({ title: x.data.title, label: '项目', href: projectHref(x), cover: opt(x.data.cover), text: [x.data.summary, x.data.status, ...x.data.tags].join(' ') })),
+    ...projects.map((x) => ({ title: x.data.title, label: '项目', href: projectPageHref(x), cover: opt(x.data.cover), text: [x.data.tagline, x.data.role, ...x.data.stack].join(' ') })),
     ...notes.map((x) => ({ title: x.data.title, label: '笔记', href: noteHref(x), text: [x.data.topic, x.data.summary, ...x.data.tags].join(' ') })),
   ]
 }
