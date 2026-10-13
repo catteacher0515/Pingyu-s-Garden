@@ -5,19 +5,19 @@ import { opt } from '../lib/img'
 import { getVideos, getRants, getWritingRows, getProjects, projectPageHref, videoHref, thumb, fmtDay } from '../lib/content'
 
 const [videos, rants, rows, projects] = await Promise.all([getVideos(), getRants(), getWritingRows(), getProjects()])
+const latestVideos = videos.slice(0, 4)
+// 笔记少于 3 篇时首页不展示这一块，免得显得空；导航里的「笔记」照常可以进
+const writing = rows.length >= 3 ? rows.slice(0, 6) : []
 let n = 0
 const no = () => String(++n).padStart(2, '0')
-const pinned = videos.length >= 3 // 视频够多才用横向滚动
-const writing = rows.slice(0, 8)
 ---
 <Base>
   <section class="hero">
-    <div>
+    <div class="hero-text">
       <p class="role reveal">{site.role}</p>
       <h1 id="name">{site.name}<span class="dot">.</span></h1>
       <p class="sub reveal" style="--d:.5s">{site.tagline}</p>
-      {site.status && <a class="status reveal" style="--d:.6s" href="#projects" data-cursor="看项目"><i></i>{site.status}<span>→</span></a>}
-      <p class="now reveal" style="--d:.7s"><span id="now" data-now={JSON.stringify(site.now)}>{site.now[0]}</span></p>
+      <p class="now reveal" style="--d:.6s"><i></i><span id="now" data-now={JSON.stringify(site.now)}>{site.now[0]}</span></p>
     </div>
     <div class="ip" id="ip">
       <img class="ip-img" src="/brand/chin.webp" alt="花萍雨的 IP 形象" />
@@ -27,21 +27,23 @@ const writing = rows.slice(0, 8)
 
   {projects.length > 0 && (
     <section id="projects" class="block first">
-      <div class="sh"><h2>{no()} · 项目</h2><span>做过的 Agent 和工程项目</span></div>
+      <div class="sh"><h2>{no()} · 项目</h2><span>正在做的 Agent 和工程项目</span></div>
       <div class="projects">
-        {projects.map((p, i) => (
-          <a class="proj reveal-scroll" href={projectPageHref(p)} data-cursor="看详情">
-            <div class="pmeta">
-              <span class="pno">{String(i + 1).padStart(2, '0')}</span>
-              <h3>{p.data.title}{p.data.draft && <span class="draft-badge">草稿</span>}</h3>
-              <p class="ptag">{p.data.tagline}</p>
-              {p.data.stack.length > 0 && <div class="pstack">{p.data.stack.map((t) => <span>{t}</span>)}</div>}
-              {p.data.highlights.length > 0 && <ul class="phl">{p.data.highlights.slice(0, 3).map((h) => <li>{h}</li>)}</ul>}
-              <span class="pgo">项目详情 →</span>
-            </div>
-            <div class="pcover">{p.data.cover ? <img src={opt(p.data.cover)} alt="" loading="lazy" /> : <div class="bg" style={`background:${thumb(i)}`}></div>}</div>
-          </a>
-        ))}
+        {projects.map((p, i) => {
+          const Tag = p.data.wip ? 'div' : 'a'
+          return (
+            <Tag class:list={['proj', 'reveal-scroll', { wip: p.data.wip }]} href={p.data.wip ? undefined : projectPageHref(p)} data-cursor={p.data.wip ? undefined : '看详情'}>
+              <div class="pcover">{p.data.cover ? <img src={opt(p.data.cover)} alt="" loading="lazy" /> : <div class="bg" style={`background:${thumb(i)}`}></div>}</div>
+              <div class="pmeta">
+                <div class="ptop"><span class="pno">{String(i + 1).padStart(2, '0')}</span>{p.data.wip && <span class="pwip"><i></i>开发中</span>}{p.data.period && <span class="pperiod">{p.data.period}</span>}</div>
+                <h3>{p.data.title}</h3>
+                <p class="ptag">{p.data.tagline}</p>
+                {p.data.stack.length > 0 && <div class="pstack">{p.data.stack.map((t) => <span>{t}</span>)}</div>}
+                {!p.data.wip && <span class="pgo">项目详情 →</span>}
+              </div>
+            </Tag>
+          )
+        })}
       </div>
     </section>
   )}
@@ -49,49 +51,31 @@ const writing = rows.slice(0, 8)
   {videos.length > 0 && (
     <section id="videos" class="block">
       <div class="sh"><h2>{no()} · 视频</h2><a class="ulink" href="/videos/">全部 {videos.length} 支 →</a></div>
-      {pinned ? (
-        <div class="reel" id="reel">
-          <div class="track" id="track">
-            {videos.map((v, i) => (
-              <a class="vcard" href={videoHref(v)} data-cursor="播放">
-                <div class="frame">
-                  {v.data.cover ? <img src={opt(v.data.cover)} alt="" loading="lazy" /> : <div class="bg" style={`background:${thumb(i)}`}></div>}
-                  {v.data.preview && <video src={v.data.preview} muted loop playsinline preload="none" data-hover-preview></video>}
-                  <span class="no">{String(i + 1).padStart(2, '0')}</span>{v.data.duration && <span class="len mono">{v.data.duration}</span>}
-                </div>
-                <div class="meta"><span>{v.data.tags[0] ?? v.data.platform}</span><span>{fmtDay(v.data.date)}{v.data.draft && ' · 草稿'}</span></div>
-                <h3>{v.data.title}</h3>
-              </a>
-            ))}
-            <div class="reel-end">全部视频<br />都在 <a href="/videos/">这里 →</a></div>
-          </div>
-        </div>
-      ) : (
-        <div class="vgrid">
-          {videos.map((v, i) => (
-            <a class="vcard reveal-scroll" href={videoHref(v)} data-cursor="播放">
-              <div class="frame">
-                {v.data.cover ? <img src={opt(v.data.cover)} alt="" loading="lazy" /> : <div class="bg" style={`background:${thumb(i)}`}></div>}
-                {v.data.preview && <video src={v.data.preview} muted loop playsinline preload="none" data-hover-preview></video>}
-                <span class="no">{String(i + 1).padStart(2, '0')}</span>{v.data.duration && <span class="len mono">{v.data.duration}</span>}
-              </div>
-              <div class="meta"><span>{v.data.tags[0] ?? v.data.platform}</span><span>{fmtDay(v.data.date)}{v.data.draft && ' · 草稿'}</span></div>
-              <h3>{v.data.title}</h3>
-            </a>
-          ))}
-        </div>
-      )}
+      <div class="vgrid">
+        {latestVideos.map((v, i) => (
+          <a class="vcard reveal-scroll" href={videoHref(v)} data-cursor="播放">
+            <div class="frame">
+              {v.data.cover ? <img src={opt(v.data.cover)} alt="" loading="lazy" /> : <div class="bg" style={`background:${thumb(i)}`}></div>}
+              {v.data.preview && <video src={v.data.preview} muted loop playsinline preload="none" data-hover-preview></video>}
+              {v.data.duration && <span class="len mono">{v.data.duration}</span>}
+            </div>
+            <div class="meta"><span>{v.data.tags[0] ?? v.data.platform}</span><span>{fmtDay(v.data.date)}{v.data.draft && ' · 草稿'}</span></div>
+            <h3>{v.data.title}</h3>
+          </a>
+        ))}
+      </div>
     </section>
   )}
 
   {writing.length > 0 && (
     <section id="writing" class="block">
-      <div class="sh"><h2>{no()} · 笔记</h2><a class="ulink" href="/writing/">全部 →</a></div>
-      <p class="big">写下来的<span class="serif">慢</span>东西</p>
-      <div class="list">
-        {writing.map((r, i) => (
-          <a class="row reveal-scroll" href={r.href} data-title={r.title} data-bg={thumb(i + 1)} data-img={r.cover} target={r.external ? '_blank' : undefined} rel={r.external ? 'noopener' : undefined}>
-            <span class="k">{r.kind}{r.draft && ' · 草稿'}</span><span>{r.title}</span><small>{r.meta}</small><small class="go">{r.external ? '↗' : '→'}</small>
+      <div class="sh"><h2>{no()} · 笔记</h2><a class="ulink" href="/writing/">全部 {rows.length} 篇 →</a></div>
+      <div class="ngrid">
+        {writing.map((r) => (
+          <a class="ncard reveal-scroll" href={r.href} target={r.external ? '_blank' : undefined} rel={r.external ? 'noopener' : undefined}>
+            <span class="nk">{r.kind}</span>
+            <h3>{r.title}</h3>
+            <span class="nm">{r.meta}</span>
           </a>
         ))}
       </div>
@@ -113,54 +97,51 @@ const writing = rows.slice(0, 8)
 </Base>
 
 <style>
-  .hero { height: 100vh; min-height: 760px; display: grid; grid-template-columns: 1.3fr 1fr; align-items: end; gap: 48px; padding: 110px var(--pad) 56px; }
-  .role { font-size: 16px; font-weight: 600; color: var(--navy); margin-bottom: 18px; letter-spacing: .02em; }
-  .status { display: inline-flex; align-items: center; gap: 10px; margin-top: 26px; background: var(--night); color: var(--paper); padding: 11px 18px 11px 14px; border-radius: 999px; font-size: 15px; font-weight: 600; transition: background .3s, color .3s; }
-  .status i { width: 9px; height: 9px; border-radius: 50%; background: var(--hot); box-shadow: 0 0 0 4px color-mix(in srgb, var(--hot) 35%, transparent); animation: blink 1.4s infinite; }
-  .status span { transition: transform .3s var(--ease); }
-  .status:hover { background: var(--hot); color: var(--ink); }
-  .status:hover span { transform: translateX(4px); }
-  .ip { position: relative; align-self: end; justify-self: center; width: min(30vw, 480px); max-height: calc(100vh - 180px); animation: pop 1.2s var(--ease) .2s backwards; }
-  @keyframes pop { from { opacity: 0; transform: translateY(40px) scale(.94); } }
-  .ip::before { content: ''; position: absolute; left: 8%; right: 8%; bottom: 2%; height: 70%; border-radius: 50%; background: radial-gradient(closest-side, color-mix(in srgb, var(--hot) 45%, transparent), transparent); filter: blur(30px); z-index: -1; }
-  .ip-img { width: 100%; max-height: calc(100vh - 180px); object-fit: contain; animation: float 6s ease-in-out infinite; }
-  .ip-badge { position: absolute; width: 21%; right: 2%; top: 4%; animation: float 5s ease-in-out -1.5s infinite; filter: drop-shadow(0 10px 18px rgba(19, 28, 70, .25)); }
-  @keyframes float { 50% { transform: translateY(-14px); } }
-  .block.first { margin-top: 40px; }
-  .projects { display: grid; gap: 28px; padding: 30px var(--pad) 0; }
-  .proj { display: grid; grid-template-columns: 1.15fr 1fr; gap: 50px; align-items: center; background: var(--paper2); border-radius: 18px; padding: 44px; transition: transform .5s var(--ease), box-shadow .5s var(--ease); }
-  .proj:nth-child(even) { grid-template-columns: 1fr 1.15fr; }
-  .proj:nth-child(even) .pcover { order: -1; }
-  .proj:hover { transform: translateY(-6px); box-shadow: 0 30px 60px rgba(19, 28, 70, .12); }
-  .pno { font-size: 15px; font-weight: 700; color: var(--navy); }
-  .proj h3 { font-size: clamp(40px, 4.4vw, 72px); letter-spacing: -.04em; line-height: 1.05; margin-top: 10px; display: flex; align-items: center; gap: 14px; }
-  .ptag { font-size: 18px; line-height: 1.7; margin-top: 18px; max-width: 640px; }
-  .pstack { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
-  .pstack span { border: 1px solid var(--ink); border-radius: 999px; padding: 4px 12px; font-size: 13px; font-weight: 600; }
-  .phl { margin-top: 22px; padding-left: 0; list-style: none; display: grid; gap: 8px; font-size: 15px; color: #4b4f66; }
-  .phl li { padding-left: 22px; position: relative; line-height: 1.6; }
-  .phl li::before { content: ''; position: absolute; left: 0; top: .6em; width: 10px; height: 10px; border-radius: 50%; background: var(--hot); }
-  .pgo { display: inline-block; margin-top: 26px; font-weight: 700; border-bottom: 2px solid var(--hot); padding-bottom: 2px; }
-  .pcover { position: relative; height: 340px; display: grid; place-items: center; overflow: hidden; }
-  .pcover img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; transition: transform .8s var(--ease); }
-  .pcover .bg { position: absolute; inset: 0; border-radius: 12px; }
-  .proj:hover .pcover img { transform: scale(1.04) rotate(-1.5deg); }
-  .hero h1 { font-size: clamp(110px, 12.5vw, 230px); line-height: .82; letter-spacing: -.06em; font-weight: 850; white-space: nowrap; }
-  .sub { margin-top: 28px; font-size: 22px; line-height: 1.5; max-width: 560px; }
-  .now { margin-top: 22px; display: flex; align-items: center; gap: 10px; color: var(--mute); font-size: 15px; }
+  .hero { display: grid; grid-template-columns: 1.4fr 1fr; align-items: center; gap: 48px; padding: 96px var(--pad) 0; }
+  .role { font-size: 16px; font-weight: 600; color: var(--navy); margin-bottom: 12px; letter-spacing: .02em; }
+  .hero h1 { font-size: clamp(96px, 10vw, 180px); line-height: .82; letter-spacing: -.06em; font-weight: 850; white-space: nowrap; }
+  .sub { margin-top: 20px; font-size: 22px; line-height: 1.55; max-width: 600px; }
+  .now { margin-top: 16px; display: flex; align-items: center; gap: 10px; color: var(--ink); font-size: 15px; }
   .now i { width: 8px; height: 8px; border-radius: 50%; background: var(--hot); animation: blink 1.4s infinite; }
   @keyframes blink { 50% { opacity: .25; } }
-  .block { margin-top: 140px; }
-  .reel { height: 100vh; overflow: hidden; margin-top: 20px; }
-  .track { display: flex; gap: 28px; padding: 0 var(--pad); height: 100%; align-items: center; will-change: transform; }
-  .track .vcard { flex: none; width: 44vw; max-width: 760px; }
-  .reel-end { flex: none; width: 30vw; font-size: 56px; font-weight: 800; letter-spacing: -.04em; line-height: 1.05; }
-  .reel-end a { border-bottom: 3px solid var(--hot); }
-  .vgrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 40px 28px; padding: 40px var(--pad) 0; }
-  .rants { display: block; padding: 70px 0 20px; overflow: hidden; }
-  .rline { display: flex; gap: 80px; white-space: nowrap; width: max-content; font-size: 56px; letter-spacing: -.02em; }
+  .ip { position: relative; justify-self: center; width: min(24vw, 380px); animation: pop 1.2s var(--ease) .2s backwards; }
+  @keyframes pop { from { opacity: 0; transform: translateY(40px) scale(.94); } }
+  .ip::before { content: ''; position: absolute; left: 8%; right: 8%; bottom: 2%; height: 70%; border-radius: 50%; background: radial-gradient(closest-side, color-mix(in srgb, var(--hot) 45%, transparent), transparent); filter: blur(30px); z-index: -1; }
+  .ip-img { width: 100%; max-height: 42vh; object-fit: contain; animation: float 6s ease-in-out infinite; }
+  .ip-badge { position: absolute; width: 21%; right: 2%; top: 4%; animation: float 5s ease-in-out -1.5s infinite; filter: drop-shadow(0 10px 18px rgba(19, 28, 70, .25)); }
+  @keyframes float { 50% { transform: translateY(-14px); } }
+
+  .block { margin-top: 120px; }
+  .block.first { margin-top: 24px; }
+
+  /* 项目：三列卡片 */
+  .projects { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding: 30px var(--pad) 0; }
+  .proj { display: flex; flex-direction: column; background: var(--paper2); border-radius: 18px; overflow: hidden; transition: transform .5s var(--ease), box-shadow .5s var(--ease); }
+  a.proj:hover { transform: translateY(-6px); box-shadow: 0 30px 60px rgba(19, 28, 70, .12); }
+  .pcover { position: relative; height: 190px; background: linear-gradient(180deg, color-mix(in srgb, var(--hot) 18%, var(--paper2)), var(--paper2)); }
+  .pcover img { position: absolute; inset: 16px 20px 0; width: calc(100% - 40px); height: calc(100% - 16px); object-fit: contain; object-position: bottom; transition: transform .8s var(--ease); }
+  .pcover .bg { position: absolute; inset: 0; }
+  .proj:hover .pcover img { transform: scale(1.04) rotate(-1.5deg); }
+  .pmeta { padding: 20px 28px 28px; display: flex; flex-direction: column; flex: 1; }
+  .ptop { display: flex; align-items: center; gap: 12px; font-size: 14px; }
+  .pno { font-weight: 700; color: var(--navy); }
+  .pwip { display: inline-flex; align-items: center; gap: 6px; background: var(--night); color: var(--paper); border-radius: 999px; padding: 3px 10px 3px 8px; font-size: 12px; font-weight: 600; }
+  .pwip i { width: 7px; height: 7px; border-radius: 50%; background: var(--hot); animation: blink 1.4s infinite; }
+  .pperiod { color: var(--mute); }
+  .proj h3 { font-size: 30px; letter-spacing: -.03em; line-height: 1.15; margin-top: 10px; }
+  .ptag { font-size: 16px; line-height: 1.7; margin-top: 12px; color: #3d4160; }
+  .pstack { display: flex; flex-wrap: wrap; gap: 6px; margin-top: auto; padding-top: 20px; }
+  .pstack span { border: 1px solid var(--ink); border-radius: 999px; padding: 3px 11px; font-size: 12px; font-weight: 600; }
+  .pgo { margin-top: 20px; font-weight: 700; border-bottom: 2px solid var(--hot); align-self: flex-start; }
+
+  /* 视频：普通网格，不锁滚动 */
+  .vgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; padding: 30px var(--pad) 0; }
+  .vgrid .vcard h3 { font-size: 18px; line-height: 1.45; }
+
+  .rants { display: block; padding: 60px 0 20px; overflow: hidden; }
+  .rline { display: flex; gap: 80px; white-space: nowrap; width: max-content; font-size: 48px; letter-spacing: -.02em; }
   .rline span { display: inline-flex; gap: 22px; align-items: center; }
-  .rline em { font-style: normal; font-size: 40px; }
+  .rline em { font-style: normal; font-size: 36px; }
   .rline small { font-size: 14px; color: var(--mute); }
 </style>
 
@@ -171,7 +152,6 @@ const writing = rows.slice(0, 8)
   gsap.registerPlugin(ScrollTrigger, SplitText)
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches
 
-  // 名字逐字落下
   if (!reduce) {
     const split = new SplitText('#name', { type: 'chars' })
     gsap.from(split.chars, { yPercent: 110, rotate: 8, opacity: 0, stagger: .07, duration: 1.2, ease: 'expo.out' })
@@ -195,18 +175,6 @@ const writing = rows.slice(0, 8)
     const x = e.clientX / innerWidth - .5, y = e.clientY / innerHeight - .5
     gsap.to(ip, { x: x * -24, y: y * -16, rotate: x * 2, duration: 1, ease: 'power3.out' })
   })
-
-  // 视频：竖向滚动驱动横向移动
-  const track = document.getElementById('track')
-  if (track && !reduce) {
-    gsap.to(track, { x: () => -(track.scrollWidth - innerWidth), ease: 'none', scrollTrigger: { trigger: '#reel', start: 'top top', end: () => '+=' + (track.scrollWidth - innerWidth), pin: true, scrub: 1, invalidateOnRefresh: true } })
-  }
-
-  // 大标题逐字
-  if (document.querySelector('.big') && !reduce) {
-    const big = new SplitText('.big', { type: 'chars' })
-    gsap.from(big.chars, { yPercent: 100, opacity: 0, stagger: .03, duration: .9, ease: 'expo.out', scrollTrigger: { trigger: '.big', start: 'top 85%' } })
-  }
 
   // 发发神经跑马灯：滚动越快转得越快
   const rline = document.getElementById('rline')

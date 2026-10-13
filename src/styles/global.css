@@ -39,10 +39,10 @@ input, textarea { cursor: text; }
 .big { padding: 40px var(--pad) 0; font-size: clamp(64px, 8vw, 140px); line-height: .95; letter-spacing: -.045em; font-weight: 800; }
 
 /* 页面标题（列表页、详情页） */
-.page-head { padding: 150px var(--pad) 40px; }
+.page-head { padding: 120px var(--pad) 30px; }
 .page-head .eyebrow { color: var(--mute); font-size: 14px; }
-.page-head h1 { font-size: clamp(72px, 10vw, 180px); line-height: .9; letter-spacing: -.055em; font-weight: 850; margin-top: 14px; }
-.page-head p { font-size: 20px; line-height: 1.6; margin-top: 20px; max-width: 720px; }
+.page-head h1 { font-size: clamp(56px, 6vw, 104px); line-height: .95; letter-spacing: -.05em; font-weight: 850; margin-top: 10px; }
+.page-head p { font-size: 18px; line-height: 1.6; margin-top: 14px; max-width: 720px; color: #3d4160; }
 
 /* 悬停列表（教程、笔记） */
 .list { padding: 10px var(--pad) 0; position: relative; }
@@ -54,6 +54,14 @@ input, textarea { cursor: text; }
 .list .row:hover { color: var(--ink); padding-left: 20px; }
 .peek { position: fixed; left: 0; top: 0; width: 340px; aspect-ratio: 4/3; border-radius: 6px; pointer-events: none; z-index: 40; opacity: 0; scale: .6; display: grid; place-items: center; color: #fff; font-size: 28px; font-weight: 800; text-align: center; padding: 22px; line-height: 1.25; box-shadow: 0 30px 60px rgba(0, 0, 0, .25); overflow: hidden; }
 .peek img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+
+/* 笔记卡片（首页和笔记页共用） */
+.ngrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; padding: 30px var(--pad) 0; }
+.ncard { display: flex; flex-direction: column; gap: 10px; min-height: 170px; padding: 24px; border-radius: 14px; border: 1px solid var(--line); background: #fff; transition: transform .4s var(--ease), border-color .3s, box-shadow .4s; }
+.ncard:hover { transform: translateY(-4px); border-color: var(--navy); box-shadow: 0 20px 40px rgba(19, 28, 70, .08); }
+.nk { font-size: 12px; font-weight: 700; color: var(--navy); }
+.ncard h3 { font-size: 20px; line-height: 1.45; letter-spacing: -.01em; }
+.nm { margin-top: auto; font-size: 13px; color: var(--mute); }
 
 /* 视频卡片 */
 .vcard { display: block; }

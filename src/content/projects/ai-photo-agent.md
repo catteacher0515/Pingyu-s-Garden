@@ -1,27 +1,9 @@
 ---
 title: "AI 修图智能体"
-tagline: "（待补充：一句话说明这个智能体做什么、解决什么问题。）"
-role: "（待补充）"
+tagline: "让 Agent 理解修图需求并调用工具完成图片处理。"
 stack: []
-highlights: []
 cover: "/brand/present.webp"
 noteTopic: "AI 修图智能体"
 order: 2
-draft: true
+wip: true
 ---
-
-## 背景
-
-（待补充）
-
-## 我做了什么
-
-（待补充）
-
-## 技术难点
-
-（待补充）
-
-## 结果
-
-（待补充）

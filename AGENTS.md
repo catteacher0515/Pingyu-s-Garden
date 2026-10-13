@@ -46,8 +46,10 @@
 ## Purpose (decided 2026-10-13)
 
 - The site serves the user's 2027 winter-break internship search first: target role is **Agent development** (not Java backend; AI app dev only secondarily). Visitors to optimise for are interviewers.
-- Homepage order: hero (name, role, status pill, IP character) → 项目 (the three resume projects, big cards linking to `/projects/[id]/`) → 视频 → 笔记 → 发发神经 → 关注我.
-- The three resume projects: AI 超级智能体, AI 修图智能体, 实习时做的内容运营工作台 (新通教育). They live in `src/content/projects/` and stay `draft: true` until the user supplies real details; never invent results, metrics or responsibilities. `noteTopic` links Obsidian notes (same `topic`) to a project page.
+- Homepage order: compact hero (role, name, tagline, rotating 「正在做」, IP character) → 项目 (three-column cards, visible on the first screen) → 视频 (latest 4 in a plain grid; no scroll-pinned reel, the user found scroll-jacking unbearable) → 笔记 (card grid, only shown when ≥3 entries) → 发发神经 → 关注我.
+- No "looking for an internship" call-to-action anywhere: the user finds it embarrassing and will recruit via social posts that link here.
+- Projects marked `wip: true` show as cards with a 开发中 badge and no detail page; only state facts the user has confirmed.
+- The three resume projects: AI 超级智能体, AI 修图智能体, 实习时做的内容运营工作台 (新通教育). They live in `src/content/projects/` as `wip: true` until the user supplies real details; never invent results, metrics or responsibilities. `noteTopic` links Obsidian notes (same `topic`) to a project page.
 - Do not put a resume PDF or phone number on the site; the user applies via recruiting platforms.
 
 ## Domain and mainland hosting (2026-10-13)

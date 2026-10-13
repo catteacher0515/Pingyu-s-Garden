@@ -51,6 +51,7 @@ const projects = defineCollection({
     demo: z.string().url().optional(),
     noteTopic: z.string().optional(),
     order: z.number().default(0),
+    wip: z.boolean().default(false),
     draft: z.boolean().default(false),
   }),
 })
