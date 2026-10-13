@@ -11,8 +11,8 @@ interface Props {
   image?: string
 }
 const { title, description, nav, back, toc = [], image } = Astro.props
-// 目录按「相对层级」显示：笔记里最高一级标题算第 1 层，往下最多 3 层
-const levels = [...new Set(toc.map((t) => t.depth))].sort((a, b) => a - b).slice(0, 3)
+// 目录只显示文章里最高的两级标题，全部展开（像文档大纲）
+const levels = [...new Set(toc.map((t) => t.depth))].sort((a, b) => a - b).slice(0, 2)
 const items: (TocItem & { rank: number; parent: number })[] = []
 const lastAt: number[] = []
 for (const t of toc) {
@@ -40,7 +40,7 @@ for (const t of toc) {
       <aside class="toc">
         <p>本页目录</p>
         <nav>
-          {items.map((t, i) => <a href={`#${t.id}`} data-id={t.id} data-i={i} data-rank={t.rank} data-parent={t.parent} class:list={[`r${t.rank}`, { hidden: t.rank > 0 }]}>{t.text}</a>)}
+          {items.map((t, i) => <a href={`#${t.id}`} data-id={t.id} data-i={i} data-rank={t.rank} data-parent={t.parent} class:list={[`r${t.rank}`]}>{t.text}</a>)}
         </nav>
       </aside>
     )}
@@ -59,8 +59,6 @@ for (const t of toc) {
   .toc nav { overflow-y: auto; overscroll-behavior: contain; padding-right: 6px; scrollbar-width: thin; }
   .toc a { display: block; padding: 6px 0 6px 14px; border-left: 1px solid var(--line); color: var(--mute); line-height: 1.45; transition: color .2s, border-color .2s; }
   .toc a.r1 { padding-left: 28px; font-size: 13px; }
-  .toc a.r2 { padding-left: 42px; font-size: 12.5px; }
-  .toc a.hidden { display: none; }
   .toc a:hover { color: var(--ink); }
   .toc a.trail { color: var(--ink); }
   .toc a.on { color: var(--ink); font-weight: 600; border-left-color: var(--hot); }
@@ -76,7 +74,7 @@ for (const t of toc) {
   addEventListener('scroll', setProgress, { passive: true })
   setProgress()
 
-  // 滚动时高亮当前小节，并只展开当前所在章节的子标题
+  // 滚动时高亮当前小节和它所在的章节
   const links = [...document.querySelectorAll<HTMLAnchorElement>('.toc nav a')]
   if (links.length) {
     const nav = document.querySelector<HTMLElement>('.toc nav')!
@@ -93,7 +91,6 @@ for (const t of toc) {
       links.forEach((a, i) => {
         a.classList.toggle('on', i === cur)
         a.classList.toggle('trail', trail.has(i) && i !== cur)
-        a.classList.toggle('hidden', parentOf[i] >= 0 && !trail.has(parentOf[i]))
       })
       const active = links[cur]
       const top = active.offsetTop - nav.offsetTop
