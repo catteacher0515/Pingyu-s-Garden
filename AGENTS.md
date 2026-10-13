@@ -52,7 +52,7 @@
 
 ## Domain and mainland hosting (2026-10-13)
 
-- Target domain `huapingyu.cn` (registered at Tencent Cloud, DNS on DNSPod, registrant 刘博). Interim plan: `www.huapingyu.cn` CNAME → `pingyu-s-garden.pages.dev` (no ICP needed for overseas hosting).
+- Target domain `huapingyu.cn` (registered at Tencent Cloud, DNS on DNSPod, registrant 刘博). Since 2026-10-13 `www.huapingyu.cn` is live: DNSPod CNAME → `pingyu-s-garden.pages.dev`, added as a Cloudflare Pages custom domain (SSL active). It is the canonical `site`. The apex `huapingyu.cn` has no record yet (DNSPod URL forwarding needs ICP); it will point to the Beijing server after filing. ICP 新增网站 order 2036856883047 submitted 2026-10-13.
 - Mainland server: Aliyun Lighthouse Beijing `39.96.92.158` (root SSH key works; nginx + certbot; already serves myshiguangxu.cn and zllab.online, do not disturb them).
 - Existing ICP filing 冀ICP备2026042324号 (subject *博, website -1 = myshiguangxu.cn). huapingyu.cn must be added via Aliyun 备案「新增网站」 before it can be served from the Beijing server; after approval set `icp` in `src/data/site.json` (footer links to beian.miit.gov.cn) and switch DNS to the server.
 

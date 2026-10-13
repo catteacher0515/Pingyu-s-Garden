@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /admin/
 
-Sitemap: https://pingyu-s-garden.pages.dev/sitemap.xml
+Sitemap: https://www.huapingyu.cn/sitemap.xml
