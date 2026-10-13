@@ -67,7 +67,7 @@ const follow = site.follow.filter((f) => f.url)
           ))}
         </div>
       )}
-      <div class="foot"><span>© {new Date().getFullYear()} {site.name}</span><span>Built slowly.</span></div>
+      <div class="foot"><span>© {new Date().getFullYear()} {site.name}</span>{site.icp ? <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">{site.icp}</a> : <span>Built slowly.</span>}</div>
     </footer>
 
     <div class="pal" id="pal">

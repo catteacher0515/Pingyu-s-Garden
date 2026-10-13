@@ -108,6 +108,7 @@ collections:
           - { name: name, label: 名字 }
           - { name: role, label: 身份, hint: '例如：Agent 开发 · 准大三' }
           - { name: tagline, label: 一句话介绍, widget: text }
+          - { name: icp, label: ICP 备案号, required: false, hint: '备案通过后填，例如 冀ICP备2026042324号-2，会显示在页脚' }
           - { name: status, label: 求职状态, required: false, hint: '首页名字下方的高亮条；留空就不显示' }
           - { name: now, label: 正在做（首页轮换显示）, widget: list }
           - name: follow

@@ -50,6 +50,12 @@
 - The three resume projects: AI 超级智能体, AI 修图智能体, 实习时做的内容运营工作台 (新通教育). They live in `src/content/projects/` and stay `draft: true` until the user supplies real details; never invent results, metrics or responsibilities. `noteTopic` links Obsidian notes (same `topic`) to a project page.
 - Do not put a resume PDF or phone number on the site; the user applies via recruiting platforms.
 
+## Domain and mainland hosting (2026-10-13)
+
+- Target domain `huapingyu.cn` (registered at Tencent Cloud, DNS on DNSPod, registrant 刘博). Interim plan: `www.huapingyu.cn` CNAME → `pingyu-s-garden.pages.dev` (no ICP needed for overseas hosting).
+- Mainland server: Aliyun Lighthouse Beijing `39.96.92.158` (root SSH key works; nginx + certbot; already serves myshiguangxu.cn and zllab.online, do not disturb them).
+- Existing ICP filing 冀ICP备2026042324号 (subject *博, website -1 = myshiguangxu.cn). huapingyu.cn must be added via Aliyun 备案「新增网站」 before it can be served from the Beijing server; after approval set `icp` in `src/data/site.json` (footer links to beian.miit.gov.cn) and switch DNS to the server.
+
 ## IP identity
 
 - Palette comes from the user's IP character (`/Users/huapingyu/IP 形象/`): cream `--paper #fbf7ee`, ink `#1c2140`, navy `#23357d`, night `#131c46` (footer, code blocks), gold `--hot #f2b22c` (dots, highlights, hover fills; not for body text).
