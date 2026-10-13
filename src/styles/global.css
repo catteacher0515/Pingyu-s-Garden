@@ -18,6 +18,15 @@ img { max-width: 100%; display: block; }
 html { cursor: url(/brand/cursor-32.png) 1 6, auto; cursor: -webkit-image-set(url(/brand/cursor-32.png) 1x, url(/brand/cursor-64.png) 2x) 1 6, auto; }
 a, button, [data-cursor], label, summary { cursor: url(/brand/cursor-hover-38.png) 1 14, pointer; cursor: -webkit-image-set(url(/brand/cursor-hover-38.png) 1x, url(/brand/cursor-hover-76.png) 2x) 1 14, pointer; }
 input, textarea { cursor: text; }
+/* 访客装了光标插件（如 Custom Cursor）时，插件会用 !important 把光标换掉。
+   这里用更高优先级把它的变量和规则都指回徽章，保证本站只显示徽章鼠标。 */
+html[data-cursorstyle]:not(#_badge) {
+  --cursor-url: url(/brand/cursor-32.png) 1 6, auto !important;
+  --pointer-url: url(/brand/cursor-hover-38.png) 1 14, pointer !important;
+}
+html:not(#_badge), html:not(#_badge) body, html:not(#_badge) body * { cursor: url(/brand/cursor-32.png) 1 6, auto !important; }
+html:not(#_badge) :is(a, button, [data-cursor], label, summary), html:not(#_badge) :is(a, button, [data-cursor], label, summary) * { cursor: url(/brand/cursor-hover-38.png) 1 14, pointer !important; }
+html:not(#_badge) :is(input, textarea) { cursor: text !important; }
 /* 悬停提示文字，跟在光标右下方 */
 .cur-label { position: fixed; left: 0; top: 0; z-index: 100; pointer-events: none; background: var(--night); color: var(--paper); font-size: 13px; font-weight: 700; padding: 5px 11px; border-radius: 999px; white-space: nowrap; opacity: 0; transform: scale(.8); transform-origin: left top; transition: opacity .2s, transform .3s var(--ease); }
 .cur-label.on { opacity: 1; transform: none; }
@@ -76,7 +85,7 @@ input, textarea { cursor: text; }
 .vcard h3 { font-size: 26px; line-height: 1.3; margin-top: 6px; letter-spacing: -.01em; }
 
 /* 关注我（全站页脚） */
-.follow { padding: 140px var(--pad) 50px; background: var(--night); color: var(--paper); margin-top: 140px; }
+.follow { padding: 140px var(--pad) 50px; background: var(--night); color: var(--paper); margin-top: 140px; scroll-snap-align: start; }
 .follow h2 { font-size: clamp(90px, 12vw, 220px); line-height: .85; letter-spacing: -.06em; font-weight: 850; }
 .plats { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; margin-top: 80px; border-top: 1px solid rgba(255, 255, 255, .15); }
 .plat { padding: 26px 20px 40px; border-right: 1px solid rgba(255, 255, 255, .15); display: block; transition: background .4s, color .4s; }

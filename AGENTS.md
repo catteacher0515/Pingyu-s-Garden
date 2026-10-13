@@ -46,7 +46,7 @@
 ## Purpose (decided 2026-10-13)
 
 - The site serves the user's 2027 winter-break internship search first: target role is **Agent development** (not Java backend; AI app dev only secondarily). Visitors to optimise for are interviewers.
-- Homepage order: compact hero (role, name, tagline, rotating 「正在做」, IP character) → 项目 (three-column cards, visible on the first screen) → 视频 (latest 4 in a plain grid; no scroll-pinned reel, the user found scroll-jacking unbearable) → 笔记 (card grid, only shown when ≥3 entries) → 发发神经 → 关注我.
+- Homepage: one section per full screen with CSS scroll-snap (`html { scroll-snap-type: y mandatory }`, each `.screen` is 100vh); never let two sections share a screen. Order: hero (role, name, tagline, rotating 「正在做」, IP character) → 项目 (three-column cards) → 笔记 (IP + list, shown even with 1 entry, with a "more coming" placeholder under 4) → 视频 (latest 4 in a plain grid; no scroll-pinned reel) → 发发神经 → 关注我 footer. Nav order: 项目 / 笔记 / 视频.
 - No "looking for an internship" call-to-action anywhere: the user finds it embarrassing and will recruit via social posts that link here.
 - Projects marked `wip: true` show as cards with a 开发中 badge and no detail page; only state facts the user has confirmed.
 - The three resume projects: AI 超级智能体, AI 修图智能体, 实习时做的内容运营工作台 (新通教育). They live in `src/content/projects/` as `wip: true` until the user supplies real details; never invent results, metrics or responsibilities. `noteTopic` links Obsidian notes (same `topic`) to a project page.
@@ -61,7 +61,7 @@
 ## IP identity
 
 - Palette comes from the user's IP character (`/Users/huapingyu/IP 形象/`): cream `--paper #fbf7ee`, ink `#1c2140`, navy `#23357d`, night `#131c46` (footer, code blocks), gold `--hot #f2b22c` (dots, highlights, hover fills; not for body text).
-- The cursor is the gold winged-cursor badge applied as a native CSS cursor (`public/brand/cursor-*.png`, hotspots 1 6 / hover 1 14), not a JS-drawn element: cursor extensions (the user runs Custom Cursor) override native cursors, and a DOM cursor would stack on top of theirs. Only the hover label (`.cur-label`) is a DOM element. Favicon is the badge on navy. IP poses are exported to `public/brand/*.webp`; regenerate from the IP folder rather than editing them.
+- The cursor is the gold winged-cursor badge applied as a native CSS cursor (`public/brand/cursor-*.png`, hotspots 1 6 / hover 1 14), not a JS-drawn element: cursor extensions (the user runs Custom Cursor) override native cursors, and a DOM cursor would stack on top of theirs. Only the hover label (`.cur-label`) is a DOM element. The user insists the badge is the cursor on this site even with their Custom Cursor extension on, so `global.css` overrides the extension's `html[data-cursorstyle]` variables and adds `!important` cursor rules with a raised-specificity `html:not(#_badge)` selector. Favicon is the badge on navy. IP poses are exported to `public/brand/*.webp`; regenerate from the IP folder rather than editing them.
 
 ## Design direction (decided 2026-10-12)
 

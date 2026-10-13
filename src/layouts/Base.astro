@@ -17,8 +17,8 @@ const search = await getSearchIndex()
 const has = await getSectionPresence()
 const links = [
   has.projects && { id: 'projects', href: '/#projects', label: '项目' },
-  has.videos && { id: 'videos', href: '/videos/', label: '视频' },
   (has.posts || has.notes) && { id: 'writing', href: '/writing/', label: '笔记' },
+  has.videos && { id: 'videos', href: '/videos/', label: '视频' },
   has.rants && { id: 'rants', href: '/rants/', label: '发发神经' },
 ].filter((l) => !!l)
 const follow = site.follow.filter((f) => f.url)
