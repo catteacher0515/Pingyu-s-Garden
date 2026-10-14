@@ -33,7 +33,6 @@ collections:
       - { name: cover, label: 封面图, widget: image, required: false }
       - { name: preview, label: 预览片段, widget: file, required: false, hint: '可选：3 到 6 秒的静音 mp4，用于首页放映厅和列表悬停预览，建议小于 3MB。' }
       - { name: tags, label: 标签, widget: list, required: false }
-      - { name: featured, label: 放进首页放映厅, widget: boolean, default: false }
       - { name: draft, label: 草稿（不发布）, widget: boolean, default: false }
       - { name: body, label: 视频说明 / 资料, widget: markdown, required: false }
 
@@ -55,7 +54,6 @@ collections:
       - { name: cover, label: 封面图, widget: image, required: false }
       - { name: external, label: 外部原文链接, required: false, hint: '如果正文在知乎等其他平台，填原文地址，点击会直接跳过去；在本站写正文就留空。' }
       - { name: tags, label: 标签, widget: list, required: false }
-      - { name: featured, label: 放进首页放映厅, widget: boolean, default: false }
       - { name: draft, label: 草稿（不发布）, widget: boolean, default: false }
       - { name: order, label: 排序（没有日期时生效，越小越靠前）, widget: number, value_type: int, default: 0, required: false }
       - { name: body, label: 正文, widget: markdown, required: false }
