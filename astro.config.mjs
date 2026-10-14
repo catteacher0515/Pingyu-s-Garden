@@ -7,8 +7,8 @@ export default defineConfig({
   compressHTML: true,
   // 旧版网址跳转到新的页面
   redirects: {
-    '/posts': '/writing/',
-    '/notes': '/writing/',
+    '/writing': '/notes/',
+    '/posts': '/articles/',
     '/projects': '/#projects',
   },
 })

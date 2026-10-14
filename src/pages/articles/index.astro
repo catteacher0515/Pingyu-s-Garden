@@ -1,0 +1,15 @@
+---
+import Base from '../../layouts/Base.astro'
+import RowList from '../../components/RowList.astro'
+import { getArticleRows } from '../../lib/content'
+
+const rows = await getArticleRows()
+---
+<Base title="文章" nav="articles">
+  <header class="page-head">
+    <p class="eyebrow">文章 · {rows.length} 篇</p>
+    <h1>文章<span class="dot">.</span></h1>
+    <p>写完整、公开发出去的文章和教程。</p>
+  </header>
+  <RowList rows={rows} empty="还没有发布文章，过阵子再来看看。" />
+</Base>

@@ -1,0 +1,15 @@
+---
+import Base from '../../layouts/Base.astro'
+import RowList from '../../components/RowList.astro'
+import { getNoteRows } from '../../lib/content'
+
+const rows = await getNoteRows()
+---
+<Base title="笔记" nav="notes">
+  <header class="page-head">
+    <p class="eyebrow">笔记 · {rows.length} 篇</p>
+    <h1>笔记<span class="dot">.</span></h1>
+    <p>边学边记的学习笔记，会一直更新，不一定完整。</p>
+  </header>
+  <RowList rows={rows} empty="笔记还在整理，过阵子再来看看。" />
+</Base>

@@ -50,7 +50,7 @@ export function groupNotes(notes: Note[]) {
 }
 
 export const noteHref = (n: Note) => `/notes/${n.id}/`
-export const postHref = (p: Post) => p.data.external ?? `/posts/${p.id}/`
+export const postHref = (p: Post) => p.data.external ?? `/articles/${p.id}/`
 export const videoHref = (v: Video) => `/videos/${v.id}/`
 
 export function bvidOf(url: string) {
@@ -83,21 +83,22 @@ export function thumb(i: number) {
 
 export const fmtDay = (d: Date) => `${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`
 
-export type WritingRow = { kind: '教程' | '笔记' | '文章'; title: string; href: string; meta: string; cover?: string; draft: boolean; external: boolean; date: number }
+export type Row = { kind: string; title: string; href: string; meta: string; cover?: string; draft: boolean; external: boolean; date: number }
 
-/** 教程（含文章）和笔记合成一个按时间倒序的列表 */
-export async function getWritingRows(): Promise<WritingRow[]> {
-  const [posts, notes] = await Promise.all([getPosts(), getNotes()])
-  return [
-    ...posts.map((p) => ({
-      kind: p.data.category, title: p.data.title, href: postHref(p), cover: opt(p.data.cover), draft: p.data.draft, external: !!p.data.external,
-      meta: [p.data.tags[0], p.data.date && fmtDay(p.data.date)].filter(Boolean).join(' · '), date: time(p.data.date),
-    })),
-    ...notes.map((n) => ({
-      kind: '笔记' as const, title: n.data.title, href: noteHref(n), draft: false, external: false,
-      meta: `${NOTE_STATUS[n.data.status].icon} ${n.data.topic} · ${fmtDay(n.data.updated)}`, date: time(n.data.updated),
-    })),
-  ].sort((a, b) => b.date - a.date)
+/** 学习笔记（来自 Obsidian），按更新时间倒序 */
+export async function getNoteRows(): Promise<Row[]> {
+  return (await getNotes()).map((n) => ({
+    kind: n.data.topic, title: n.data.title, href: noteHref(n), draft: false, external: false,
+    meta: `${NOTE_STATUS[n.data.status].icon} ${NOTE_STATUS[n.data.status].label} · ${fmtDay(n.data.updated)}`, date: time(n.data.updated),
+  }))
+}
+
+/** 公开发布的文章和教程，按发布时间倒序 */
+export async function getArticleRows(): Promise<Row[]> {
+  return (await getPosts()).map((p) => ({
+    kind: p.data.category, title: p.data.title, href: postHref(p), cover: opt(p.data.cover), draft: p.data.draft, external: !!p.data.external,
+    meta: [p.data.tags[0], p.data.date && fmtDay(p.data.date)].filter(Boolean).join(' · '), date: time(p.data.date),
+  }))
 }
 
 export type SearchItem = { title: string; label: string; href: string; cover?: string; text: string }

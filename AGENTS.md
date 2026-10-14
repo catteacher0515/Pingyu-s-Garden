@@ -46,7 +46,8 @@
 ## Purpose (decided 2026-10-13)
 
 - The site serves the user's 2027 winter-break internship search first: target role is **Agent development** (not Java backend; AI app dev only secondarily). Visitors to optimise for are interviewers.
-- Homepage: one section per full screen with CSS scroll-snap (`html { scroll-snap-type: y mandatory }`, each `.screen` is 100vh); never let two sections share a screen. Order: hero (role, name, tagline, rotating 「正在做」, IP character) → 项目 (three-column cards) → 笔记 (IP + list, shown even with 1 entry, with a "more coming" placeholder under 4) → 视频 (latest 4 in a plain grid; no scroll-pinned reel) → 发发神经 → 关注我 footer. Nav order: 项目 / 笔记 / 视频.
+- Homepage: one section per full screen with CSS scroll-snap (`html { scroll-snap-type: y mandatory }`, each `.screen` is 100vh); never let two sections share a screen. Order: hero (laptop IP pose) → 项目 → 笔记 (Obsidian notes only) → 文章 (only when published articles exist) → 视频 → 发发神经 (always shown, facepalm IP pose, latest 3 or an empty-state line) → 关注我 footer. Nav: 项目 / 笔记 / 文章 (if any) / 视频 / 发发神经 (always).
+- Notes (`/notes/`, from Obsidian) and published articles/tutorials (`/articles/`, the `posts` collection, CMS label 文章) are separate sections and must never be merged into one list. `/writing` and `/posts` redirect to them.
 - No "looking for an internship" call-to-action anywhere: the user finds it embarrassing and will recruit via social posts that link here.
 - Projects marked `wip: true` show as cards with a 开发中 badge and no detail page; only state facts the user has confirmed.
 - The three resume projects: AI 超级智能体, AI 修图智能体, 实习时做的内容运营工作台 (新通教育). They live in `src/content/projects/` as `wip: true` until the user supplies real details; never invent results, metrics or responsibilities. `noteTopic` links Obsidian notes (same `topic`) to a project page.

@@ -6,10 +6,11 @@ export const GET: APIRoute = async ({ site }) => {
   const paths = [
     '/',
     ...(videos.length ? ['/videos/'] : []),
-    ...(posts.length || notes.length ? ['/writing/'] : []),
-    ...(rants.length ? ['/rants/'] : []),
+    ...(notes.length ? ['/notes/'] : []),
+    ...(posts.length ? ['/articles/'] : []),
+    '/rants/',
     ...videos.map(videoHref),
-    ...posts.filter((p) => !p.data.external).map((p) => `/posts/${p.id}/`),
+    ...posts.filter((p) => !p.data.external).map((p) => `/articles/${p.id}/`),
     ...notes.map(noteHref),
   ]
   const urls = paths.map((p) => `<url><loc>${new URL(p, site).href}</loc></url>`).join('')

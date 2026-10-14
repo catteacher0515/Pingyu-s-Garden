@@ -1,0 +1,37 @@
+---
+import type { Row } from '../lib/content'
+
+interface Props { rows: Row[]; tabsLabel?: string; empty: string }
+const { rows, empty } = Astro.props
+const kinds = ['全部', ...new Set(rows.map((r) => r.kind))]
+---
+{kinds.length > 2 && (
+  <div class="tabs">{kinds.map((k, i) => <button class:list={['ulink', { on: i === 0 }]} data-kind={k}>{k}</button>)}</div>
+)}
+{rows.length ? (
+  <div class="ngrid">
+    {rows.map((r) => (
+      <a class="ncard reveal-scroll" href={r.href} data-kind={r.kind} target={r.external ? '_blank' : undefined} rel={r.external ? 'noopener' : undefined}>
+        <span class="nk">{r.kind}{r.draft && ' · 草稿'}</span>
+        <h3>{r.title}</h3>
+        <span class="nm">{r.meta}</span>
+      </a>
+    ))}
+  </div>
+) : <p class="empty">{empty}</p>}
+
+<style>
+  .tabs { display: flex; gap: 30px; padding: 0 var(--pad) 10px; font-size: 16px; color: var(--mute); }
+  .tabs .on { color: var(--ink); }
+</style>
+
+<script>
+  import { gsap } from 'gsap'
+  const cards = [...document.querySelectorAll<HTMLElement>('.ncard')]
+  document.querySelectorAll<HTMLButtonElement>('.tabs button').forEach((b) => b.addEventListener('click', () => {
+    document.querySelectorAll('.tabs button').forEach((x) => x.classList.toggle('on', x === b))
+    const show = cards.filter((c) => b.dataset.kind === '全部' || c.dataset.kind === b.dataset.kind)
+    cards.forEach((c) => (c.style.display = show.includes(c) ? '' : 'none'))
+    gsap.from(show, { y: 20, opacity: 0, stagger: .04, duration: .5, ease: 'expo.out' })
+  }))
+</script>

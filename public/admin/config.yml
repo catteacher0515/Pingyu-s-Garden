@@ -38,8 +38,8 @@ collections:
       - { name: body, label: 视频说明 / 资料, widget: markdown, required: false }
 
   - name: posts
-    label: 图文
-    label_singular: 图文
+    label: 文章
+    label_singular: 文章
     folder: src/content/posts
     slug: '{{year}}{{month}}{{day}}-{{uuid_shorter}}'
     create: true

@@ -12,7 +12,7 @@ const { Content, headings } = await render(note)
 const d = note.data
 const st = NOTE_STATUS[d.status]
 ---
-<Article title={d.title} description={d.summary ?? `${d.topic} 学习笔记`} nav="writing" back={{ href: '/writing/', label: '教程 & 笔记' }} toc={headings.map((h) => ({ id: h.slug, text: h.text, depth: h.depth }))}>
+<Article title={d.title} description={d.summary ?? `${d.topic} 学习笔记`} nav="notes" back={{ href: '/notes/', label: '全部笔记' }} toc={headings.map((h) => ({ id: h.slug, text: h.text, depth: h.depth }))}>
   <Fragment slot="meta">
     <span>{st.icon} {st.label}</span><span>{d.topic}</span><span>最后更新 {fmtDay(d.updated)}</span>{d.tags.map((t) => <span>#{t}</span>)}
   </Fragment>

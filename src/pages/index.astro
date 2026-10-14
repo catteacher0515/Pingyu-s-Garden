@@ -2,11 +2,13 @@
 import Base from '../layouts/Base.astro'
 import site from '../data/site.json'
 import { opt } from '../lib/img'
-import { getVideos, getRants, getWritingRows, getProjects, projectPageHref, videoHref, thumb, fmtDay } from '../lib/content'
+import { render } from 'astro:content'
+import { getVideos, getRants, getNoteRows, getArticleRows, getProjects, projectPageHref, videoHref, thumb, fmtDay } from '../lib/content'
 
-const [videos, rants, rows, projects] = await Promise.all([getVideos(), getRants(), getWritingRows(), getProjects()])
+const [videos, rants, rows, articles, projects] = await Promise.all([getVideos(), getRants(), getNoteRows(), getArticleRows(), getProjects()])
 const latestVideos = videos.slice(0, 4)
 const writing = rows.slice(0, 4)
+const latestRants = await Promise.all(rants.slice(0, 3).map(async (r) => ({ r, Content: (await render(r)).Content })))
 let n = 0
 const no = () => String(++n).padStart(2, '0')
 ---
@@ -47,8 +49,8 @@ const no = () => String(++n).padStart(2, '0')
   )}
 
   {writing.length > 0 && (
-    <section id="writing" class="screen">
-      <div class="sh"><h2>{no()} · 笔记</h2><a class="ulink" href="/writing/">全部 {rows.length} 篇 →</a></div>
+    <section id="notes" class="screen">
+      <div class="sh"><h2>{no()} · 笔记</h2><a class="ulink" href="/notes/">全部 {rows.length} 篇 →</a></div>
       <div class="notes-wrap">
         <div class="notes-ip">
           <img src="/brand/notes.webp" alt="" loading="lazy" />
@@ -65,6 +67,21 @@ const no = () => String(++n).padStart(2, '0')
           ))}
           {rows.length < 4 && <p class="nmore">更多笔记正在整理，会陆续放上来。</p>}
         </div>
+      </div>
+    </section>
+  )}
+
+  {articles.length > 0 && (
+    <section id="articles" class="screen">
+      <div class="sh"><h2>{no()} · 文章</h2><a class="ulink" href="/articles/">全部 {articles.length} 篇 →</a></div>
+      <div class="ngrid">
+        {articles.slice(0, 6).map((r) => (
+          <a class="ncard reveal-scroll" href={r.href} target={r.external ? '_blank' : undefined} rel={r.external ? 'noopener' : undefined}>
+            <span class="nk">{r.kind}{r.draft && ' · 草稿'}</span>
+            <h3>{r.title}</h3>
+            <span class="nm">{r.meta}</span>
+          </a>
+        ))}
       </div>
     </section>
   )}
@@ -88,18 +105,24 @@ const no = () => String(++n).padStart(2, '0')
     </section>
   )}
 
-  {rants.length > 0 && (
-    <section id="rants" class="screen">
-      <div class="sh"><h2>发发神经</h2><a class="ulink" href="/rants/">全部 →</a></div>
-      <a class="rants" href="/rants/" data-cursor="去看看">
-        <div class="rline" id="rline">
-          {[0, 1].map(() => rants.slice(0, 6).map((r) => (
-            <span><em>{r.data.mood ?? '💬'}</em>{r.body?.trim().split('\n')[0]}<small class="mono">{fmtDay(r.data.date)}</small></span>
-          )))}
-        </div>
-      </a>
-    </section>
-  )}
+  <section id="rants" class="screen">
+    <div class="sh"><h2>{no()} · 发发神经</h2><a class="ulink" href="/rants/">{rants.length ? `全部 ${rants.length} 条 →` : '去看看 →'}</a></div>
+    <div class="rants-wrap">
+      <div class="rants-ip">
+        <img src="/brand/facepalm.webp" alt="" loading="lazy" />
+        <p>牢骚、碎碎念，<br />情绪总得有个出口。</p>
+      </div>
+      <div class="rants-list">
+        {latestRants.length ? latestRants.map(({ r, Content }) => (
+          <a class="rcard reveal-scroll" href="/rants/">
+            <span class="rmood">{r.data.mood ?? '💬'}</span>
+            <div class="rbody"><Content /></div>
+            <time class="mono">{fmtDay(r.data.date)}{r.data.draft && ' · 草稿'}</time>
+          </a>
+        )) : <p class="nmore">今天很平静，还没有发神经。</p>}
+      </div>
+    </div>
+  </section>
 </Base>
 
 <style is:global>
@@ -162,11 +185,17 @@ const no = () => String(++n).padStart(2, '0')
   .vgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; padding: 30px var(--pad) 0; }
   .vgrid .vcard h3 { font-size: 18px; line-height: 1.45; }
 
-  .rants { display: block; padding: 60px 0 20px; overflow: hidden; }
-  .rline { display: flex; gap: 80px; white-space: nowrap; width: max-content; font-size: 48px; letter-spacing: -.02em; }
-  .rline span { display: inline-flex; gap: 22px; align-items: center; }
-  .rline em { font-style: normal; font-size: 36px; }
-  .rline small { font-size: 14px; color: var(--mute); }
+  .rants-wrap { display: grid; grid-template-columns: 1fr 2fr; gap: 50px; align-items: center; padding: 30px var(--pad) 0; }
+  .rants-ip { text-align: center; }
+  .rants-ip img { width: min(100%, 300px); max-height: 46vh; object-fit: contain; margin: 0 auto; }
+  .rants-ip p { margin-top: 18px; font-size: 26px; font-weight: 700; line-height: 1.4; }
+  .rants-list { display: grid; gap: 14px; }
+  .rcard { display: grid; grid-template-columns: 50px 1fr auto; gap: 18px; align-items: start; padding: 24px 28px; border-radius: 6px 20px 20px 20px; background: #fff; border: 1px solid var(--line); transition: transform .4s var(--ease), border-color .3s; }
+  .rcard:hover { transform: translateX(6px); border-color: var(--navy); }
+  .rmood { font-size: 30px; line-height: 1; }
+  .rbody { font-size: 20px; line-height: 1.6; font-weight: 600; }
+  .rbody :global(p + p) { margin-top: .4em; }
+  .rcard time { font-size: 13px; color: var(--mute); padding-top: 4px; }
 </style>
 
 <script>
@@ -199,16 +228,6 @@ const no = () => String(++n).padStart(2, '0')
     const x = e.clientX / innerWidth - .5, y = e.clientY / innerHeight - .5
     gsap.to(ip, { x: x * -24, y: y * -16, rotate: x * 2, duration: 1, ease: 'power3.out' })
   })
-
-  // 发发神经跑马灯：滚动越快转得越快
-  const rline = document.getElementById('rline')
-  if (rline && !reduce) {
-    const loop = gsap.to(rline, { xPercent: -50, duration: 40, ease: 'none', repeat: -1 })
-    ScrollTrigger.create({ onUpdate: (self) => {
-      gsap.to(loop, { timeScale: 1 + Math.min(Math.abs(self.getVelocity()) / 300, 6), duration: .2, overwrite: true })
-      gsap.to(loop, { timeScale: 1, duration: 1.2, delay: .2 })
-    } })
-  }
 
   // 视频卡片悬停播放预览片段
   document.querySelectorAll<HTMLVideoElement>('video[data-hover-preview]').forEach((v) => {
