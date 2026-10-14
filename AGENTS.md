@@ -46,7 +46,7 @@
 ## Purpose (decided 2026-10-13)
 
 - The site serves the user's 2027 winter-break internship search first: target role is **Agent development** (not Java backend; AI app dev only secondarily). Visitors to optimise for are interviewers.
-- Homepage: one section per full screen with CSS scroll-snap (`html { scroll-snap-type: y mandatory }`, each `.screen` is 100vh); never let two sections share a screen. Order: hero (laptop IP pose) → 项目 → 笔记 (Obsidian notes only) → 文章 (only when published articles exist) → 视频 → 发发神经 (always shown, facepalm IP pose, latest 3 or an empty-state line) → 关注我 footer. Nav: 项目 / 笔记 / 文章 (if any) / 视频 / 发发神经 (always).
+- Homepage: one section per full screen with CSS scroll-snap (`html { scroll-snap-type: y mandatory }`, each `.screen` is 100vh); never let two sections share a screen. Order: hero (laptop IP pose) → 项目 → 笔记 (Obsidian notes only) → 文章 (always shown, pointing IP pose, empty-state line until the first article) → 视频 → 发发神经 (always shown, facepalm IP pose, latest 3 or an empty-state line) → 关注我 footer. Nav: 项目 / 笔记 / 文章 / 视频 / 发发神经 (笔记、文章、发发神经 always present even when empty).
 - Notes (`/notes/`, from Obsidian) and published articles/tutorials (`/articles/`, the `posts` collection, CMS label 文章) are separate sections and must never be merged into one list. `/writing` and `/posts` redirect to them.
 - No "looking for an internship" call-to-action anywhere: the user finds it embarrassing and will recruit via social posts that link here.
 - Projects marked `wip: true` show as cards with a 开发中 badge and no detail page; only state facts the user has confirmed.

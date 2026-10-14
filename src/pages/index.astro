@@ -71,20 +71,26 @@ const no = () => String(++n).padStart(2, '0')
     </section>
   )}
 
-  {articles.length > 0 && (
-    <section id="articles" class="screen">
-      <div class="sh"><h2>{no()} · 文章</h2><a class="ulink" href="/articles/">全部 {articles.length} 篇 →</a></div>
-      <div class="ngrid">
-        {articles.slice(0, 6).map((r) => (
-          <a class="ncard reveal-scroll" href={r.href} target={r.external ? '_blank' : undefined} rel={r.external ? 'noopener' : undefined}>
+  <section id="articles" class="screen">
+    <div class="sh"><h2>{no()} · 文章</h2><a class="ulink" href="/articles/">{articles.length ? `全部 ${articles.length} 篇 →` : '去看看 →'}</a></div>
+    <div class="notes-wrap">
+      <div class="notes-ip">
+        <img src="/brand/point.webp" alt="" loading="lazy" />
+        <p>想清楚了，<br />就写成完整的文章。</p>
+      </div>
+      <div class="notes-list">
+        {articles.slice(0, 4).map((r) => (
+          <a class="nrow reveal-scroll" href={r.href} target={r.external ? '_blank' : undefined} rel={r.external ? 'noopener' : undefined}>
             <span class="nk">{r.kind}{r.draft && ' · 草稿'}</span>
             <h3>{r.title}</h3>
             <span class="nm">{r.meta}</span>
+            <span class="ngo">{r.external ? '↗' : '→'}</span>
           </a>
         ))}
+        {articles.length === 0 && <p class="nmore">第一篇文章正在写，写好就放上来。</p>}
       </div>
-    </section>
-  )}
+    </div>
+  </section>
 
   {videos.length > 0 && (
     <section id="videos" class="screen">

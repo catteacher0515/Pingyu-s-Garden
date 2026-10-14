@@ -7,7 +7,7 @@ export const GET: APIRoute = async ({ site }) => {
     '/',
     ...(videos.length ? ['/videos/'] : []),
     ...(notes.length ? ['/notes/'] : []),
-    ...(posts.length ? ['/articles/'] : []),
+    '/articles/',
     '/rants/',
     ...videos.map(videoHref),
     ...posts.filter((p) => !p.data.external).map((p) => `/articles/${p.id}/`),

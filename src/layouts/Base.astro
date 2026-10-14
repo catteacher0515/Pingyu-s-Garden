@@ -18,7 +18,7 @@ const has = await getSectionPresence()
 const links = [
   has.projects && { id: 'projects', href: '/#projects', label: '项目' },
   has.notes && { id: 'notes', href: '/notes/', label: '笔记' },
-  has.posts && { id: 'articles', href: '/articles/', label: '文章' },
+  { id: 'articles', href: '/articles/', label: '文章' },
   has.videos && { id: 'videos', href: '/videos/', label: '视频' },
   { id: 'rants', href: '/rants/', label: '发发神经' },
 ].filter((l) => !!l)
