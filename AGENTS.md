@@ -69,7 +69,7 @@
 - The layout language is prototype A「片场」 from `docs/prototypes/v3/a-studio.html` (colours since replaced by the IP palette above): huge name hero, scroll-pinned horizontal video reel (only when ≥3 videos), hover list with cursor-following preview for 教程 & 笔记, rants marquee, black 「关注我」 footer, custom cursor, ⌘K search. Single light theme, no dark mode.
 - The user rejected prototype C (colour blocks) outright, and B (desktop/windows) because its interaction felt bad, though they liked the sticky-note idea.
 - Desktop only (decided 2026-10-12): design, test and screenshot at desktop widths; no mobile work unless asked.
-- Never reuse old-site visuals (poster illustration, red line doodles, Zhihu covers). Old posts/projects are archived in `archive/old-site-content/` and offline.
+- Never reuse old-site visuals (poster illustration, red line doodles). The 13 Zhihu articles were restored on 2026-10-14 as published 文章 (external links, tabs by series tag; covers in `public/media/articles/`). Old tools remain archived in `archive/old-site-content/projects/`.
 - Homepage text (name, tagline, rotating 「正在做」, follow links) lives in `src/data/site.json`, editable in the CMS under 网站设置. Follow links without a URL are hidden.
 - The user cares about UI/UX and motion, not just colour. Propose visual changes as clickable prototypes and verify them in a foreground Chrome window.
 - Astro 7 compiler is strict about unclosed/invalid HTML. `compressHTML: true` is set on purpose for mixed Chinese/English whitespace.

@@ -96,8 +96,8 @@ export async function getNoteRows(): Promise<Row[]> {
 /** 公开发布的文章和教程，按发布时间倒序 */
 export async function getArticleRows(): Promise<Row[]> {
   return (await getPosts()).map((p) => ({
-    kind: p.data.category, title: p.data.title, href: postHref(p), cover: opt(p.data.cover), draft: p.data.draft, external: !!p.data.external,
-    meta: [p.data.tags[0], p.data.date && fmtDay(p.data.date)].filter(Boolean).join(' · '), date: time(p.data.date),
+    kind: p.data.tags[0] ?? p.data.category, title: p.data.title, href: postHref(p), cover: opt(p.data.cover), draft: p.data.draft, external: !!p.data.external,
+    meta: [p.data.external ? '知乎' : p.data.category, p.data.date && fmtDay(p.data.date)].filter(Boolean).join(' · '), date: time(p.data.date),
   }))
 }
 

@@ -3,7 +3,6 @@ title: "示例教程：来不及做成视频的内容，就写在这里"
 summary: "这是一篇草稿示例，只在本地预览时显示。"
 category: 教程
 date: 2026-10-08
-featured: true
 draft: true
 tags: ["示例"]
 ---

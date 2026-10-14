@@ -5,5 +5,4 @@ cover: "/media/articles/ppt-skill.png"
 external: "https://zhuanlan.zhihu.com/p/2040526006285509057"
 order: 20
 tags: ["AI 工具箱"]
-featured: true
 ---
