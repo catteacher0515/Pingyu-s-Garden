@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css'
 import site from '../data/site.json'
+import Foot from '../components/Foot.astro'
 import { getSearchIndex, getSectionPresence } from '../lib/content'
 
 interface Props {
@@ -22,8 +23,8 @@ const links = [
   has.videos && { id: 'videos', href: '/videos/', label: '视频' },
   { id: 'rants', href: '/rants/', label: '发发神经' },
 ].filter((l) => !!l)
-const follow = site.follow.filter((f) => f.url)
-// 「关注我」大版块只放首页，子页面只留一行版权和备案号
+const hasFollow = site.follow.some((f) => f.url)
+// 「关注我」只放首页（index.astro 的最后一屏），子页面只留一行版权和备案号
 const isHome = Astro.url.pathname === '/'
 ---
 <!doctype html>
@@ -52,30 +53,14 @@ const isHome = Astro.url.pathname === '/'
       <a class="brand" href="/">{site.name} / Pingyu</a>
       <nav>
         {links.map((l) => <a class:list={['ulink', { on: nav === l.id }]} href={l.href}>{l.label}</a>)}
-        {follow.length > 0 && <a class="ulink" href="/#follow">关注我</a>}
+        {hasFollow && <a class="ulink" href="/#follow">关注我</a>}
         <button class="ulink" data-open-search>搜索 ⌘K</button>
       </nav>
     </header>
 
     <slot />
 
-    {isHome ? (
-      <footer class="follow" id="follow">
-        <h2 class="follow-title">关注我<span class="dot">.</span></h2>
-        {follow.length > 0 && (
-          <div class="plats">
-            {follow.map((f) => (
-              <a class="plat" href={f.url} target={f.url.startsWith('http') ? '_blank' : undefined} rel="noopener" data-cursor="去看看">
-                <b>{f.name}</b><span>{f.handle || '→'}</span>
-              </a>
-            ))}
-          </div>
-        )}
-        <div class="foot"><span>© {new Date().getFullYear()} {site.name}</span>{site.icp ? <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">{site.icp}</a> : <span>Built slowly.</span>}</div>
-      </footer>
-    ) : (
-      <footer class="mini-foot"><div class="foot"><span>© {new Date().getFullYear()} {site.name}</span>{site.icp ? <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">{site.icp}</a> : <span>Built slowly.</span>}</div></footer>
-    )}
+    {!isHome && <footer class="mini-foot"><Foot /></footer>}
 
     <div class="pal" id="pal">
       <div class="box">
@@ -87,9 +72,8 @@ const isHome = Astro.url.pathname === '/'
 
     <script>
       import { gsap } from 'gsap'
-      import { SplitText } from 'gsap/SplitText'
       import { ScrollTrigger } from 'gsap/ScrollTrigger'
-      gsap.registerPlugin(SplitText, ScrollTrigger)
+      gsap.registerPlugin(ScrollTrigger)
       if (import.meta.env.DEV) (window as unknown as { gsap: typeof gsap }).gsap = gsap
 
       const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -115,11 +99,6 @@ const isHome = Astro.url.pathname === '/'
         lastY = y
       }, { passive: true })
 
-      // 页脚「关注我」逐字出现
-      if (!reduce && document.querySelector('.follow-title')) {
-        const fs = new SplitText('.follow-title', { type: 'chars' })
-        gsap.from(fs.chars, { yPercent: 120, stagger: .05, duration: 1.1, ease: 'expo.out', scrollTrigger: { trigger: '.follow', start: 'top 75%' } })
-      }
 
       // 悬停列表：跟随光标的预览卡（任何页面的 .list 都生效）
       document.querySelectorAll<HTMLElement>('.list').forEach((list) => {

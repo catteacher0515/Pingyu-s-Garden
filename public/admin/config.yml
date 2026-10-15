@@ -117,4 +117,5 @@ collections:
             fields:
               - { name: name, label: 平台 }
               - { name: handle, label: 账号名, required: false }
+              - { name: desc, label: 在那里能看到什么, required: false, hint: '一句话，例如 教程和长视频' }
               - { name: url, label: 链接, required: false, hint: '主页地址，例如 https://space.bilibili.com/你的UID ；邮箱写 mailto:你的邮箱' }

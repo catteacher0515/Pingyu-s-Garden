@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro'
+import Foot from '../components/Foot.astro'
 import site from '../data/site.json'
 import { opt } from '../lib/img'
 import { render } from 'astro:content'
@@ -10,6 +11,7 @@ const latestVideos = videos.slice(0, 4)
 const writing = rows.slice(0, 4)
 const latestRants = await Promise.all(rants.slice(0, 3).map(async (r) => ({ r, Content: (await render(r)).Content })))
 let n = 0
+const follow = site.follow.filter((f) => f.url)
 const no = () => String(++n).padStart(2, '0')
 ---
 <Base>
@@ -129,6 +131,28 @@ const no = () => String(++n).padStart(2, '0')
       </div>
     </div>
   </section>
+  {follow.length > 0 && (
+    <section id="follow" class="screen follow">
+      <div class="sh"><h2>{no()} · 关注我</h2><span>新视频和新笔记，会先发在这些地方</span></div>
+      <div class="follow-wrap">
+        <div class="follow-ip">
+          <img src="/brand/wave.webp" alt="" loading="lazy" />
+          <p>来打个招呼，<br />在这些地方都能找到我。</p>
+        </div>
+        <div class="fgrid">
+          {follow.map((f) => (
+            <a class="fcard reveal-scroll" href={f.url} target={f.url.startsWith('http') ? '_blank' : undefined} rel="noopener" data-cursor="去看看">
+              <span class="fname">{f.name}</span>
+              {f.desc && <span class="fdesc">{f.desc}</span>}
+              <span class="fhandle">{f.handle ? `@${f.handle}` : ''}</span>
+              <span class="fgo">↗</span>
+            </a>
+          ))}
+        </div>
+      </div>
+      <div class="follow-foot"><Foot /></div>
+    </section>
+  )}
 </Base>
 
 <style is:global>
@@ -196,6 +220,23 @@ const no = () => String(++n).padStart(2, '0')
   .rants-ip img { width: min(100%, 300px); max-height: 46vh; object-fit: contain; margin: 0 auto; }
   .rants-ip p { margin-top: 18px; font-size: 26px; font-weight: 700; line-height: 1.4; }
   .rants-list { display: grid; gap: 14px; }
+  .follow { padding-bottom: 28px; }
+  .follow-wrap { display: grid; grid-template-columns: 1fr 2fr; gap: 50px; align-items: center; padding: 30px var(--pad) 0; flex: 1; }
+  .follow-ip { text-align: center; }
+  .follow-ip img { width: min(100%, 300px); max-height: 46vh; object-fit: contain; margin: 0 auto; transform-origin: 30% 70%; }
+  .follow:hover .follow-ip img { animation: wave 1.2s var(--ease); }
+  .follow-ip p { margin-top: 18px; font-size: 26px; font-weight: 700; line-height: 1.4; }
+  .fgrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .fcard { position: relative; display: grid; grid-template-rows: auto 1fr auto; min-height: 168px; padding: 26px 28px; border-radius: 18px; background: #fff; border: 1px solid var(--line); transition: transform .4s var(--ease), background .3s, border-color .3s, box-shadow .4s; }
+  .fname { font-size: 34px; font-weight: 800; letter-spacing: -.02em; }
+  .fdesc { color: var(--mute); font-size: 15px; margin-top: 6px; }
+  .fhandle { color: var(--navy); font-size: 14px; font-weight: 600; }
+  .fgo { position: absolute; right: 24px; top: 22px; font-size: 22px; color: var(--mute); transition: transform .4s var(--ease), color .3s; }
+  .fcard:hover { transform: translateY(-4px); background: var(--hot); border-color: var(--hot); box-shadow: 0 18px 40px -22px rgba(28, 33, 64, .45); }
+  .fcard:hover .fdesc, .fcard:hover .fhandle, .fcard:hover .fgo { color: var(--ink); }
+  .fcard:hover .fgo { transform: translate(3px, -3px); }
+  .follow-foot { margin: 40px var(--pad) 0; padding-top: 18px; border-top: 1px solid var(--line); }
+  @keyframes wave { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-6deg); } 50% { transform: rotate(4deg); } 75% { transform: rotate(-2deg); } }
   .rcard { display: grid; grid-template-columns: 50px 1fr auto; gap: 18px; align-items: start; padding: 24px 28px; border-radius: 6px 20px 20px 20px; background: #fff; border: 1px solid var(--line); transition: transform .4s var(--ease), border-color .3s; }
   .rcard:hover { transform: translateX(6px); border-color: var(--navy); }
   .rmood { font-size: 30px; line-height: 1; }
