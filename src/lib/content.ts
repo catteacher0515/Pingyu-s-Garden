@@ -95,6 +95,12 @@ export async function getNoteRows(): Promise<Row[]> {
 
 /** 中文阅读时长：去掉 Markdown 记号后约每分钟 400 字 */
 export const readMinutes = (md = '') => Math.max(1, Math.round(md.replace(/!\[[^\]]*\]\([^)]*\)|```[\s\S]*?```|[#>*_`~\[\]()-]/g, '').replace(/\s+/g, '').length / 400))
+/** 正文开头的纯文字摘要：去掉图片、代码、链接网址和 Markdown 记号 */
+export const excerpt = (md = '', len = 90) => {
+  const t = md.replace(/```[\s\S]*?```/g, '').replace(/!\[[^\]]*\]\([^)]*\)/g, '').replace(/<[^>]+>/g, '').replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
+    .replace(/https?:\/\/\S+/g, '').replace(/^#+\s.*$/gm, '').replace(/[*_`>#~|-]/g, '').replace(/\s+/g, ' ').trim()
+  return t.length > len ? t.slice(0, len) + '…' : t
+}
 export const fmtFull = (d: Date) => `${d.getUTCFullYear()}.${fmtDay(d)}`
 
 /** 公开发布的文章和教程，按发布时间倒序 */

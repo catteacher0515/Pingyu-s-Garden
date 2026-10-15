@@ -1,15 +1,94 @@
 ---
 import Base from '../../layouts/Base.astro'
-import RowList from '../../components/RowList.astro'
-import { getArticleRows } from '../../lib/content'
+import { opt } from '../../lib/img'
+import { getPosts, postHref, fmtFull, readMinutes, excerpt } from '../../lib/content'
 
-const rows = await getArticleRows()
+const posts = await getPosts()
+const kindOf = (p: (typeof posts)[number]) => p.data.tags[0] ?? p.data.category
+const counts = new Map<string, number>()
+for (const p of posts) counts.set(kindOf(p), (counts.get(kindOf(p)) ?? 0) + 1)
+const kinds = [...counts.entries()].sort((a, b) => b[1] - a[1])
+// 周刊开头那段介绍每期都一样，摘要改成列出这一期的项目名（取「### 1. 项目名」这类小标题）
+const picks = (md = '') => {
+  const names = [...md.matchAll(/^#{2,4}\s*\d+[.、]\s*(.+)$/gm)].map((m) => m[1].trim())
+  return names.length >= 3 ? `本期：${names.join(' · ')}` : undefined
+}
+const cards = posts.map((p) => ({
+  href: postHref(p), external: !!p.data.external, kind: kindOf(p), title: p.data.title, draft: p.data.draft,
+  cover: opt(p.data.cover), text: p.data.summary ?? picks(p.body) ?? excerpt(p.body),
+  meta: [p.data.date && fmtFull(p.data.date), p.data.external ? '外部链接' : `${readMinutes(p.body)} 分钟读完`].filter(Boolean).join(' · '),
+}))
 ---
 <Base title="文章" nav="articles">
-  <header class="page-head">
-    <p class="eyebrow">文章 · {rows.length} 篇</p>
-    <h1>文章<span class="dot">.</span></h1>
-    <p>写完整、公开发出去的文章和教程。</p>
-  </header>
-  <RowList rows={rows} empty="还没有发布文章，过阵子再来看看。" />
+  <div class="wrap">
+    <header class="head">
+      <div>
+        <p class="eyebrow">文章 · {posts.length} 篇</p>
+        <h1>文章<span class="dot">.</span></h1>
+        <p class="desc">想清楚的事，写成完整的文章：AI 工具的上手体验、每周值得关注的 GitHub 项目，和我自己做的小东西。</p>
+      </div>
+      <img class="ip" src="/brand/point.webp" alt="" />
+    </header>
+
+    {kinds.length > 1 && (
+      <div class="tabs" role="tablist">
+        <button class="on" data-kind="全部">全部<small>{posts.length}</small></button>
+        {kinds.map(([k, n]) => <button data-kind={k}>{k}<small>{n}</small></button>)}
+      </div>
+    )}
+
+    {cards.length ? (
+      <div class="grid">
+        {cards.map((c, i) => (
+          <a class="card" href={c.href} data-kind={c.kind} target={c.external ? '_blank' : undefined} rel={c.external ? 'noopener' : undefined} data-cursor="读一读">
+            <div class="cover">{c.cover ? <img src={c.cover} alt="" loading={i < 4 ? 'eager' : 'lazy'} /> : <div class="ph">{c.kind}</div>}</div>
+            <div class="body">
+              <span class="kind">{c.kind}{c.draft && ' · 草稿'}</span>
+              <h2>{c.title}</h2>
+              {c.text && <p>{c.text}</p>}
+              <span class="meta">{c.meta}</span>
+            </div>
+          </a>
+        ))}
+      </div>
+    ) : <p class="empty">还没有发布文章，过阵子再来看看。</p>}
+  </div>
 </Base>
+
+<style>
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 100px var(--pad) 0; }
+  .head { display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 40px; padding-bottom: 26px; border-bottom: 1px solid var(--line); }
+  .eyebrow { color: var(--mute); font-size: 14px; }
+  .head h1 { font-size: 56px; line-height: 1.05; letter-spacing: -.04em; font-weight: 850; margin-top: 8px; }
+  .desc { margin-top: 14px; font-size: 17px; line-height: 1.7; color: #4a4e6a; max-width: 560px; }
+  .ip { height: 190px; margin-bottom: -26px; }
+  .tabs { display: flex; flex-wrap: wrap; gap: 10px; margin: 26px 0 28px; }
+  .tabs button { display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: 999px; border: 1px solid var(--line); background: #fff; font-size: 15px; color: #4a4e6a; transition: background .25s, border-color .25s, color .25s; }
+  .tabs button small { font-size: 12px; color: var(--mute); }
+  .tabs button:hover { border-color: var(--ink); }
+  .tabs button.on { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+  .tabs button.on small { color: #b9bdd8; }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+  .card { display: flex; flex-direction: column; border-radius: 18px; background: #fff; border: 1px solid var(--line); overflow: hidden; transition: transform .45s var(--ease), box-shadow .45s, border-color .3s; }
+  .card:hover { transform: translateY(-4px); border-color: transparent; box-shadow: 0 24px 50px -30px rgba(28, 33, 64, .45); }
+  .cover { aspect-ratio: 16 / 9; overflow: hidden; background: var(--paper2); }
+  .cover img { width: 100%; height: 100%; object-fit: cover; transition: transform .7s var(--ease); }
+  .card:hover .cover img { transform: scale(1.04); }
+  .ph { height: 100%; display: grid; place-items: center; color: var(--mute); font-weight: 700; }
+  .body { display: flex; flex-direction: column; flex: 1; padding: 18px 22px 20px; }
+  .kind { color: var(--navy); font-size: 13px; font-weight: 700; }
+  .body h2 { font-size: 19px; line-height: 1.45; margin-top: 6px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .body p { margin-top: 8px; font-size: 14px; line-height: 1.7; color: var(--mute); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .meta { margin-top: auto; padding-top: 14px; font-size: 13px; color: var(--mute); }
+  .empty { color: var(--mute); padding: 40px 0; }
+</style>
+
+<script>
+  // 分类筛选：只是显示/隐藏卡片
+  const cards = [...document.querySelectorAll<HTMLElement>('.card')]
+  document.querySelectorAll<HTMLButtonElement>('.tabs button').forEach((b) => b.addEventListener('click', () => {
+    document.querySelectorAll('.tabs button').forEach((x) => x.classList.toggle('on', x === b))
+    const all = b.dataset.kind === '全部'
+    cards.forEach((c) => (c.style.display = all || c.dataset.kind === b.dataset.kind ? '' : 'none'))
+  }))
+</script>
