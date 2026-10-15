@@ -91,14 +91,18 @@ const isHome = Astro.url.pathname === '/'
         })
       }
 
-      // 往下滚收起顶栏，往上滚再出现
+      // 子页面往下滚收起顶栏，往上滚或鼠标移到页面顶部时再出现。
+      // 首页是一屏一屏吸附滚动的，每翻一屏都算「往下滚」，所以首页顶栏始终显示，不然导航会一直藏着
       const bar = document.querySelector('.bar')!
-      let lastY = scrollY
-      addEventListener('scroll', () => {
-        const y = scrollY
-        bar.classList.toggle('hide', y > lastY && y > 120)
-        lastY = y
-      }, { passive: true })
+      if (location.pathname !== '/') {
+        let lastY = scrollY
+        addEventListener('scroll', () => {
+          const y = scrollY
+          bar.classList.toggle('hide', y > lastY && y > 120)
+          lastY = y
+        }, { passive: true })
+        addEventListener('pointermove', (e) => { if (e.clientY < 80) bar.classList.remove('hide') }, { passive: true })
+      }
 
 
       // 悬停列表：跟随光标的预览卡（任何页面的 .list 都生效）
