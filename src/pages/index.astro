@@ -194,8 +194,9 @@ const slots = [[-340, -180], [340, -190], [-390, 50], [390, 40], [-400, 250], [4
   .screen > .sh { margin-bottom: 10px; }
   .hero { position: relative; align-items: center; perspective: 1200px; overflow: hidden; padding-top: 60px; padding-bottom: 60px; }
   .glow { position: absolute; left: 50%; top: 50%; width: 620px; height: 620px; border-radius: 50%; transform: translate(-50%, -50%); background: radial-gradient(closest-side, color-mix(in srgb, var(--hot) 40%, transparent), transparent); filter: blur(20px); pointer-events: none; }
-  .ring { position: absolute; left: 50%; top: 50%; width: 760px; height: 760px; border: 1.5px dashed var(--line); border-radius: 50%; transform: translate(-50%, -54%); animation: ringSpin 60s linear infinite; pointer-events: none; }
-  @keyframes ringSpin { to { transform: translate(-50%, -54%) rotate(360deg); } }
+  /* 虚线圈：直径随屏幕高度收缩，上下都留出顶栏和底部文字的空间，不会被裁掉 */
+  .ring { position: absolute; left: 50%; top: 50%; width: min(760px, calc(100vh - 150px)); aspect-ratio: 1; border: 1.5px dashed var(--line); border-radius: 50%; transform: translate(-50%, -50%); animation: ringSpin 60s linear infinite; pointer-events: none; }
+  @keyframes ringSpin { to { transform: translate(-50%, -50%) rotate(360deg); } }
   .orbit { position: absolute; left: 50%; top: 50%; z-index: 2; }
   /* 入口大小固定，悬停区域稳定；详情是另一张浮层，不占位、不接收鼠标 */
   .pill { position: absolute; display: flex; align-items: baseline; gap: 8px; background: #fff; border: 1px solid var(--line); border-radius: 999px; padding: 12px 20px; box-shadow: 0 10px 24px -16px rgba(28, 33, 64, .5); white-space: nowrap; transition: background .25s, box-shadow .3s; animation: pillIn .8s var(--ease) backwards; }
