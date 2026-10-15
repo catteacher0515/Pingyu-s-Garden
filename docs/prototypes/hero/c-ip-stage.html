@@ -49,7 +49,7 @@
 const poses = [
   ['wave', '嗨！点我一下 👋'], ['laptop', '我在写 Agent，别打扰我…开玩笑的'], ['idea', '想到一个点子！'],
   ['thumbs', '你能看到这里，很棒'], ['present', '来看看我的项目？'], ['notes', '学到的都记在笔记里'],
-  ['chin', '让我想想…'], ['facepalm', '这个 bug 又是我写的'], ['point', '往下滑，内容在下面 ↓'],
+  ['chin', '让我想想…'], ['facepalm', '调试中，马上就好'], ['point', '往下滑，内容在下面 ↓'],
 ]
 const stage = document.getElementById('stage'), bubble = document.getElementById('bubble')
 const imgs = poses.map(([k], i) => { if (i === 0) return stage.querySelector('img'); const im = new Image(); im.src = `../../../public/brand/${k}.webp`; im.className = 'off'; stage.appendChild(im); return im })

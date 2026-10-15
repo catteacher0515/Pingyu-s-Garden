@@ -71,7 +71,7 @@ const say = (t, pop) => {
   sayT = setTimeout(() => { bubble.textContent = t; bubble.classList.remove('fade'); if (pop) { bubble.classList.add('pop'); setTimeout(() => bubble.classList.remove('pop'), 250) } }, 150)
 }
 // 点他：按顺序换表情
-const clicks = [['wave', '嗨！点我一下 👋'], ['idea', '想到一个点子！'], ['chin', '让我想想…'], ['thumbs', '你能看到这里，很棒'], ['facepalm', '这个 bug 又是我写的'], ['laptop', '我先去写代码了']]
+const clicks = [['wave', '嗨！点我一下 👋'], ['idea', '想到一个点子！'], ['chin', '让我想想…'], ['thumbs', '你能看到这里，很棒'], ['facepalm', '调试中，马上就好'], ['laptop', '我先去写代码了']]
 let ci = 0, hovered = null, enterT = 0, leaveT = 0
 pose('wave')
 stage.addEventListener('click', () => { ci = (ci + 1) % clicks.length; if (!hovered) { pose(clicks[ci][0]); say(clicks[ci][1], true) } })

@@ -52,7 +52,7 @@ const isHome = Astro.url.pathname === '/'
     <header class="bar">
       <a class="brand" href="/">{site.name} / Pingyu</a>
       <nav>
-        {!isHome && <a class="ulink" href="/">首页</a>}
+        <a class="ulink" href={isHome ? '#top' : '/'}>首页</a>
         {links.map((l) => <a class:list={['ulink', { on: nav === l.id }]} href={l.href}>{l.label}</a>)}
         {hasFollow && <a class="ulink" href="/#follow">关注我</a>}
         <button class="ulink" data-open-search>搜索 ⌘K</button>
