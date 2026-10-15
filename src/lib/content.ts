@@ -81,7 +81,7 @@ export function thumb(i: number) {
   return `radial-gradient(120% 90% at ${20 + (i * 23) % 60}% ${30 + (i * 17) % 40}%, ${b} 0%, ${a} 55%, #131c46 140%)`
 }
 
-export const fmtDay = (d: Date) => `${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`
+export const fmtDay = (d: Date) => `${String(d.getUTCMonth() + 1).padStart(2, '0')}.${String(d.getUTCDate()).padStart(2, '0')}`
 
 export type Row = { kind: string; title: string; href: string; meta: string; cover?: string; draft: boolean; external: boolean; date: number }
 

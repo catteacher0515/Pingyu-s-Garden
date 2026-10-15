@@ -5,7 +5,8 @@ import { getRants } from '../lib/content'
 
 const rants = await getRants()
 const items = await Promise.all(rants.map(async (r) => ({ r, Content: (await render(r)).Content })))
-const fmt = (d: Date) => d.toLocaleString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Shanghai' })
+// 后台存的是不带时区的北京时间（如 10:47:00），解析后按 UTC 读回即为原样，不能再转 Asia/Shanghai
+const fmt = (d: Date) => d.toLocaleString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', timeZone: 'UTC' })
 ---
 <Base title="发发神经" nav="rants" description="花萍雨的牢骚、碎碎念和一些小感悟。">
   <header class="page-head">
