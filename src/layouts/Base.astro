@@ -23,6 +23,8 @@ const links = [
   { id: 'rants', href: '/rants/', label: '发发神经' },
 ].filter((l) => !!l)
 const follow = site.follow.filter((f) => f.url)
+// 「关注我」大版块只放首页，子页面只留一行版权和备案号
+const isHome = Astro.url.pathname === '/'
 ---
 <!doctype html>
 <html lang="zh-CN">
@@ -50,26 +52,30 @@ const follow = site.follow.filter((f) => f.url)
       <a class="brand" href="/">{site.name} / Pingyu</a>
       <nav>
         {links.map((l) => <a class:list={['ulink', { on: nav === l.id }]} href={l.href}>{l.label}</a>)}
-        {follow.length > 0 && <a class="ulink" href="#follow">关注我</a>}
+        {follow.length > 0 && <a class="ulink" href="/#follow">关注我</a>}
         <button class="ulink" data-open-search>搜索 ⌘K</button>
       </nav>
     </header>
 
     <slot />
 
-    <footer class="follow" id="follow">
-      <h2 class="follow-title">关注我<span class="dot">.</span></h2>
-      {follow.length > 0 && (
-        <div class="plats">
-          {follow.map((f) => (
-            <a class="plat" href={f.url} target={f.url.startsWith('http') ? '_blank' : undefined} rel="noopener" data-cursor="去看看">
-              <b>{f.name}</b><span>{f.handle || '→'}</span>
-            </a>
-          ))}
-        </div>
-      )}
-      <div class="foot"><span>© {new Date().getFullYear()} {site.name}</span>{site.icp ? <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">{site.icp}</a> : <span>Built slowly.</span>}</div>
-    </footer>
+    {isHome ? (
+      <footer class="follow" id="follow">
+        <h2 class="follow-title">关注我<span class="dot">.</span></h2>
+        {follow.length > 0 && (
+          <div class="plats">
+            {follow.map((f) => (
+              <a class="plat" href={f.url} target={f.url.startsWith('http') ? '_blank' : undefined} rel="noopener" data-cursor="去看看">
+                <b>{f.name}</b><span>{f.handle || '→'}</span>
+              </a>
+            ))}
+          </div>
+        )}
+        <div class="foot"><span>© {new Date().getFullYear()} {site.name}</span>{site.icp ? <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">{site.icp}</a> : <span>Built slowly.</span>}</div>
+      </footer>
+    ) : (
+      <footer class="mini-foot"><div class="foot"><span>© {new Date().getFullYear()} {site.name}</span>{site.icp ? <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener">{site.icp}</a> : <span>Built slowly.</span>}</div></footer>
+    )}
 
     <div class="pal" id="pal">
       <div class="box">
@@ -110,7 +116,7 @@ const follow = site.follow.filter((f) => f.url)
       }, { passive: true })
 
       // 页脚「关注我」逐字出现
-      if (!reduce) {
+      if (!reduce && document.querySelector('.follow-title')) {
         const fs = new SplitText('.follow-title', { type: 'chars' })
         gsap.from(fs.chars, { yPercent: 120, stagger: .05, duration: 1.1, ease: 'expo.out', scrollTrigger: { trigger: '.follow', start: 'top 75%' } })
       }

@@ -132,3 +132,6 @@ html:not(#_badge) :is(input, textarea) { cursor: text !important; }
   .reveal-scroll { animation: rise linear backwards; animation-timeline: view(); animation-range: entry 0% entry 60%; }
 }
 @media (prefers-reduced-motion: reduce) { .reveal, .reveal-scroll { animation: none !important; } }
+.mini-foot { padding: 28px var(--pad); margin-top: 120px; border-top: 1px solid var(--line); }
+.mini-foot .foot { margin-top: 0; color: var(--mute); }
+.mini-foot .foot a:hover { color: var(--ink); }
