@@ -45,10 +45,10 @@ const slots = [[-340, -180], [340, -190], [-390, 50], [390, 40], [-400, 250], [4
       <div class="bubble" id="bubble">嗨！点我一下 👋</div>
       <img src="/brand/wave.webp" alt="花萍雨的 IP 形象" data-k="wave" />
     </div>
+    <button class="mute" id="mute" type="button" aria-label="关闭点击音效" data-cursor="关闭音效">🔊</button>
     <div class="name">
       {site.role && <p class="role">{site.role}</p>}
       <h1 id="name">{site.name}<span class="dot">.</span></h1>
-      <p class="sub">{site.tagline}</p>
     </div>
     {site.now.length > 0 && <p class="now"><i></i><span id="now" data-now={JSON.stringify(site.now)}>{site.now[0]}</span></p>}
   </section>
@@ -222,10 +222,11 @@ const slots = [[-340, -180], [340, -190], [-390, 50], [390, 40], [-400, 250], [4
   .bubble::after { content: ''; position: absolute; left: 50%; bottom: -7px; width: 14px; height: 14px; background: var(--ink); transform: translateX(-50%) rotate(45deg); }
   .bubble.fade { opacity: 0; }
   .bubble.pop { transform: translate(-50%, -100%) scale(1.08); }
+  .mute { position: relative; z-index: 3; margin-top: -34px; margin-left: 330px; width: 34px; height: 34px; border-radius: 50%; background: #fff; border: 1px solid var(--line); font-size: 15px; line-height: 1; box-shadow: 0 8px 18px -12px rgba(28, 33, 64, .5); opacity: .55; transition: opacity .2s, transform .3s var(--ease); }
+  .mute:hover { opacity: 1; transform: scale(1.08); }
   .name { position: relative; z-index: 2; text-align: center; margin-top: 12px; }
   .role { font-size: 15px; font-weight: 600; color: var(--navy); }
   .hero h1 { font-size: 60px; letter-spacing: -.05em; font-weight: 850; line-height: 1.05; }
-  .sub { color: var(--mute); font-size: 16px; line-height: 1.6; margin: 6px auto 0; max-width: 500px; }
   .now { position: absolute; bottom: 22px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--mute); }
   .now i { width: 8px; height: 8px; border-radius: 50%; background: var(--hot); animation: blink 1.4s infinite; }
   @keyframes blink { 50% { opacity: .25; } }
@@ -340,9 +341,37 @@ const slots = [[-340, -180], [340, -190], [-390, 50], [390, 40], [-400, 250], [4
       if (popIt) { bubble.classList.add('pop'); setTimeout(() => bubble.classList.remove('pop'), 250) }
     }, 150)
   }
+  // 点击音效：用 Web Audio 现场合成，不加载音频文件。每个表情一种声音，音量很低；静音选择记在浏览器里
+  let actx: AudioContext | null = null
+  let muted = localStorage.getItem('ip-sfx') === 'off'
+  const muteBtn = document.getElementById('mute')!
+  const syncMute = () => { muteBtn.textContent = muted ? '🔇' : '🔊'; muteBtn.dataset.cursor = muted ? '打开音效' : '关闭音效'; muteBtn.setAttribute('aria-label', muted ? '打开点击音效' : '关闭点击音效') }
+  syncMute()
+  muteBtn.addEventListener('click', () => { muted = !muted; localStorage.setItem('ip-sfx', muted ? 'off' : 'on'); syncMute(); document.getElementById('cur-label')!.textContent = muteBtn.dataset.cursor! })
+  // 一个音：从 f0 滑到 f1，快起慢收
+  const tone = (f0: number, f1: number, dur: number, at = 0, type: OscillatorType = 'sine', vol = .07) => {
+    const c = actx!, t = c.currentTime + at, o = c.createOscillator(), g = c.createGain()
+    o.type = type; o.frequency.setValueAtTime(f0, t); o.frequency.exponentialRampToValueAtTime(f1, t + dur)
+    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t + .008); g.gain.exponentialRampToValueAtTime(.0001, t + dur)
+    o.connect(g).connect(c.destination); o.start(t); o.stop(t + dur + .02)
+  }
+  const sfx: Record<string, () => void> = {
+    wave: () => tone(700, 1100, .12),                                          // 啵
+    idea: () => { tone(1046, 1046, .09, 0, 'triangle'); tone(1568, 1568, .16, .07, 'triangle', .05) }, // 叮
+    chin: () => { tone(520, 600, .1); tone(600, 520, .12, .1) },              // 嗯？
+    thumbs: () => { tone(660, 880, .07); tone(880, 1320, .1, .07) },          // 上扬两声
+    facepalm: () => tone(420, 180, .28, 0, 'triangle', .08),                  // 泄气
+    laptop: () => { tone(1800, 1600, .03, 0, 'square', .025); tone(1700, 1500, .03, .07, 'square', .025); tone(1900, 1700, .03, .13, 'square', .025) }, // 敲键盘
+  }
+  const play = (k: string) => {
+    if (muted || !sfx[k]) return
+    actx ??= new AudioContext()
+    if (actx.state === 'suspended') actx.resume()
+    sfx[k]()
+  }
   const clicks = [['wave', '嗨！点我一下 👋'], ['idea', '想到一个点子！'], ['chin', '让我想想…'], ['thumbs', '你能看到这里，很棒'], ['facepalm', '这个 bug 又是我写的'], ['laptop', '我先去写代码了']]
   let ci = 0, hovering = false, enterT = 0, leaveT = 0
-  stage.addEventListener('click', () => { ci = (ci + 1) % clicks.length; if (!hovering) { pose(clicks[ci][0]); say(clicks[ci][1], true) } })
+  stage.addEventListener('click', () => { ci = (ci + 1) % clicks.length; play(clicks[ci][0]); if (!hovering) { pose(clicks[ci][0]); say(clicks[ci][1], true) } })
   // 停留 120ms 才换姿势（划过不触发）；离开 300ms 后才回到原表情（在入口之间移动不来回闪）
   document.querySelectorAll<HTMLElement>('.pill').forEach((p) => {
     new Image().src = `/brand/${p.dataset.ip}.webp`
