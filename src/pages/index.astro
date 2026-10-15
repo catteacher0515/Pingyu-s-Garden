@@ -215,8 +215,9 @@ const slots = [[-340, -180], [340, -190], [-390, 50], [390, 40], [-400, 250], [4
   .pill:hover .pop { opacity: 1; transform: none; transition-delay: .08s; }
   .stage { position: relative; z-index: 1; width: 380px; height: min(440px, 48vh); margin-top: 40px; transform-style: preserve-3d; will-change: transform; animation: stageIn 1.2s var(--ease) .1s backwards; }
   @keyframes stageIn { from { opacity: 0; transform: translateY(30px) scale(.94); } }
-  .stage img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; transition: opacity .2s ease .13s; }
-  .stage img.off { opacity: 0; transition: opacity .13s ease; }
+  /* 换姿势的图片是脚本动态加的，没有 Astro 的作用域属性，所以这里必须用 :global */
+  .stage :global(img) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; transition: opacity .2s ease .13s; }
+  .stage :global(img.off) { opacity: 0; transition: opacity .13s ease; }
   .bubble { position: absolute; left: 50%; top: -6px; z-index: 3; transform: translate(-50%, -100%); background: var(--ink); color: var(--paper); padding: 12px 18px; border-radius: 18px; font-weight: 700; font-size: 16px; white-space: nowrap; transition: transform .35s var(--ease), opacity .15s; }
   .bubble::after { content: ''; position: absolute; left: 50%; bottom: -7px; width: 14px; height: 14px; background: var(--ink); transform: translateX(-50%) rotate(45deg); }
   .bubble.fade { opacity: 0; }
