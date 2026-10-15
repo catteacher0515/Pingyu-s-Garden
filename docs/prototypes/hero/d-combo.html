@@ -7,26 +7,26 @@
   .ring { position: absolute; left: 50%; top: 50%; width: 760px; height: 760px; border: 1.5px dashed var(--line); border-radius: 50%; transform: translate(-50%, -54%); animation: spin 60s linear infinite; }
   @keyframes spin { to { transform: translate(-50%, -54%) rotate(360deg); } }
   .orbit { position: absolute; left: 50%; top: 50%; z-index: 2; }
-  /* 环绕入口：平时是小胶囊，悬停展开成 B 的目录卡（数量 + 最新一条） */
-  .pill { position: absolute; transform: translate(-50%, -50%); width: max-content; max-width: 270px; background: #fff; border: 1px solid var(--line); border-radius: 22px; padding: 12px 18px; box-shadow: 0 10px 24px -16px rgba(28,33,64,.5); transition: background .25s, box-shadow .3s, padding .35s var(--ease); }
-  .pill.l { text-align: right; }
-  .pill .top { display: flex; align-items: baseline; gap: 8px; }
-  .pill.l .top { justify-content: flex-end; }
+  /* 环绕入口：胶囊大小固定不变（悬停区域稳定），详情是另一张浮层卡，不占位、不接收鼠标 */
+  .pill { position: absolute; display: flex; align-items: baseline; gap: 8px; background: #fff; border: 1px solid var(--line); border-radius: 999px; padding: 12px 20px; box-shadow: 0 10px 24px -16px rgba(28,33,64,.5); white-space: nowrap; transition: background .25s, box-shadow .3s; }
+  .pill.l { transform: translate(-100%, -50%); }
+  .pill.r { transform: translate(0, -50%); }
   .pill b { font-size: 18px; }
-  .pill small { color: var(--mute); font-size: 13px; }
-  .pill .more { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .4s var(--ease); }
-  .pill .more > span { overflow: hidden; width: 0; font-size: 13px; color: #4a4e6a; line-height: 1.5; }
-  .pill .more i { font-style: normal; color: var(--navy); font-weight: 700; margin-right: 6px; }
-  .pill:hover, .pill.hv { background: var(--hot); box-shadow: 0 18px 36px -20px rgba(28,33,64,.6); }
-  .pill:hover small, .pill:hover .more > span, .pill:hover .more i, .pill.hv small, .pill.hv .more > span { color: var(--ink); }
-  .pill:hover .more, .pill.hv .more { grid-template-rows: 1fr; }
-  .pill:hover .more > span, .pill.hv .more > span { padding-top: 6px; width: 240px; }
-  .stage { position: relative; z-index: 1; width: 380px; height: 440px; margin-top: 30px; transform-style: preserve-3d; transition: transform .2s ease-out; }
-  .stage img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; transition: opacity .3s, transform .45s var(--ease); }
-  .stage img.off { opacity: 0; transform: scale(.92) translateY(10px); }
-  .bubble { position: absolute; left: 50%; top: -6px; z-index: 3; transform: translate(-50%, -100%); background: var(--ink); color: var(--paper); padding: 12px 18px; border-radius: 18px; font-weight: 700; font-size: 16px; white-space: nowrap; transition: transform .35s var(--ease); }
+  .pill small { color: var(--mute); font-size: 13px; transition: color .25s; }
+  .pill .pop { position: absolute; top: calc(100% + 10px); width: 250px; padding: 12px 16px; border-radius: 14px; background: var(--ink); color: var(--paper); font-size: 13px; line-height: 1.55; white-space: normal; pointer-events: none; opacity: 0; transform: translateY(-4px); transition: opacity .25s, transform .3s var(--ease); }
+  .pill.l .pop { right: 0; }
+  .pill.r .pop { left: 0; }
+  .pill .pop i { font-style: normal; color: var(--hot); font-weight: 700; margin-right: 6px; }
+  .pill:hover { background: var(--hot); box-shadow: 0 16px 30px -18px rgba(28,33,64,.6); }
+  .pill:hover small { color: var(--ink); }
+  .pill:hover .pop { opacity: 1; transform: none; transition-delay: .08s; }
+  .stage { position: relative; z-index: 1; width: 380px; height: 440px; margin-top: 30px; transform-style: preserve-3d; will-change: transform; }
+  .stage img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; transition: opacity .2s ease .13s; }
+  .stage img.off { opacity: 0; transition: opacity .13s ease; }
+  .bubble { position: absolute; left: 50%; top: -6px; z-index: 3; transform: translate(-50%, -100%); background: var(--ink); color: var(--paper); padding: 12px 18px; border-radius: 18px; font-weight: 700; font-size: 16px; white-space: nowrap; transition: transform .35s var(--ease), opacity .15s; }
+  .bubble.fade { opacity: 0; }
   .bubble::after { content: ''; position: absolute; left: 50%; bottom: -7px; width: 14px; height: 14px; background: var(--ink); transform: translateX(-50%) rotate(45deg); }
-  .bubble.pop { transform: translate(-50%, -100%) scale(1.1); }
+  .bubble.pop { transform: translate(-50%, -100%) scale(1.08); }
   .name { position: relative; z-index: 2; text-align: center; margin-top: 10px; }
   .name h1 { font-size: 60px; letter-spacing: -.05em; font-weight: 850; line-height: 1.05; }
   .name p { color: var(--mute); font-size: 16px; margin-top: 6px; }
@@ -37,12 +37,12 @@
 <section class="screen hero">
   <div class="glow"></div><div class="ring"></div>
   <div class="orbit" id="orbit">
-    <a href="#" class="pill l" style="left:-450px; top:-180px" data-ip="laptop" data-say="这三个项目我正在做"><span class="top"><b>项目</b><small>3 个</small></span><span class="more"><span><i>开发中</i>AI 超级智能体 · AI 修图智能体 · 内容运营工作台</span></span></a>
-    <a href="#" class="pill" style="left:450px; top:-190px" data-ip="notes" data-say="学到的都记在这里"><span class="top"><b>笔记</b><small>1 篇</small></span><span class="more"><span><i>最新</i>Python 工程能力-古法练习</span></span></a>
-    <a href="#" class="pill l" style="left:-500px; top:50px" data-ip="point" data-say="想清楚的写成文章"><span class="top"><b>文章</b><small>13 篇</small></span><span class="more"><span><i>最新</i>这个 GitHub 项目，帮你完成公众号排版</span></span></a>
-    <a href="#" class="pill" style="left:500px; top:40px" data-ip="present" data-say="做的过程都拍下来了"><span class="top"><b>视频</b><small>10 支</small></span><span class="more"><span><i>最新</i>电脑一合盖 AI 就罢工？问题出在这一个勾上</span></span></a>
-    <a href="#" class="pill l" style="left:-400px; top:250px" data-ip="facepalm" data-say="这里随便发发牢骚"><span class="top"><b>发发神经</b><small>1 条</small></span><span class="more"><span><i>10.15</i>测试站长编辑功能</span></span></a>
-    <a href="#" class="pill" style="left:400px; top:260px" data-ip="thumbs" data-say="在这些地方都能找到我"><span class="top"><b>关注我</b><small>6 个平台</small></span><span class="more"><span>B 站 · 抖音 · 小红书 · 知乎 · GitHub · 微信</span></span></a>
+    <a href="#" class="pill l" style="left:-340px; top:-180px" data-ip="laptop" data-say="这三个项目我正在做"><b>项目</b><small>3 个</small><span class="pop"><i>开发中</i>AI 超级智能体 · AI 修图智能体 · 内容运营工作台</span></a>
+    <a href="#" class="pill r" style="left:340px; top:-190px" data-ip="notes" data-say="学到的都记在这里"><b>笔记</b><small>1 篇</small><span class="pop"><i>最新</i>Python 工程能力-古法练习</span></a>
+    <a href="#" class="pill l" style="left:-390px; top:50px" data-ip="point" data-say="想清楚的写成文章"><b>文章</b><small>13 篇</small><span class="pop"><i>最新</i>这个 GitHub 项目，帮你完成公众号排版</span></a>
+    <a href="#" class="pill r" style="left:390px; top:40px" data-ip="present" data-say="做的过程都拍下来了"><b>视频</b><small>10 支</small><span class="pop"><i>最新</i>电脑一合盖 AI 就罢工？问题出在这一个勾上</span></a>
+    <a href="#" class="pill l" style="left:-290px; top:250px" data-ip="facepalm" data-say="这里随便发发牢骚"><b>发发神经</b><small>1 条</small><span class="pop"><i>10.15</i>测试站长编辑功能</span></a>
+    <a href="#" class="pill r" style="left:290px; top:260px" data-ip="thumbs" data-say="在这些地方都能找到我"><b>关注我</b><small>6 个平台</small><span class="pop">B 站 · 抖音 · 小红书 · 知乎 · GitHub · 微信</span></a>
   </div>
   <div class="stage" id="stage" data-cursor>
     <div class="bubble" id="bubble">嗨！点我一下 👋</div>
@@ -56,28 +56,41 @@
 <script>
 const stage = document.getElementById('stage'), bubble = document.getElementById('bubble')
 const imgs = {}
+let curPose = ''
 const pose = (k) => {
+  if (k === curPose) return
+  curPose = k
   if (!imgs[k]) { const im = new Image(); im.src = `../../../public/brand/${k}.webp`; im.className = 'off'; stage.appendChild(im); imgs[k] = im }
   Object.values(imgs).forEach((x) => x.classList.add('off'))
   requestAnimationFrame(() => imgs[k].classList.remove('off'))
 }
-const say = (t) => { bubble.textContent = t; bubble.classList.add('pop'); setTimeout(() => bubble.classList.remove('pop'), 250) }
+let sayTo = bubble.textContent, sayT = 0
+const say = (t, pop) => {
+  if (t === sayTo) return
+  sayTo = t; clearTimeout(sayT); bubble.classList.add('fade')
+  sayT = setTimeout(() => { bubble.textContent = t; bubble.classList.remove('fade'); if (pop) { bubble.classList.add('pop'); setTimeout(() => bubble.classList.remove('pop'), 250) } }, 150)
+}
 // 点他：按顺序换表情
 const clicks = [['wave', '嗨！点我一下 👋'], ['idea', '想到一个点子！'], ['chin', '让我想想…'], ['thumbs', '你能看到这里，很棒'], ['facepalm', '这个 bug 又是我写的'], ['laptop', '我先去写代码了']]
-let ci = 0
+let ci = 0, hovered = null, enterT = 0, leaveT = 0
 pose('wave')
-stage.addEventListener('click', () => { ci = (ci + 1) % clicks.length; pose(clicks[ci][0]); say(clicks[ci][1]) })
-// 指向入口：他换成对应姿势并介绍；离开后回到挥手
+stage.addEventListener('click', () => { ci = (ci + 1) % clicks.length; if (!hovered) { pose(clicks[ci][0]); say(clicks[ci][1], true) } })
+// 指向入口：停留 120ms 才换姿势（划过不触发）；离开 300ms 后才回到原表情（在入口之间移动不来回闪）
 document.querySelectorAll('.pill').forEach((p) => {
   new Image().src = `../../../public/brand/${p.dataset.ip}.webp`
-  p.addEventListener('mouseenter', () => { pose(p.dataset.ip); say(p.dataset.say) })
-  p.addEventListener('mouseleave', () => { pose(clicks[ci][0]); say(clicks[ci][1]) })
+  p.addEventListener('mouseenter', () => {
+    clearTimeout(leaveT); clearTimeout(enterT)
+    enterT = setTimeout(() => { hovered = p; pose(p.dataset.ip); say(p.dataset.say) }, 120)
+  })
+  p.addEventListener('mouseleave', () => {
+    clearTimeout(enterT)
+    leaveT = setTimeout(() => { hovered = null; pose(clicks[ci][0]); say(clicks[ci][1]) }, 300)
+  })
 })
-const orbit = document.getElementById('orbit')
-addEventListener('pointermove', (e) => {
-  const x = e.clientX / innerWidth - .5, y = e.clientY / innerHeight - .5
-  stage.style.transform = `rotateY(${x * 18}deg) rotateX(${-y * 12}deg)`
-  orbit.style.transform = `translate(${x * -14}px, ${y * -10}px)`
-})
+// 转身：目标角度跟鼠标，实际角度每帧缓慢靠近，动作连贯不抖
+let tx = 0, ty = 0, cx = 0, cy = 0
+addEventListener('pointermove', (e) => { tx = (e.clientX / innerWidth - .5) * 14; ty = (e.clientY / innerHeight - .5) * -9 })
+const loop = () => { cx += (tx - cx) * .08; cy += (ty - cy) * .08; stage.style.transform = `rotateY(${cx.toFixed(2)}deg) rotateX(${cy.toFixed(2)}deg)`; requestAnimationFrame(loop) }
+loop()
 </script>
 </body></html>
