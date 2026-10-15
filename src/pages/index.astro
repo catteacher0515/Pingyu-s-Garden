@@ -13,18 +13,44 @@ const latestRants = await Promise.all(rants.slice(0, 3).map(async (r) => ({ r, C
 let n = 0
 const follow = site.follow.filter((f) => f.url || f.copy)
 const no = () => String(++n).padStart(2, '0')
+// 第一屏：IP 周围的入口。悬停时 IP 换成对应姿势、说一句介绍，入口下方浮出「数量 + 最新一条」
+const clip = (t: string, len = 26) => (t.length > len ? t.slice(0, len) + '…' : t)
+const plain = (md = '') => md.replace(/[#>*_`~\[\]()!-]/g, '').replace(/\s+/g, ' ').trim()
+const entries = [
+  projects.length > 0 && { href: '#projects', name: '项目', count: `${projects.length} 个`, ip: 'laptop', say: '这几个项目我正在做', tag: projects.some((p) => p.data.wip) ? '开发中' : '', latest: projects.map((p) => p.data.title).join(' · ') },
+  rows.length > 0 && { href: '#notes', name: '笔记', count: `${rows.length} 篇`, ip: 'notes', say: '学到的都记在这里', tag: '最新', latest: clip(rows[0].title) },
+  { href: '#articles', name: '文章', count: articles.length ? `${articles.length} 篇` : '', ip: 'point', say: '想清楚的写成文章', tag: articles.length ? '最新' : '', latest: articles.length ? clip(articles[0].title) : '第一篇正在写' },
+  videos.length > 0 && { href: '#videos', name: '视频', count: `${videos.length} 支`, ip: 'present', say: '做的过程都拍下来了', tag: '最新', latest: clip(videos[0].data.title) },
+  { href: '#rants', name: '发发神经', count: rants.length ? `${rants.length} 条` : '', ip: 'facepalm', say: '这里随便发发牢骚', tag: rants.length ? fmtDay(rants[0].data.date) : '', latest: rants.length ? clip(plain(rants[0].body)) : '今天很平静' },
+  follow.length > 0 && { href: '#follow', name: '关注我', count: `${follow.length} 个平台`, ip: 'thumbs', say: '在这些地方都能找到我', tag: '', latest: follow.map((f) => f.name).join(' · ') },
+].filter((e) => !!e)
+// 左右交替摆放，左边锚在右边缘、右边锚在左边缘，展开详情时入口本身不变大
+const slots = [[-340, -180], [340, -190], [-390, 50], [390, 40], [-400, 250], [400, 260]]
 ---
 <Base>
   <section class="hero screen">
-    <div class="hero-text">
-      {site.role && <p class="role reveal">{site.role}</p>}
+    <div class="glow"></div><div class="ring"></div>
+    <nav class="orbit" aria-label="网站内容">
+      {entries.map((e, i) => {
+        const [x, y] = slots[i]
+        return (
+          <a href={e.href} class:list={['pill', x < 0 ? 'l' : 'r']} style={`left:${x}px; top:${y}px`} data-ip={e.ip} data-say={e.say}>
+            <b>{e.name}</b>{e.count && <small>{e.count}</small>}
+            <span class="pop">{e.tag && <i>{e.tag}</i>}{e.latest}</span>
+          </a>
+        )
+      })}
+    </nav>
+    <div class="stage" id="stage" data-cursor="点我">
+      <div class="bubble" id="bubble">嗨！点我一下 👋</div>
+      <img src="/brand/wave.webp" alt="花萍雨的 IP 形象" data-k="wave" />
+    </div>
+    <div class="name">
+      {site.role && <p class="role">{site.role}</p>}
       <h1 id="name">{site.name}<span class="dot">.</span></h1>
-      <p class="sub reveal" style="--d:.5s">{site.tagline}</p>
-      <p class="now reveal" style="--d:.6s"><i></i><span id="now" data-now={JSON.stringify(site.now)}>{site.now[0]}</span></p>
+      <p class="sub">{site.tagline}</p>
     </div>
-    <div class="ip" id="ip">
-      <img class="ip-img" src="/brand/laptop.webp" alt="花萍雨的 IP 形象" />
-    </div>
+    {site.now.length > 0 && <p class="now"><i></i><span id="now" data-now={JSON.stringify(site.now)}>{site.now[0]}</span></p>}
   </section>
 
   {projects.length > 0 && (
@@ -166,18 +192,41 @@ const no = () => String(++n).padStart(2, '0')
 <style>
   .screen { min-height: 100vh; scroll-snap-align: start; display: flex; flex-direction: column; justify-content: center; padding: 90px 0 50px; }
   .screen > .sh { margin-bottom: 10px; }
-  .hero { display: grid; grid-template-columns: 1.3fr 1fr; align-items: center; gap: 48px; padding: 90px var(--pad) 40px; }
-  .role { font-size: 16px; font-weight: 600; color: var(--navy); margin-bottom: 18px; letter-spacing: .02em; }
-  .hero h1 { font-size: clamp(110px, 12.5vw, 230px); line-height: .82; letter-spacing: -.06em; font-weight: 850; white-space: nowrap; }
-  .sub { margin-top: 28px; font-size: 22px; line-height: 1.55; max-width: 600px; }
-  .now { margin-top: 24px; display: flex; align-items: center; gap: 10px; color: var(--ink); font-size: 15px; }
+  .hero { position: relative; align-items: center; perspective: 1200px; overflow: hidden; padding-top: 60px; padding-bottom: 60px; }
+  .glow { position: absolute; left: 50%; top: 50%; width: 620px; height: 620px; border-radius: 50%; transform: translate(-50%, -50%); background: radial-gradient(closest-side, color-mix(in srgb, var(--hot) 40%, transparent), transparent); filter: blur(20px); pointer-events: none; }
+  .ring { position: absolute; left: 50%; top: 50%; width: 760px; height: 760px; border: 1.5px dashed var(--line); border-radius: 50%; transform: translate(-50%, -54%); animation: ringSpin 60s linear infinite; pointer-events: none; }
+  @keyframes ringSpin { to { transform: translate(-50%, -54%) rotate(360deg); } }
+  .orbit { position: absolute; left: 50%; top: 50%; z-index: 2; }
+  /* 入口大小固定，悬停区域稳定；详情是另一张浮层，不占位、不接收鼠标 */
+  .pill { position: absolute; display: flex; align-items: baseline; gap: 8px; background: #fff; border: 1px solid var(--line); border-radius: 999px; padding: 12px 20px; box-shadow: 0 10px 24px -16px rgba(28, 33, 64, .5); white-space: nowrap; transition: background .25s, box-shadow .3s; animation: pillIn .8s var(--ease) backwards; }
+  .pill:nth-child(2) { animation-delay: .08s; } .pill:nth-child(3) { animation-delay: .16s; } .pill:nth-child(4) { animation-delay: .24s; } .pill:nth-child(5) { animation-delay: .32s; } .pill:nth-child(6) { animation-delay: .4s; }
+  @keyframes pillIn { from { opacity: 0; } }
+  .pill.l { transform: translate(-100%, -50%); }
+  .pill.r { transform: translate(0, -50%); }
+  .pill b { font-size: 18px; }
+  .pill small { color: var(--mute); font-size: 13px; transition: color .25s; }
+  .pill .pop { position: absolute; top: calc(100% + 10px); width: 250px; padding: 12px 16px; border-radius: 14px; background: var(--ink); color: var(--paper); font-size: 13px; line-height: 1.55; white-space: normal; pointer-events: none; opacity: 0; transform: translateY(-4px); transition: opacity .25s, transform .3s var(--ease); }
+  .pill.l .pop { right: 0; }
+  .pill.r .pop { left: 0; }
+  .pill .pop i { font-style: normal; color: var(--hot); font-weight: 700; margin-right: 6px; }
+  .pill:hover { background: var(--hot); box-shadow: 0 16px 30px -18px rgba(28, 33, 64, .6); }
+  .pill:hover small { color: var(--ink); }
+  .pill:hover .pop { opacity: 1; transform: none; transition-delay: .08s; }
+  .stage { position: relative; z-index: 1; width: 380px; height: min(440px, 48vh); margin-top: 40px; transform-style: preserve-3d; will-change: transform; animation: stageIn 1.2s var(--ease) .1s backwards; }
+  @keyframes stageIn { from { opacity: 0; transform: translateY(30px) scale(.94); } }
+  .stage img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; transition: opacity .2s ease .13s; }
+  .stage img.off { opacity: 0; transition: opacity .13s ease; }
+  .bubble { position: absolute; left: 50%; top: -6px; z-index: 3; transform: translate(-50%, -100%); background: var(--ink); color: var(--paper); padding: 12px 18px; border-radius: 18px; font-weight: 700; font-size: 16px; white-space: nowrap; transition: transform .35s var(--ease), opacity .15s; }
+  .bubble::after { content: ''; position: absolute; left: 50%; bottom: -7px; width: 14px; height: 14px; background: var(--ink); transform: translateX(-50%) rotate(45deg); }
+  .bubble.fade { opacity: 0; }
+  .bubble.pop { transform: translate(-50%, -100%) scale(1.08); }
+  .name { position: relative; z-index: 2; text-align: center; margin-top: 12px; }
+  .role { font-size: 15px; font-weight: 600; color: var(--navy); }
+  .hero h1 { font-size: 60px; letter-spacing: -.05em; font-weight: 850; line-height: 1.05; }
+  .sub { color: var(--mute); font-size: 16px; line-height: 1.6; margin: 6px auto 0; max-width: 500px; }
+  .now { position: absolute; bottom: 22px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--mute); }
   .now i { width: 8px; height: 8px; border-radius: 50%; background: var(--hot); animation: blink 1.4s infinite; }
   @keyframes blink { 50% { opacity: .25; } }
-  .ip { position: relative; justify-self: center; width: min(30vw, 480px); animation: pop 1.2s var(--ease) .2s backwards; }
-  @keyframes pop { from { opacity: 0; transform: translateY(40px) scale(.94); } }
-  .ip::before { content: ''; position: absolute; left: 8%; right: 8%; bottom: 2%; height: 70%; border-radius: 50%; background: radial-gradient(closest-side, color-mix(in srgb, var(--hot) 45%, transparent), transparent); filter: blur(30px); z-index: -1; }
-  .ip-img { width: 100%; max-height: 72vh; object-fit: contain; animation: float 6s ease-in-out infinite; }
-  @keyframes float { 50% { transform: translateY(-14px); } }
 
 
   /* 项目：三列卡片 */
@@ -252,33 +301,69 @@ const no = () => String(++n).padStart(2, '0')
 <script>
   import { gsap } from 'gsap'
   import { ScrollTrigger } from 'gsap/ScrollTrigger'
-  import { SplitText } from 'gsap/SplitText'
-  gsap.registerPlugin(ScrollTrigger, SplitText)
+  gsap.registerPlugin(ScrollTrigger)
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches
 
-  if (!reduce) {
-    const split = new SplitText('#name', { type: 'chars' })
-    gsap.from(split.chars, { yPercent: 110, rotate: 8, opacity: 0, stagger: .07, duration: 1.2, ease: 'expo.out' })
-  }
-
   // 「正在做」轮换
-  const nowEl = document.getElementById('now')!
-  const nows: string[] = JSON.parse(nowEl.dataset.now || '[]')
+  const nowEl = document.getElementById('now')
+  const nows: string[] = JSON.parse(nowEl?.dataset.now || '[]')
   let ni = 0
-  if (nows.length > 1 && !reduce) setInterval(() => {
-    gsap.to(nowEl, { y: -10, opacity: 0, duration: .3, onComplete: () => {
+  if (nowEl && nows.length > 1 && !reduce) setInterval(() => {
+    gsap.to(nowEl, { y: -8, opacity: 0, duration: .3, onComplete: () => {
       ni = (ni + 1) % nows.length; nowEl.textContent = nows[ni]
-      gsap.fromTo(nowEl, { y: 10, opacity: 0 }, { y: 0, opacity: 1, duration: .5 })
+      gsap.fromTo(nowEl, { y: 8, opacity: 0 }, { y: 0, opacity: 1, duration: .5 })
     } })
   }, 2600)
 
-  // 角色跟随鼠标轻微视差
-  const ip = document.getElementById('ip')
-  if (ip && !reduce) addEventListener('pointermove', (e) => {
-    if (e.pointerType !== 'mouse') return
-    const x = e.clientX / innerWidth - .5, y = e.clientY / innerHeight - .5
-    gsap.to(ip, { x: x * -24, y: y * -16, rotate: x * 2, duration: 1, ease: 'power3.out' })
+  // 第一屏 IP：点他换表情；指向入口时换成对应姿势并介绍
+  const stage = document.getElementById('stage')!
+  const bubble = document.getElementById('bubble')!
+  const imgs: Record<string, HTMLImageElement> = { wave: stage.querySelector('img')! }
+  let curPose = 'wave'
+  const pose = (k: string) => {
+    if (k === curPose) return
+    curPose = k
+    let img = imgs[k]
+    if (!img) { img = imgs[k] = new Image(); img.src = `/brand/${k}.webp`; img.alt = ''; img.className = 'off'; stage.appendChild(img) }
+    Object.values(imgs).forEach((x) => x.classList.add('off'))
+    requestAnimationFrame(() => img.classList.remove('off'))
+  }
+  // 气泡先淡出再换字，连续触发时只保留最后一次
+  let sayTo = bubble.textContent, sayT = 0
+  const say = (t: string, popIt = false) => {
+    if (t === sayTo) return
+    sayTo = t; clearTimeout(sayT); bubble.classList.add('fade')
+    sayT = window.setTimeout(() => {
+      bubble.textContent = t; bubble.classList.remove('fade')
+      if (popIt) { bubble.classList.add('pop'); setTimeout(() => bubble.classList.remove('pop'), 250) }
+    }, 150)
+  }
+  const clicks = [['wave', '嗨！点我一下 👋'], ['idea', '想到一个点子！'], ['chin', '让我想想…'], ['thumbs', '你能看到这里，很棒'], ['facepalm', '这个 bug 又是我写的'], ['laptop', '我先去写代码了']]
+  let ci = 0, hovering = false, enterT = 0, leaveT = 0
+  stage.addEventListener('click', () => { ci = (ci + 1) % clicks.length; if (!hovering) { pose(clicks[ci][0]); say(clicks[ci][1], true) } })
+  // 停留 120ms 才换姿势（划过不触发）；离开 300ms 后才回到原表情（在入口之间移动不来回闪）
+  document.querySelectorAll<HTMLElement>('.pill').forEach((p) => {
+    new Image().src = `/brand/${p.dataset.ip}.webp`
+    p.addEventListener('mouseenter', () => {
+      clearTimeout(leaveT); clearTimeout(enterT)
+      enterT = window.setTimeout(() => { hovering = true; pose(p.dataset.ip!); say(p.dataset.say!) }, 120)
+    })
+    p.addEventListener('mouseleave', () => {
+      clearTimeout(enterT)
+      leaveT = window.setTimeout(() => { hovering = false; pose(clicks[ci][0]); say(clicks[ci][1]) }, 300)
+    })
   })
+  // 转身：角度每帧缓慢靠近鼠标方向，动作连贯不抖
+  if (!reduce) {
+    let tx = 0, ty = 0, cx = 0, cy = 0
+    addEventListener('pointermove', (e) => { if (e.pointerType !== 'mouse') return; tx = (e.clientX / innerWidth - .5) * 14; ty = (e.clientY / innerHeight - .5) * -9 })
+    const loop = () => {
+      cx += (tx - cx) * .08; cy += (ty - cy) * .08
+      if (Math.abs(tx - cx) > .01 || Math.abs(ty - cy) > .01) stage.style.transform = `rotateY(${cx.toFixed(2)}deg) rotateX(${cy.toFixed(2)}deg)`
+      requestAnimationFrame(loop)
+    }
+    loop()
+  }
 
   // 视频卡片悬停播放预览片段
   document.querySelectorAll<HTMLVideoElement>('video[data-hover-preview]').forEach((v) => {
