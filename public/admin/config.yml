@@ -54,7 +54,8 @@ collections:
       - { name: date, label: 发布日期, widget: datetime, time_format: false, format: YYYY-MM-DD, required: false }
       - { name: summary, label: 一句话简介, widget: text, required: false }
       - { name: cover, label: 封面图, widget: image, required: false }
-      - { name: external, label: 外部原文链接, required: false, hint: '如果正文在知乎等其他平台，填原文地址，点击会直接跳过去；在本站写正文就留空。' }
+      - { name: external, label: 外部原文链接（直接跳走）, required: false, hint: '只有正文不放在本站时才填：点击会直接跳到这个地址。正文写在本站就留空。' }
+      - { name: origin, label: 首发链接, required: false, hint: '正文在本站、同时也发在知乎等平台时填原文地址：文末会显示「本文首发于…」。' }
       - { name: tags, label: 标签, widget: list, required: false }
       - { name: draft, label: 草稿（不发布）, widget: boolean, default: false }
       - { name: order, label: 排序（没有日期时生效，越小越靠前）, widget: number, value_type: int, default: 0, required: false }

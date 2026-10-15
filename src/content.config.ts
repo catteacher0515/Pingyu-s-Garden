@@ -32,6 +32,7 @@ const posts = defineCollection({
     category: z.enum(['教程', '文章']),
     date: z.coerce.date().optional(),
     external: z.string().url().optional(),
+    origin: z.string().url().optional(),
     order: z.number().default(0),
   }),
 })

@@ -93,11 +93,15 @@ export async function getNoteRows(): Promise<Row[]> {
   }))
 }
 
+/** 中文阅读时长：去掉 Markdown 记号后约每分钟 400 字 */
+export const readMinutes = (md = '') => Math.max(1, Math.round(md.replace(/!\[[^\]]*\]\([^)]*\)|```[\s\S]*?```|[#>*_`~\[\]()-]/g, '').replace(/\s+/g, '').length / 400))
+export const fmtFull = (d: Date) => `${d.getUTCFullYear()}.${fmtDay(d)}`
+
 /** 公开发布的文章和教程，按发布时间倒序 */
 export async function getArticleRows(): Promise<Row[]> {
   return (await getPosts()).map((p) => ({
     kind: p.data.tags[0] ?? p.data.category, title: p.data.title, href: postHref(p), cover: opt(p.data.cover), draft: p.data.draft, external: !!p.data.external,
-    meta: [p.data.external ? '知乎' : p.data.category, p.data.date && fmtDay(p.data.date)].filter(Boolean).join(' · '), date: time(p.data.date),
+    meta: [p.data.date && fmtFull(p.data.date), p.data.external ? '知乎' : `${readMinutes(p.body)} 分钟读完`].filter(Boolean).join(' · '), date: time(p.data.date),
   }))
 }
 
