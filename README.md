@@ -1,6 +1,6 @@
 # Pingyu's Garden
 
-花萍雨的个人网站：视频、图文教程和自己做的小工具。
+花萍雨的个人网站：Agent 项目、学习笔记、文章、视频和「发发神经」。只做电脑端。
 
 > 这个分支（`astro-v2`）是从零重写的新版本，已上线：https://www.huapingyu.cn （Cloudflare Pages，push 到 `astro-v2` 自动部署）。
 > 旧版仍在 `main` 分支，部署在 GitHub Pages：https://catteacher0515.github.io/Pingyu-s-Garden/ 。
@@ -15,23 +15,23 @@ npm run build    # 输出到 dist/
 
 ## 页面
 
-- `/` 首页：名字、最新一期视频、视频、教程 & 笔记、发发神经、关注我
+- `/` 首页：一屏一块，依次是 名字 → 项目 → 笔记 → 文章 → 视频 → 发发神经 → 关注我（「关注我」只在首页，其他页面底部只有一行版权和备案号）
+- `/notes/` 学习笔记（从 Obsidian 发布）
+- `/articles/` 文章（在后台写，含以前的知乎文章）
 - `/videos/` 视频列表和详情（嵌入 B 站播放器）
-- `/writing/` 教程 & 笔记（教程在后台写，笔记从 Obsidian 发布）
 - `/rants/` 发发神经
-- `/admin/` 编辑后台；「网站设置」里可以改首页文字和关注我的链接
+- `/admin/` 编辑后台；「网站设置」里可以改首页文字、关注我的平台和备案号
 
 ## 怎么更新内容
 
-1. 打开 https://www.huapingyu.cn/admin/ （本地是 `http://localhost:4321/admin/index.html`）。
-2. 选「Sign In Using Access Token」。令牌在 https://github.com/settings/personal-access-tokens/new 生成：Repository access 只选 `Pingyu-s-Garden`，Permissions 里 Contents 设为 Read and write，生成后粘贴登录。
-3. 新建或修改视频、教程、发发神经，点保存。内容会提交到 GitHub 的 `astro-v2` 分支，Cloudflare 自动重新构建，几分钟内生效。
+1. 打开 https://pingyu-s-garden.pages.dev/admin/ （本地是 `http://localhost:4321/admin/index.html`）。
+2. 点「使用访问令牌登录」，粘贴 GitHub 令牌。令牌在 https://github.com/settings/personal-access-tokens/new 生成：Repository access 选 Only select repositories → `Pingyu-s-Garden`，Permissions 里 Contents 设为 Read and write，有效期最长 365 天。登录状态保存在浏览器里，令牌过期后按同样步骤重新生成。
+3. 新建、修改或删除（勾选条目 → 右上角「删除」）视频、文章、发发神经，点保存。内容会提交到 GitHub 的 `astro-v2` 分支，Cloudflare 自动重新构建，2～3 分钟生效。
 
 几个开关：
 
-- **放进首页放映厅**：勾上后会出现在首页的「最近在做」。
 - **草稿**：勾上后只在本地预览可见，不会发布。
-- 视频的「预览片段」是可选的 3～6 秒静音 mp4，用来在首页和列表里自动播放。
+- 视频的「预览片段」是可选的 3～6 秒静音 mp4，鼠标悬停在视频卡片上时播放。
 
 ## 怎么发布学习笔记
 
@@ -48,7 +48,11 @@ npm run build    # 输出到 dist/
 
 ## 怎么发「发发神经」
 
-打开编辑后台，进入「发发神经」，新建一条：时间会自动填好，选个心情，写几句话，保存即可。不需要标题。
+打开编辑后台，进入「发发神经」，新建一条：时间会自动填好，选个心情，写几句话，保存即可。不需要标题。首页显示最新 3 条，全部在 `/rants/`。
+
+## 关注我
+
+在「网站设置 → 关注我」里改。填了「链接」的平台显示为跳转卡片；微信这类没有主页的，把微信号填在「点击复制的内容」，访客点卡片就会复制。两项都空的平台不显示。
 
 ## 技术栈
 
@@ -56,4 +60,4 @@ Astro 7、GSAP、Sveltia CMS。内容是 `src/content/` 下的 Markdown 文件�
 
 ## 设计来源
 
-`docs/prototypes/redesign-v2/` 是翻新前做的可交互原型，参考了 GSAP Showcase 和 HyperFrames Showcase。
+`docs/prototypes/v3/a-studio.html`（「片场」）是现在的版式来源，配色后来换成了 IP 形象的配色；`docs/prototypes/redesign-v2/` 是更早的原型。参考了 GSAP Showcase 和 HyperFrames Showcase。
