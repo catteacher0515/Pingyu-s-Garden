@@ -11,7 +11,7 @@ const latestVideos = videos.slice(0, 4)
 const writing = rows.slice(0, 4)
 const latestRants = await Promise.all(rants.slice(0, 3).map(async (r) => ({ r, Content: (await render(r)).Content })))
 let n = 0
-const follow = site.follow.filter((f) => f.url)
+const follow = site.follow.filter((f) => f.url || f.copy)
 const no = () => String(++n).padStart(2, '0')
 ---
 <Base>
@@ -133,21 +133,24 @@ const no = () => String(++n).padStart(2, '0')
   </section>
   {follow.length > 0 && (
     <section id="follow" class="screen follow">
-      <div class="sh"><h2>{no()} · 关注我</h2><span>新视频和新笔记，会先发在这些地方</span></div>
+      <div class="sh"><h2>{no()} · 关注我</h2><span>视频在 B 站、抖音、小红书同步更新，长文写在知乎</span></div>
       <div class="follow-wrap">
         <div class="follow-ip">
           <img src="/brand/wave.webp" alt="" loading="lazy" />
           <p>来打个招呼，<br />在这些地方都能找到我。</p>
         </div>
         <div class="fgrid">
-          {follow.map((f) => (
-            <a class="fcard reveal-scroll" href={f.url} target={f.url.startsWith('http') ? '_blank' : undefined} rel="noopener" data-cursor="去看看">
-              <span class="fname">{f.name}</span>
-              {f.desc && <span class="fdesc">{f.desc}</span>}
-              <span class="fhandle">{f.handle ? `@${f.handle}` : ''}</span>
-              <span class="fgo">↗</span>
-            </a>
-          ))}
+          {follow.map((f) => {
+            const Tag = f.url ? 'a' : 'button'
+            return (
+              <Tag class="fcard reveal-scroll" href={f.url || undefined} target={f.url.startsWith('http') ? '_blank' : undefined} rel={f.url ? 'noopener' : undefined} data-copy={f.url ? undefined : f.copy} data-cursor={f.url ? '去看看' : '点击复制'}>
+                <span class="fname">{f.name}</span>
+                {f.desc && <span class="fdesc">{f.desc}</span>}
+                <span class="fhandle">{f.handle ? (f.url ? `@${f.handle}` : f.handle) : ''}</span>
+                <span class="fgo">{f.url ? '↗' : '⧉'}</span>
+              </Tag>
+            )
+          })}
         </div>
       </div>
       <div class="follow-foot"><Foot /></div>
@@ -226,9 +229,10 @@ const no = () => String(++n).padStart(2, '0')
   .follow-ip img { width: min(100%, 300px); max-height: 46vh; object-fit: contain; margin: 0 auto; transform-origin: 30% 70%; }
   .follow:hover .follow-ip img { animation: wave 1.2s var(--ease); }
   .follow-ip p { margin-top: 18px; font-size: 26px; font-weight: 700; line-height: 1.4; }
-  .fgrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
-  .fcard { position: relative; display: grid; grid-template-rows: auto 1fr auto; min-height: 168px; padding: 26px 28px; border-radius: 18px; background: #fff; border: 1px solid var(--line); transition: transform .4s var(--ease), background .3s, border-color .3s, box-shadow .4s; }
-  .fname { font-size: 34px; font-weight: 800; letter-spacing: -.02em; }
+  .fgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .fcard { position: relative; display: grid; text-align: left; font: inherit; color: inherit; grid-template-rows: auto 1fr auto; min-height: 160px; padding: 26px 28px; border-radius: 18px; background: #fff; border: 1px solid var(--line); transition: transform .4s var(--ease), background .3s, border-color .3s, box-shadow .4s; }
+  .fcard.copied .fgo { color: var(--ink); }
+  .fname { font-size: 30px; font-weight: 800; letter-spacing: -.02em; }
   .fdesc { color: var(--mute); font-size: 15px; margin-top: 6px; }
   .fhandle { color: var(--navy); font-size: 14px; font-weight: 600; }
   .fgo { position: absolute; right: 24px; top: 22px; font-size: 22px; color: var(--mute); transition: transform .4s var(--ease), color .3s; }
@@ -281,5 +285,16 @@ const no = () => String(++n).padStart(2, '0')
     const card = v.closest('.vcard')!
     card.addEventListener('mouseenter', () => { v.preload = 'auto'; v.play().catch(() => {}) })
     card.addEventListener('mouseleave', () => v.pause())
+  })
+  // 「关注我」里的微信卡片：点击复制微信号，光标提示和卡片角标都给反馈
+  document.querySelectorAll<HTMLElement>('[data-copy]').forEach((el) => {
+    el.addEventListener('click', async () => {
+      await navigator.clipboard.writeText(el.dataset.copy || '')
+      const go = el.querySelector('.fgo')!
+      el.dataset.cursor = '已复制，去微信添加吧'
+      document.getElementById('cur-label')!.textContent = el.dataset.cursor
+      go.textContent = '✓'
+      setTimeout(() => { go.textContent = '⧉'; el.dataset.cursor = '点击复制' }, 2000)
+    })
   })
 </script>

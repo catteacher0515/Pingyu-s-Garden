@@ -11,38 +11,51 @@
     {
       "name": "B 站",
       "handle": "花萍雨呀",
-      "desc": "教程和长视频",
-      "url": "https://space.bilibili.com/3546939995982271"
+      "desc": "视频",
+      "url": "https://space.bilibili.com/3546939995982271",
+      "copy": ""
     },
     {
       "name": "抖音",
       "handle": "花萍雨呀",
-      "desc": "短视频",
-      "url": "https://www.douyin.com/user/MS4wLjABAAAA7USyo0rUDrxTs-QozOJj7XZD7q0FXThQyKntoO-oJUm6ttbKkqQTHnD9n61NqSOm"
+      "desc": "视频",
+      "url": "https://www.douyin.com/user/MS4wLjABAAAA7USyo0rUDrxTs-QozOJj7XZD7q0FXThQyKntoO-oJUm6ttbKkqQTHnD9n61NqSOm",
+      "copy": ""
     },
     {
       "name": "小红书",
       "handle": "花萍雨呀",
-      "desc": "图文笔记和日常",
-      "url": "https://www.xiaohongshu.com/user/profile/608cf7c6000000000101c236"
+      "desc": "视频",
+      "url": "https://www.xiaohongshu.com/user/profile/608cf7c6000000000101c236",
+      "copy": ""
     },
     {
       "name": "知乎",
-      "handle": "",
-      "desc": "回答和长文",
-      "url": ""
+      "handle": "花萍雨呀",
+      "desc": "文字长文和回答",
+      "url": "https://www.zhihu.com/people/bai-tang-18-17-83",
+      "copy": ""
     },
     {
       "name": "GitHub",
       "handle": "catteacher0515",
       "desc": "代码和项目",
-      "url": "https://github.com/catteacher0515"
+      "url": "https://github.com/catteacher0515",
+      "copy": ""
+    },
+    {
+      "name": "微信",
+      "handle": "ssm0515ssm",
+      "desc": "添加时请备注来意",
+      "url": "",
+      "copy": "ssm0515ssm"
     },
     {
       "name": "邮箱",
       "handle": "",
       "desc": "实习和合作",
-      "url": ""
+      "url": "",
+      "copy": ""
     }
   ],
   "icp": ""

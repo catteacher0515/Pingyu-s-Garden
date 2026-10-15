@@ -112,10 +112,11 @@ collections:
           - { name: icp, label: ICP 备案号, required: false, hint: '备案通过后填，例如 冀ICP备2026042324号-2，会显示在页脚' }
           - { name: now, label: 正在做（首页轮换显示）, widget: list }
           - name: follow
-            label: 关注我（填了链接的才会显示）
+            label: 关注我（填了链接或复制内容的才会显示）
             widget: list
             fields:
               - { name: name, label: 平台 }
               - { name: handle, label: 账号名, required: false }
               - { name: desc, label: 在那里能看到什么, required: false, hint: '一句话，例如 教程和长视频' }
               - { name: url, label: 链接, required: false, hint: '主页地址，例如 https://space.bilibili.com/你的UID ；邮箱写 mailto:你的邮箱' }
+              - { name: copy, label: 点击复制的内容, required: false, hint: '没有主页链接的平台（如微信）填这里，访客点卡片会复制它，例如微信号' }

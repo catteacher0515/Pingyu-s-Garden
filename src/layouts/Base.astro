@@ -23,7 +23,7 @@ const links = [
   has.videos && { id: 'videos', href: '/videos/', label: '视频' },
   { id: 'rants', href: '/rants/', label: '发发神经' },
 ].filter((l) => !!l)
-const hasFollow = site.follow.some((f) => f.url)
+const hasFollow = site.follow.some((f) => f.url || f.copy)
 // 「关注我」只放首页（index.astro 的最后一屏），子页面只留一行版权和备案号
 const isHome = Astro.url.pathname === '/'
 ---
