@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>首页第一屏 · 三个方向</title>
+<link rel="stylesheet" href="_base.css">
+<style>
+  html, body { overflow: auto; }
+  body { padding: 40px var(--pad) 80px; }
+  h1 { font-size: 40px; letter-spacing: -.03em; }
+  .sub { color: var(--mute); margin-top: 8px; }
+  .item { margin-top: 48px; }
+  .item h2 { font-size: 24px; display: flex; align-items: baseline; gap: 14px; }
+  .item h2 a { font-size: 15px; color: var(--navy); }
+  .item p { color: var(--mute); margin: 6px 0 14px; }
+  .frame { width: 100%; aspect-ratio: 16 / 10; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: var(--paper); }
+  .frame iframe { width: 1440px; height: 900px; border: 0; transform-origin: 0 0; }
+</style></head>
+<body>
+<h1>首页第一屏 · 三个方向<span class="dot">.</span></h1>
+<p class="sub">每个都能直接在框里点、移动鼠标；点标题旁的「全屏打开」看真实大小。</p>
+<div class="item"><h2>A · Agent 演示台 <a href="a-agent-desk.html" target="_blank">全屏打开 ↗</a></h2><p>右边小终端自动演示 Agent 一步步干活：读任务 → 调工具 → 出结果。下面的按钮可切换三个项目各自的任务。</p><div class="frame"><iframe src="a-agent-desk.html"></iframe></div></div>
+<div class="item"><h2>B · 名片 + 总览 <a href="b-overview.html" target="_blank">全屏打开 ↗</a></h2><p>左边名片，右边全站目录（数量 + 最新一条）。鼠标移到哪一行，名片上的 IP 就换成对应的姿势。</p><div class="frame"><iframe src="b-overview.html"></iframe></div></div>
+<div class="item"><h2>C · IP 互动主角 <a href="c-ip-stage.html" target="_blank">全屏打开 ↗</a></h2><p>IP 站在中间，随鼠标转向；点他会换表情、说一句话。各版块入口环绕在四周。</p><div class="frame"><iframe src="c-ip-stage.html"></iframe></div></div>
+<script>
+const fit = () => document.querySelectorAll('.frame').forEach((f) => { f.querySelector('iframe').style.transform = `scale(${f.clientWidth / 1440})` })
+addEventListener('resize', fit); fit()
+</script>
+</body></html>

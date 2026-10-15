@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>B · 名片 + 总览</title>
+<link rel="stylesheet" href="_base.css">
+<style>
+  .hero { display: grid; grid-template-columns: 1fr 1.25fr; gap: 70px; align-items: center; padding: 90px var(--pad) 50px; }
+  .card { position: relative; background: #fff; border: 1px solid var(--line); border-radius: 28px; padding: 40px 40px 36px; box-shadow: 0 30px 60px -40px rgba(28,33,64,.35); }
+  .card .ipw { position: relative; height: 300px; margin: -110px 0 10px; }
+  .card .ipw img { position: absolute; left: 50%; bottom: 0; height: 100%; transform: translateX(-50%); transition: opacity .35s, transform .5s var(--ease); }
+  .card .ipw img.off { opacity: 0; transform: translateX(-50%) translateY(14px) scale(.96); }
+  .role { color: var(--navy); font-weight: 700; font-size: 15px; }
+  .card h1 { font-size: 76px; letter-spacing: -.05em; line-height: 1; font-weight: 850; margin-top: 8px; }
+  .card p.lead { font-size: 19px; line-height: 1.6; margin-top: 16px; color: #3b3f5c; }
+  .card .now { display: flex; align-items: center; gap: 10px; margin-top: 22px; padding-top: 18px; border-top: 1px dashed var(--line); font-size: 14px; color: var(--mute); }
+  .card .now i { width: 8px; height: 8px; border-radius: 50%; background: #3ac06e; box-shadow: 0 0 0 4px #3ac06e33; }
+
+  .idx { list-style: none; }
+  .idx li a { display: grid; grid-template-columns: 56px 130px 1fr 90px 30px; align-items: center; gap: 12px; padding: 22px 18px; border-top: 1px solid var(--line); border-radius: 14px; transition: background .3s, padding .4s var(--ease); }
+  .idx li:last-child a { border-bottom: 1px solid var(--line); }
+  .idx .no { font-size: 14px; color: var(--mute); }
+  .idx .nm { font-size: 30px; font-weight: 800; letter-spacing: -.02em; }
+  .idx .latest { color: var(--mute); font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .idx .latest b { color: var(--navy); font-weight: 600; margin-right: 8px; font-size: 13px; }
+  .idx .ct { text-align: right; font-size: 14px; color: var(--mute); }
+  .idx .go { font-size: 20px; transition: transform .4s var(--ease); }
+  .idx li a:hover { background: var(--hot); padding-left: 28px; border-color: transparent; }
+  .idx li a:hover .latest, .idx li a:hover .ct, .idx li a:hover .no { color: var(--ink); }
+  .idx li a:hover .go { transform: translateX(6px); }
+  .idx-head { display: flex; justify-content: space-between; font-size: 14px; color: var(--mute); margin: 0 18px 14px; }
+</style></head>
+<body>
+<header class="bar"><a class="brand">花萍雨 / Pingyu</a><nav><a>项目</a><a>笔记</a><a>文章</a><a>视频</a><a>发发神经</a><a>关注我</a><a>搜索 ⌘K</a></nav></header>
+<section class="screen hero">
+  <div class="card">
+    <div class="ipw" id="ipw">
+      <img src="../../../public/brand/wave.webp" data-k="default" alt="">
+    </div>
+    <p class="role">Agent 开发 · 准大三</p>
+    <h1>花萍雨<span class="dot">.</span></h1>
+    <p class="lead">我做 AI Agent：让大模型会查资料、会用工具，能自己把事情做完。也把做的过程拍成视频、写成笔记。</p>
+    <p class="now"><i></i>正在：在打磨 Agent 项目</p>
+  </div>
+  <div>
+    <div class="idx-head"><span>这里有什么</span><span>鼠标移上去看看</span></div>
+    <ul class="idx">
+      <li><a href="#" data-ip="laptop"><span class="no">01</span><span class="nm">项目</span><span class="latest"><b>开发中</b>AI 超级智能体 · AI 修图智能体 · 内容运营工作台</span><span class="ct">3 个</span><span class="go">→</span></a></li>
+      <li><a href="#" data-ip="notes"><span class="no">02</span><span class="nm">笔记</span><span class="latest"><b>最新</b>Python 工程能力-古法练习</span><span class="ct">1 篇</span><span class="go">→</span></a></li>
+      <li><a href="#" data-ip="point"><span class="no">03</span><span class="nm">文章</span><span class="latest"><b>最新</b>这个 GitHub 项目，帮你完成公众号排版</span><span class="ct">13 篇</span><span class="go">→</span></a></li>
+      <li><a href="#" data-ip="present"><span class="no">04</span><span class="nm">视频</span><span class="latest"><b>最新</b>电脑一合盖 AI 就罢工？问题出在这一个勾上</span><span class="ct">10 支</span><span class="go">→</span></a></li>
+      <li><a href="#" data-ip="facepalm"><span class="no">05</span><span class="nm">发发神经</span><span class="latest"><b>10.15</b>测试站长编辑功能</span><span class="ct">1 条</span><span class="go">→</span></a></li>
+      <li><a href="#" data-ip="thumbs"><span class="no">06</span><span class="nm">关注我</span><span class="latest">B 站 · 抖音 · 小红书 · 知乎 · GitHub · 微信</span><span class="ct"></span><span class="go">→</span></a></li>
+    </ul>
+  </div>
+</section>
+<script>
+// 悬停目录行，左边名片上的 IP 换成对应姿势
+const wrap = document.getElementById('ipw')
+const cache = {}
+const show = (k) => {
+  const cur = wrap.querySelector('img:not(.off)')
+  if (cur && cur.dataset.k === k) return
+  let img = cache[k]
+  if (!img) { img = new Image(); img.src = `../../../public/brand/${k === 'default' ? 'wave' : k}.webp`; img.dataset.k = k; img.className = 'off'; wrap.appendChild(img); cache[k] = img }
+  wrap.querySelectorAll('img').forEach((x) => x.classList.add('off'))
+  requestAnimationFrame(() => img.classList.remove('off'))
+}
+cache.default = wrap.querySelector('img')
+document.querySelectorAll('[data-ip]').forEach((a) => { a.addEventListener('mouseenter', () => show(a.dataset.ip)); new Image().src = `../../../public/brand/${a.dataset.ip}.webp` })
+document.querySelector('.idx').addEventListener('mouseleave', () => show('default'))
+</script>
+</body></html>

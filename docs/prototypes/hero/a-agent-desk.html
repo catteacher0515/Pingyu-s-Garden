@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>A · Agent 演示台</title>
+<link rel="stylesheet" href="_base.css">
+<style>
+  .hero { display: grid; grid-template-columns: 1fr 1.05fr; align-items: center; gap: 40px; padding: 80px var(--pad) 40px; }
+  .role { color: var(--navy); font-weight: 700; font-size: 18px; letter-spacing: .02em; }
+  h1 { font-size: clamp(96px, 10vw, 168px); line-height: .95; letter-spacing: -.05em; font-weight: 850; margin-top: 14px; }
+  .lead { font-size: 26px; line-height: 1.5; margin-top: 26px; max-width: 560px; font-weight: 600; }
+  .lead em { font-style: normal; background: linear-gradient(transparent 62%, color-mix(in srgb, var(--hot) 60%, transparent) 0); }
+  .cta { display: flex; gap: 12px; margin-top: 36px; }
+  .stats { display: flex; gap: 34px; margin-top: 46px; color: var(--mute); font-size: 14px; }
+  .stats b { display: block; color: var(--ink); font-size: 30px; letter-spacing: -.02em; }
+
+  .desk { position: relative; height: 640px; }
+  .term { position: absolute; left: 0; right: 70px; top: 30px; height: 470px; background: var(--night); border-radius: 18px; box-shadow: 0 40px 80px -40px rgba(19,28,70,.7); color: #e7e9f6; overflow: hidden; display: flex; flex-direction: column; }
+  .tbar { display: flex; align-items: center; gap: 8px; padding: 14px 18px; border-bottom: 1px solid rgba(255,255,255,.08); font-size: 13px; color: #9aa0c8; }
+  .tbar i { width: 11px; height: 11px; border-radius: 50%; background: #3a4374; }
+  .tbar i:first-child { background: var(--hot); }
+  .tbar span { margin-left: 10px; }
+  .tbar .proj { margin-left: auto; color: var(--hot); font-weight: 600; }
+  .log { flex: 1; padding: 20px 24px; font-size: 15px; line-height: 1.75; overflow: hidden; }
+  .line { opacity: 0; transform: translateY(6px); animation: in .35s var(--ease) forwards; white-space: pre-wrap; }
+  .line.user { color: #fff; font-weight: 700; font-size: 17px; }
+  .line.user::before { content: '› '; color: var(--hot); }
+  .line.think { color: #9aa0c8; }
+  .line.tool { color: #b9c3ff; }
+  .line.tool b { color: var(--hot); font-weight: 600; }
+  .line.obs { color: #8f96bd; padding-left: 18px; border-left: 2px solid #2e3768; margin: 2px 0 2px 4px; }
+  .line.done { color: #fff; margin-top: 8px; }
+  .line.done::before { content: '✓ '; color: #7ee0a1; font-weight: 800; }
+  .caret { display: inline-block; width: 9px; height: 18px; background: var(--hot); vertical-align: -3px; animation: blink 1s steps(1) infinite; }
+  @keyframes in { to { opacity: 1; transform: none; } }
+  @keyframes blink { 50% { opacity: 0; } }
+  .tfoot { display: flex; gap: 8px; padding: 14px 18px; border-top: 1px solid rgba(255,255,255,.08); }
+  .chip { font-size: 13px; padding: 7px 12px; border-radius: 999px; border: 1px solid #39427a; color: #c9cdea; transition: background .2s, color .2s, border-color .2s; }
+  .chip.on, .chip:hover { background: var(--hot); color: var(--ink); border-color: var(--hot); }
+  .ip { position: absolute; right: -10px; bottom: -10px; width: 300px; filter: drop-shadow(0 20px 30px rgba(28,33,64,.18)); animation: bob 4s ease-in-out infinite; }
+  @keyframes bob { 50% { transform: translateY(-8px); } }
+  .tag { position: absolute; right: 230px; bottom: 60px; background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 10px 14px; font-size: 14px; font-weight: 600; box-shadow: 0 10px 30px -18px rgba(28,33,64,.5); }
+  .tag::after { content: ''; position: absolute; right: -7px; top: 50%; width: 12px; height: 12px; background: #fff; border-right: 1px solid var(--line); border-top: 1px solid var(--line); transform: translateY(-50%) rotate(45deg); }
+</style></head>
+<body>
+<header class="bar"><a class="brand">花萍雨 / Pingyu</a><nav><a>项目</a><a>笔记</a><a>文章</a><a>视频</a><a>发发神经</a><a>关注我</a><a>搜索 ⌘K</a></nav></header>
+<section class="screen hero">
+  <div>
+    <p class="role">Agent 开发 · 准大三</p>
+    <h1>花萍雨<span class="dot">.</span></h1>
+    <p class="lead">我做 <em>AI Agent</em>：让大模型会查资料、会用工具，能自己把事情做完。</p>
+    <div class="cta"><a class="btn solid" href="#">看我的项目 ↓</a><a class="btn ghost" href="#">读我的笔记</a></div>
+    <div class="stats"><span><b>3</b>个 Agent 项目</span><span><b>13</b>篇文章</span><span><b>10</b>支视频</span></div>
+  </div>
+  <div class="desk">
+    <div class="term">
+      <div class="tbar"><i></i><i></i><i></i><span>agent run</span><span class="proj" id="proj"></span></div>
+      <div class="log" id="log"></div>
+      <div class="tfoot" id="chips"></div>
+    </div>
+    <img class="ip" src="../../../public/brand/laptop.webp" alt="">
+    <div class="tag" id="tag">它在帮我干活 👀</div>
+  </div>
+</section>
+<script>
+const tasks = [
+  { chip: '修一张证件照', proj: 'AI 修图智能体', steps: [
+    ['user', '把这张自拍修成蓝底证件照'],
+    ['think', '需要：抠出人像 → 换蓝色背景 → 裁成 1 寸'],
+    ['tool', '调用 <b>segment_person</b>(selfie.jpg)'], ['obs', '已抠出人像，边缘干净'],
+    ['tool', '调用 <b>replace_bg</b>(color="#438EDB")'], ['obs', '背景已换成证件蓝'],
+    ['tool', '调用 <b>crop</b>(size="1寸", dpi=300)'], ['obs', '295 × 413 px'],
+    ['done', '证件照做好了，已保存到 id_photo.jpg'] ] },
+  { chip: '调研一个技术问题', proj: 'AI 超级智能体', steps: [
+    ['user', '帮我弄清楚 MCP 和普通工具调用有什么区别'],
+    ['think', '先查官方文档，再对比两种写法，最后总结'],
+    ['tool', '调用 <b>web_search</b>("Model Context Protocol spec")'], ['obs', '找到 3 篇一手资料'],
+    ['tool', '调用 <b>rag_query</b>(知识库="Agent 笔记")'], ['obs', '命中 2 条我以前的笔记'],
+    ['tool', '调用 <b>write_report</b>(format="markdown")'],
+    ['done', '整理好了一份对比，存到 mcp-vs-tools.md'] ] },
+  { chip: '拆一条爆款视频', proj: '内容运营工作台', steps: [
+    ['user', '找这周小红书上同类目的爆款，拆一下结构'],
+    ['think', '抓取热门内容 → 拆开头、节奏、结尾 → 出脚本初稿'],
+    ['tool', '调用 <b>fetch_trending</b>(平台="小红书", 类目="留学")'], ['obs', '抓到 20 条高互动笔记'],
+    ['tool', '调用 <b>analyze_structure</b>(top=5)'], ['obs', '共同点：前 3 秒抛问题，中段给清单'],
+    ['tool', '调用 <b>draft_script</b>()'],
+    ['done', '脚本初稿已生成，等运营同学改'] ] },
+]
+const log = document.getElementById('log'), chips = document.getElementById('chips'), proj = document.getElementById('proj'), tag = document.getElementById('tag')
+let cur = 0, timer = null
+tasks.forEach((t, i) => { const b = document.createElement('button'); b.className = 'chip'; b.textContent = t.chip; b.onclick = () => run(i); chips.appendChild(b) })
+function type(el, text, done) { let i = 0; el.textContent = ''; const c = document.createElement('span'); c.className = 'caret'; el.appendChild(c); const tick = () => { if (i < text.length) { c.before(text[i++]); timer = setTimeout(tick, 45) } else { c.remove(); done() } }; tick() }
+function run(i) {
+  clearTimeout(timer); cur = i; log.innerHTML = ''; proj.textContent = tasks[i].proj
+  ;[...chips.children].forEach((c, k) => c.classList.toggle('on', k === i))
+  tag.textContent = '它在帮我干活 👀'
+  const steps = tasks[i].steps; let s = 0
+  const next = () => {
+    if (s >= steps.length) { tag.textContent = '搞定 ✨ 换个任务试试'; timer = setTimeout(() => run((cur + 1) % tasks.length), 3500); return }
+    const [k, t] = steps[s++]; const d = document.createElement('div'); d.className = 'line ' + k; log.appendChild(d)
+    if (k === 'user') type(d, t, () => timer = setTimeout(next, 500))
+    else { d.innerHTML = t; timer = setTimeout(next, k === 'tool' ? 900 : 600) }
+  }
+  next()
+}
+run(0)
+</script>
+</body></html>
