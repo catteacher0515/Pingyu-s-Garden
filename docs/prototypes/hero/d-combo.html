@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>D · B + C 组合</title>
+<link rel="stylesheet" href="_base.css">
+<style>
+  .hero { display: flex; flex-direction: column; align-items: center; justify-content: center; padding-top: 30px; perspective: 1200px; }
+  .glow { position: absolute; left: 50%; top: 50%; width: 620px; height: 620px; border-radius: 50%; transform: translate(-50%, -50%); background: radial-gradient(closest-side, color-mix(in srgb, var(--hot) 40%, transparent), transparent); filter: blur(20px); }
+  .ring { position: absolute; left: 50%; top: 50%; width: 760px; height: 760px; border: 1.5px dashed var(--line); border-radius: 50%; transform: translate(-50%, -54%); animation: spin 60s linear infinite; }
+  @keyframes spin { to { transform: translate(-50%, -54%) rotate(360deg); } }
+  .orbit { position: absolute; left: 50%; top: 50%; z-index: 2; }
+  /* 环绕入口：平时是小胶囊，悬停展开成 B 的目录卡（数量 + 最新一条） */
+  .pill { position: absolute; transform: translate(-50%, -50%); width: max-content; max-width: 270px; background: #fff; border: 1px solid var(--line); border-radius: 22px; padding: 12px 18px; box-shadow: 0 10px 24px -16px rgba(28,33,64,.5); transition: background .25s, box-shadow .3s, padding .35s var(--ease); }
+  .pill.l { text-align: right; }
+  .pill .top { display: flex; align-items: baseline; gap: 8px; }
+  .pill.l .top { justify-content: flex-end; }
+  .pill b { font-size: 18px; }
+  .pill small { color: var(--mute); font-size: 13px; }
+  .pill .more { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .4s var(--ease); }
+  .pill .more > span { overflow: hidden; width: 0; font-size: 13px; color: #4a4e6a; line-height: 1.5; }
+  .pill .more i { font-style: normal; color: var(--navy); font-weight: 700; margin-right: 6px; }
+  .pill:hover, .pill.hv { background: var(--hot); box-shadow: 0 18px 36px -20px rgba(28,33,64,.6); }
+  .pill:hover small, .pill:hover .more > span, .pill:hover .more i, .pill.hv small, .pill.hv .more > span { color: var(--ink); }
+  .pill:hover .more, .pill.hv .more { grid-template-rows: 1fr; }
+  .pill:hover .more > span, .pill.hv .more > span { padding-top: 6px; width: 240px; }
+  .stage { position: relative; z-index: 1; width: 380px; height: 440px; margin-top: 30px; transform-style: preserve-3d; transition: transform .2s ease-out; }
+  .stage img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; transition: opacity .3s, transform .45s var(--ease); }
+  .stage img.off { opacity: 0; transform: scale(.92) translateY(10px); }
+  .bubble { position: absolute; left: 50%; top: -6px; z-index: 3; transform: translate(-50%, -100%); background: var(--ink); color: var(--paper); padding: 12px 18px; border-radius: 18px; font-weight: 700; font-size: 16px; white-space: nowrap; transition: transform .35s var(--ease); }
+  .bubble::after { content: ''; position: absolute; left: 50%; bottom: -7px; width: 14px; height: 14px; background: var(--ink); transform: translateX(-50%) rotate(45deg); }
+  .bubble.pop { transform: translate(-50%, -100%) scale(1.1); }
+  .name { position: relative; z-index: 2; text-align: center; margin-top: 10px; }
+  .name h1 { font-size: 60px; letter-spacing: -.05em; font-weight: 850; line-height: 1.05; }
+  .name p { color: var(--mute); font-size: 16px; margin-top: 6px; }
+  .hint { position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%); font-size: 13px; color: var(--mute); }
+</style></head>
+<body>
+<header class="bar"><a class="brand">花萍雨 / Pingyu</a><nav><a>项目</a><a>笔记</a><a>文章</a><a>视频</a><a>发发神经</a><a>关注我</a><a>搜索 ⌘K</a></nav></header>
+<section class="screen hero">
+  <div class="glow"></div><div class="ring"></div>
+  <div class="orbit" id="orbit">
+    <a href="#" class="pill l" style="left:-450px; top:-180px" data-ip="laptop" data-say="这三个项目我正在做"><span class="top"><b>项目</b><small>3 个</small></span><span class="more"><span><i>开发中</i>AI 超级智能体 · AI 修图智能体 · 内容运营工作台</span></span></a>
+    <a href="#" class="pill" style="left:450px; top:-190px" data-ip="notes" data-say="学到的都记在这里"><span class="top"><b>笔记</b><small>1 篇</small></span><span class="more"><span><i>最新</i>Python 工程能力-古法练习</span></span></a>
+    <a href="#" class="pill l" style="left:-500px; top:50px" data-ip="point" data-say="想清楚的写成文章"><span class="top"><b>文章</b><small>13 篇</small></span><span class="more"><span><i>最新</i>这个 GitHub 项目，帮你完成公众号排版</span></span></a>
+    <a href="#" class="pill" style="left:500px; top:40px" data-ip="present" data-say="做的过程都拍下来了"><span class="top"><b>视频</b><small>10 支</small></span><span class="more"><span><i>最新</i>电脑一合盖 AI 就罢工？问题出在这一个勾上</span></span></a>
+    <a href="#" class="pill l" style="left:-400px; top:250px" data-ip="facepalm" data-say="这里随便发发牢骚"><span class="top"><b>发发神经</b><small>1 条</small></span><span class="more"><span><i>10.15</i>测试站长编辑功能</span></span></a>
+    <a href="#" class="pill" style="left:400px; top:260px" data-ip="thumbs" data-say="在这些地方都能找到我"><span class="top"><b>关注我</b><small>6 个平台</small></span><span class="more"><span>B 站 · 抖音 · 小红书 · 知乎 · GitHub · 微信</span></span></a>
+  </div>
+  <div class="stage" id="stage" data-cursor>
+    <div class="bubble" id="bubble">嗨！点我一下 👋</div>
+  </div>
+  <div class="name">
+    <h1>花萍雨<span class="dot">.</span></h1>
+    <p>让大模型会查资料、会用工具，能自己把事情做完。</p>
+  </div>
+  <p class="hint">移动鼠标他会转向你 · 点他换表情 · 指向周围的入口，他会给你介绍</p>
+</section>
+<script>
+const stage = document.getElementById('stage'), bubble = document.getElementById('bubble')
+const imgs = {}
+const pose = (k) => {
+  if (!imgs[k]) { const im = new Image(); im.src = `../../../public/brand/${k}.webp`; im.className = 'off'; stage.appendChild(im); imgs[k] = im }
+  Object.values(imgs).forEach((x) => x.classList.add('off'))
+  requestAnimationFrame(() => imgs[k].classList.remove('off'))
+}
+const say = (t) => { bubble.textContent = t; bubble.classList.add('pop'); setTimeout(() => bubble.classList.remove('pop'), 250) }
+// 点他：按顺序换表情
+const clicks = [['wave', '嗨！点我一下 👋'], ['idea', '想到一个点子！'], ['chin', '让我想想…'], ['thumbs', '你能看到这里，很棒'], ['facepalm', '这个 bug 又是我写的'], ['laptop', '我先去写代码了']]
+let ci = 0
+pose('wave')
+stage.addEventListener('click', () => { ci = (ci + 1) % clicks.length; pose(clicks[ci][0]); say(clicks[ci][1]) })
+// 指向入口：他换成对应姿势并介绍；离开后回到挥手
+document.querySelectorAll('.pill').forEach((p) => {
+  new Image().src = `../../../public/brand/${p.dataset.ip}.webp`
+  p.addEventListener('mouseenter', () => { pose(p.dataset.ip); say(p.dataset.say) })
+  p.addEventListener('mouseleave', () => { pose(clicks[ci][0]); say(clicks[ci][1]) })
+})
+const orbit = document.getElementById('orbit')
+addEventListener('pointermove', (e) => {
+  const x = e.clientX / innerWidth - .5, y = e.clientY / innerHeight - .5
+  stage.style.transform = `rotateY(${x * 18}deg) rotateX(${-y * 12}deg)`
+  orbit.style.transform = `translate(${x * -14}px, ${y * -10}px)`
+})
+</script>
+</body></html>
