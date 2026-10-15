@@ -8,6 +8,13 @@ duration: "04:35"
 cover: "/media/videos/BV1FdHf6xEyJ.jpg"
 summary: "一位做过运营的文科生私信问我三个问题：  从哪些岗位切入，AI 公司的运营每天做什么，想提升竞争力该补哪些能力。"
 tags: ["AI"]
+series: "AI 认知"
+chapters:
+  - { at: "0:00", title: "引言" }
+  - { at: "0:32", title: "从哪些岗位切入" }
+  - { at: "2:27", title: "AI 公司的运营" }
+  - { at: "2:57", title: "补哪些能力" }
+  - { at: "3:49", title: "结尾" }
 ---
 
 一位做过运营的文科生私信问我三个问题：

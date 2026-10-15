@@ -22,6 +22,8 @@ const videos = defineCollection({
     platform: z.string().default('B站'),
     duration: z.string().optional(),
     preview: z.string().optional(),
+    series: z.string().optional(),
+    chapters: z.array(z.object({ at: z.string(), title: z.string() })).default([]),
   }),
 })
 

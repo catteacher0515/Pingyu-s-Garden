@@ -8,6 +8,7 @@ duration: "02:43"
 cover: "/media/videos/BV15thE6RESL.jpg"
 summary: "给 X 装一个“信息过滤器”。"
 tags: ["AI"]
+series: "工具上手"
 ---
 
 给 X 装一个“信息过滤器”。

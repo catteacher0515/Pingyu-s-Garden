@@ -20,14 +20,17 @@ const src = `https://player.bilibili.com/player.html?bvid=${bvid}&autoplay=1&hig
 </style>
 
 <script>
+  // 章节按钮会派发 bili:seek 事件（detail 是秒数），播放器带上 t 参数重新从那个时间开始播
   document.querySelectorAll<HTMLElement>('.bili').forEach((box) => {
-    box.querySelector('button')!.addEventListener('click', () => {
+    const load = (t = 0) => {
       const f = document.createElement('iframe')
-      f.src = box.dataset.src!
+      f.src = box.dataset.src! + (t ? `&t=${t}` : '')
       f.allow = 'autoplay; fullscreen; picture-in-picture'
       f.setAttribute('allowfullscreen', '')
       f.setAttribute('sandbox', 'allow-top-navigation allow-same-origin allow-forms allow-scripts allow-popups')
       box.replaceChildren(f)
-    })
+    }
+    box.querySelector('button')!.addEventListener('click', () => load())
+    box.addEventListener('bili:seek', (e) => load((e as CustomEvent<number>).detail))
   })
 </script>

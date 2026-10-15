@@ -8,6 +8,7 @@ duration: "07:08"
 cover: "/media/videos/BV1uZYr6nEcT.jpg"
 summary: "收藏了一堆资料却从来不看？"
 tags: ["RAG"]
+series: "AI 认知"
 ---
 
 收藏了一堆资料却从来不看？这期用一个完整例子，带你看懂 RAG 如何从几百篇资料里找到真正有用的内容

@@ -8,6 +8,12 @@ duration: "06:45"
 cover: "/media/videos/BV1muts6nEJ9.jpg"
 summary: "AI 新工具永远学不完，也没必要什么都学。"
 tags: ["AI"]
+series: "AI 认知"
+chapters:
+  - { at: "0:00", title: "AI FOMO" }
+  - { at: "0:39", title: "两个维度" }
+  - { at: "3:38", title: "四象限" }
+  - { at: "6:05", title: "结尾" }
 ---
 
 AI 新工具永远学不完，也没必要什么都学。

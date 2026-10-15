@@ -8,6 +8,7 @@ duration: "00:46"
 cover: "/media/videos/BV1ShLb6BEdU.jpg"
 summary: "离四六级只剩 21 天，很多人这时候最需要的就是历年真题。"
 tags: ["四六级"]
+series: "工具上手"
 ---
 
 离四六级只剩 21 天，很多人这时候最需要的就是历年真题。

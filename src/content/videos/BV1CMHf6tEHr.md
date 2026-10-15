@@ -8,6 +8,7 @@ duration: "04:10"
 cover: "/media/videos/BV1CMHf6tEHr.jpg"
 summary: "不会写代码，也能让 AI 帮你把活干完。"
 tags: ["AI"]
+series: "AI 认知"
 ---
 
 不会写代码，也能让 AI 帮你把活干完。这期用每个月报销这件小事做例子，把「AI 同事」的用法拆成四步：备好工具，把事说清楚，把活交出去，把经验存下来。半天就能上手。

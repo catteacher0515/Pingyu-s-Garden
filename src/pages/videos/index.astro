@@ -1,32 +1,107 @@
 ---
 import Base from '../../layouts/Base.astro'
 import { opt } from '../../lib/img'
-import { getVideos, videoHref, thumb, fmtDay } from '../../lib/content'
+import { getVideos, videoHref, thumb, fmtFull, excerpt } from '../../lib/content'
 
 const videos = await getVideos()
+const kindOf = (v: (typeof videos)[number]) => v.data.series ?? v.data.tags[0] ?? v.data.platform
+const counts = new Map<string, number>()
+for (const v of videos) counts.set(kindOf(v), (counts.get(kindOf(v)) ?? 0) + 1)
+const kinds = [...counts.entries()].sort((a, b) => b[1] - a[1])
+const cards = videos.map((v, i) => ({
+  href: videoHref(v), kind: kindOf(v), title: v.data.title, draft: v.data.draft, bg: thumb(i),
+  cover: opt(v.data.cover), preview: v.data.preview, duration: v.data.duration,
+  text: v.data.summary ?? excerpt(v.body),
+  meta: [fmtFull(v.data.date), v.data.chapters.length > 1 && `${v.data.chapters.length} 个章节`].filter(Boolean).join(' · '),
+}))
 ---
 <Base title="视频" nav="videos">
-  <header class="page-head">
-    <p class="eyebrow">视频 · {videos.length} 支</p>
-    <h1>视频<span class="dot">.</span></h1>
-    <p>工具上手、工作流演示和折腾记录。点开可以在这里直接看，也可以去平台看高清和评论。</p>
-  </header>
-  {videos.length ? (
-    <div class="vgrid">
-      {videos.map((v, i) => (
-        <a class="vcard reveal-scroll" href={videoHref(v)} data-cursor="播放">
-          <div class="frame">
-            {v.data.cover ? <img src={opt(v.data.cover)} alt="" loading="lazy" /> : <div class="bg" style={`background:${thumb(i)}`}></div>}
-            <span class="no">{String(videos.length - i).padStart(2, '0')}</span>{v.data.duration && <span class="len mono">{v.data.duration}</span>}
-          </div>
-          <div class="meta"><span>{v.data.tags[0] ?? v.data.platform}</span><span>{fmtDay(v.data.date)}{v.data.draft && ' · 草稿'}</span></div>
-          <h3>{v.data.title}</h3>
-        </a>
-      ))}
-    </div>
-  ) : <p class="empty">第一支视频正在剪，过阵子再来看看。</p>}
+  <div class="wrap">
+    <header class="head">
+      <div>
+        <p class="eyebrow">视频 · {videos.length} 支</p>
+        <h1>视频<span class="dot">.</span></h1>
+        <p class="desc">工具上手、AI 认知和日常折腾。点开就能在这里看，有章节的可以直接跳到想看的部分。</p>
+      </div>
+      <img class="ip" src="/brand/present.webp" alt="" />
+    </header>
+
+    {kinds.length > 1 && (
+      <div class="tabs" role="tablist">
+        <button class="on" data-kind="全部">全部<small>{videos.length}</small></button>
+        {kinds.map(([k, n]) => <button data-kind={k}>{k}<small>{n}</small></button>)}
+      </div>
+    )}
+
+    {cards.length ? (
+      <div class="grid">
+        {cards.map((c, i) => (
+          <a class="card" href={c.href} data-kind={c.kind} data-cursor="播放">
+            <div class="cover">
+              {c.cover ? <img src={c.cover} alt="" loading={i < 6 ? 'eager' : 'lazy'} /> : <div class="ph" style={`background:${c.bg}`}></div>}
+              {c.preview && <video src={c.preview} muted loop playsinline preload="none"></video>}
+              <span class="play" aria-hidden="true">▶</span>
+              {c.duration && <span class="len">{c.duration}</span>}
+            </div>
+            <div class="body">
+              <span class="kind">{c.kind}{c.draft && ' · 草稿'}</span>
+              <h2>{c.title}</h2>
+              {c.text && <p>{c.text}</p>}
+              <span class="meta">{c.meta}</span>
+            </div>
+          </a>
+        ))}
+      </div>
+    ) : <p class="empty">第一支视频正在剪，过阵子再来看看。</p>}
+  </div>
 </Base>
 
 <style>
-  .vgrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 56px 28px; padding: 20px var(--pad) 0; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 100px var(--pad) 0; }
+  .head { display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 40px; padding-bottom: 26px; border-bottom: 1px solid var(--line); }
+  .eyebrow { color: var(--mute); font-size: 14px; }
+  .head h1 { font-size: 56px; line-height: 1.05; letter-spacing: -.04em; font-weight: 850; margin-top: 8px; }
+  .desc { margin-top: 14px; font-size: 17px; line-height: 1.7; color: #4a4e6a; max-width: 560px; }
+  .ip { height: 190px; margin-bottom: -26px; }
+  .tabs { display: flex; flex-wrap: wrap; gap: 10px; margin: 26px 0 28px; }
+  .tabs button { display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: 999px; border: 1px solid var(--line); background: #fff; font-size: 15px; color: #4a4e6a; transition: background .25s, border-color .25s, color .25s; }
+  .tabs button small { font-size: 12px; color: var(--mute); }
+  .tabs button:hover { border-color: var(--ink); }
+  .tabs button.on { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+  .tabs button.on small { color: #b9bdd8; }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+  .card { display: flex; flex-direction: column; border-radius: 18px; background: #fff; border: 1px solid var(--line); overflow: hidden; transition: transform .45s var(--ease), box-shadow .45s, border-color .3s; }
+  .card:hover { transform: translateY(-4px); border-color: transparent; box-shadow: 0 24px 50px -30px rgba(28, 33, 64, .45); }
+  .cover { position: relative; aspect-ratio: 16 / 9; overflow: hidden; background: var(--paper2); }
+  .cover img, .cover video, .ph { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .cover img { transition: transform .7s var(--ease); }
+  .card:hover .cover img { transform: scale(1.04); }
+  .cover video { opacity: 0; transition: opacity .3s; }
+  .card:hover .cover video { opacity: 1; }
+  .play { position: absolute; left: 50%; top: 50%; width: 56px; height: 56px; margin: -28px 0 0 -28px; display: grid; place-items: center; border-radius: 50%; background: rgba(255, 255, 255, .92); color: #111; font-size: 18px; opacity: 0; transform: scale(.85); transition: opacity .3s, transform .4s var(--ease); }
+  .card:hover .play { opacity: 1; transform: scale(1); }
+  .len { position: absolute; right: 10px; bottom: 10px; background: rgba(0, 0, 0, .62); color: #fff; font-size: 12px; font-weight: 600; padding: 3px 7px; border-radius: 4px; font-variant-numeric: tabular-nums; }
+  .body { display: flex; flex-direction: column; flex: 1; padding: 18px 22px 20px; }
+  .kind { color: var(--navy); font-size: 13px; font-weight: 700; }
+  .body h2 { font-size: 19px; line-height: 1.45; margin-top: 6px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .body p { margin-top: 8px; font-size: 14px; line-height: 1.7; color: var(--mute); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .meta { margin-top: auto; padding-top: 14px; font-size: 13px; color: var(--mute); }
+  .empty { color: var(--mute); padding: 40px 0; }
 </style>
+
+<script>
+  // 分类筛选：只是显示/隐藏卡片
+  const cards = [...document.querySelectorAll<HTMLElement>('.card')]
+  document.querySelectorAll<HTMLButtonElement>('.tabs button').forEach((b) => b.addEventListener('click', () => {
+    document.querySelectorAll('.tabs button').forEach((x) => x.classList.toggle('on', x === b))
+    const all = b.dataset.kind === '全部'
+    cards.forEach((c) => (c.style.display = all || c.dataset.kind === b.dataset.kind ? '' : 'none'))
+  }))
+  // 有预览片段的卡片：悬停时播放，移开就停
+  cards.forEach((c) => {
+    const v = c.querySelector('video')
+    if (!v) return
+    c.addEventListener('mouseenter', () => v.play().catch(() => {}))
+    c.addEventListener('mouseleave', () => v.pause())
+  })
+</script>

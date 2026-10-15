@@ -34,6 +34,15 @@ collections:
       - { name: summary, label: 一句话简介, widget: text, required: false }
       - { name: cover, label: 封面图, widget: image, required: false }
       - { name: preview, label: 预览片段, widget: file, required: false, hint: '可选：3 到 6 秒的静音 mp4，用于首页放映厅和列表悬停预览，建议小于 3MB。' }
+      - { name: series, label: 分类, widget: select, options: [工具上手, AI 认知, 日常], required: false, hint: '视频列表页按这个分类筛选' }
+      - name: chapters
+        label: 章节
+        widget: list
+        required: false
+        hint: '和 B 站分段章节一致；视频页会显示章节，点一下从那里开始播'
+        fields:
+          - { name: at, label: 开始时间, hint: '例如 1:05' }
+          - { name: title, label: 章节名 }
       - { name: tags, label: 标签, widget: list, required: false }
       - { name: draft, label: 草稿（不发布）, widget: boolean, default: false }
       - { name: body, label: 视频说明 / 资料, widget: markdown, required: false }
