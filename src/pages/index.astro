@@ -226,7 +226,9 @@ const slots = [[-340, -180], [340, -190], [-390, 50], [390, 40], [-400, 250], [4
   .mute:hover { opacity: 1; transform: scale(1.08); }
   .name { position: relative; z-index: 2; text-align: center; margin-top: 12px; }
   .role { font-size: 15px; font-weight: 600; color: var(--navy); }
-  .hero h1 { font-size: 60px; letter-spacing: -.05em; font-weight: 850; line-height: 1.05; }
+  /* 只让三个字居中：圆点挂在右侧不占宽度；负字距会把最后一个字后面也收进去，用同样大小的右内边距补回 */
+  .hero h1 { position: relative; display: inline-block; font-size: 60px; letter-spacing: -.05em; padding-right: .05em; font-weight: 850; line-height: 1.05; }
+  .hero h1 .dot { position: absolute; left: 100%; bottom: 0; }
   .now { position: absolute; bottom: 22px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--mute); }
   .now i { width: 8px; height: 8px; border-radius: 50%; background: var(--hot); animation: blink 1.4s infinite; }
   @keyframes blink { 50% { opacity: .25; } }
