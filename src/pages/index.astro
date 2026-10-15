@@ -17,7 +17,7 @@ const no = () => String(++n).padStart(2, '0')
 <Base>
   <section class="hero screen">
     <div class="hero-text">
-      <p class="role reveal">{site.role}</p>
+      {site.role && <p class="role reveal">{site.role}</p>}
       <h1 id="name">{site.name}<span class="dot">.</span></h1>
       <p class="sub reveal" style="--d:.5s">{site.tagline}</p>
       <p class="now reveal" style="--d:.6s"><i></i><span id="now" data-now={JSON.stringify(site.now)}>{site.now[0]}</span></p>

@@ -107,7 +107,7 @@ collections:
         file: src/data/site.json
         fields:
           - { name: name, label: 名字 }
-          - { name: role, label: 身份, hint: '例如：Agent 开发 · 准大三' }
+          - { name: role, label: 身份, required: false, hint: '名字上方的小标签，不想显示就留空' }
           - { name: tagline, label: 一句话介绍, widget: text }
           - { name: icp, label: ICP 备案号, required: false, hint: '备案通过后填，例如 冀ICP备2026042324号-2，会显示在页脚' }
           - { name: now, label: 正在做（首页轮换显示）, widget: list }
