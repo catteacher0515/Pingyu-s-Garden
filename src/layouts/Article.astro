@@ -28,14 +28,18 @@ for (const t of toc) {
 ---
 <Base title={title} description={description} nav={nav} image={image}>
   <div class="progress" aria-hidden="true"><i id="progress"></i></div>
-  <header class="page-head art-head">
-    <a class="eyebrow ulink" href={back.href}>← {back.label}</a>
-    <h1>{title}</h1>
-    <div class="meta"><slot name="meta" /></div>
-  </header>
-  <slot name="hero" />
-  <div class="art">
-    <article class="prose"><slot /></article>
+  <!-- 标题、信息、正文在同一栏；目录和这一栏并排、顶端对齐，整体居中 -->
+  <div class:list={['art', { 'no-toc': items.length === 0 }]}>
+    <div class="main">
+      <header class="art-head">
+        <a class="back ulink" href={back.href}>← {back.label}</a>
+        <h1>{title}</h1>
+        <div class="meta"><slot name="meta" /></div>
+      </header>
+      <slot name="hero" />
+      <article class="prose"><slot /></article>
+      <slot name="after" />
+    </div>
     {items.length > 0 && (
       <aside class="toc">
         <p>本页目录</p>
@@ -45,16 +49,19 @@ for (const t of toc) {
       </aside>
     )}
   </div>
-  <slot name="after" />
 </Base>
 
 <style>
   .progress { position: fixed; left: 0; right: 0; top: 0; height: 3px; z-index: 60; }
   .progress i { display: block; height: 100%; background: var(--hot); transform-origin: left; transform: scaleX(0); }
-  .art-head h1 { font-size: clamp(38px, 4.2vw, 64px); line-height: 1.15; letter-spacing: -.03em; max-width: 1100px; }
-  .art-head .meta { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; margin-top: 26px; color: var(--mute); font-size: 15px; }
-  .art { display: grid; grid-template-columns: minmax(0, 760px) 240px; justify-content: space-between; gap: 60px; padding: 30px var(--pad) 0; }
-  .toc { position: sticky; top: 110px; align-self: start; font-size: 14px; max-height: calc(100vh - 150px); display: flex; flex-direction: column; }
+  .art { display: grid; grid-template-columns: minmax(0, 780px) 240px; justify-content: center; gap: 72px; padding: 112px var(--pad) 0; }
+  .art.no-toc { grid-template-columns: minmax(0, 780px); }
+  .art-head { padding-bottom: 22px; margin-bottom: 30px; border-bottom: 1px solid var(--line); }
+  .back { color: var(--mute); font-size: 14px; }
+  .art-head h1 { font-size: 34px; line-height: 1.35; letter-spacing: -.01em; font-weight: 800; margin-top: 18px; }
+  .art-head .meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 0; margin-top: 14px; color: var(--mute); font-size: 14px; }
+  .art-head .meta :global(> span:not(:first-child))::before { content: ''; display: inline-block; width: 1px; height: 12px; background: var(--line); margin: 0 14px; vertical-align: -1px; }
+  .toc { position: sticky; top: 100px; align-self: start; font-size: 14px; max-height: calc(100vh - 150px); display: flex; flex-direction: column; }
   .toc p { color: var(--mute); margin-bottom: 12px; flex: none; }
   .toc nav { overflow-y: auto; overscroll-behavior: contain; padding-right: 6px; scrollbar-width: thin; }
   .toc a { display: block; padding: 6px 0 6px 14px; border-left: 1px solid var(--line); color: var(--mute); line-height: 1.45; transition: color .2s, border-color .2s; }

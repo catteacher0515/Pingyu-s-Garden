@@ -29,10 +29,10 @@ const originHost = d.origin && (new URL(d.origin).hostname.includes('zhihu') ? '
 </Article>
 
 <style>
-  .lead { font-size: 22px; line-height: 1.6; }
+  .lead { font-size: 18px; line-height: 1.7; }
   .origin { margin-top: 48px !important; padding-top: 20px; border-top: 1px dashed var(--line); color: var(--mute); font-size: 14px; }
   .origin a { color: var(--navy); margin: 0 2px; }
-  .pager { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 60px var(--pad) 0; max-width: calc(760px + 2 * var(--pad)); }
+  .pager { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding-top: 56px; }
   .pager a { display: block; padding: 20px 24px; border: 1px solid var(--line); border-radius: 16px; background: #fff; transition: transform .4s var(--ease), border-color .3s; }
   .pager a:hover { transform: translateY(-3px); border-color: var(--hot); }
   .pager .next { text-align: right; }

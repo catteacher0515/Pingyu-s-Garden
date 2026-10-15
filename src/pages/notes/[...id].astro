@@ -1,7 +1,7 @@
 ---
 import { render } from 'astro:content'
 import Article from '../../layouts/Article.astro'
-import { getNotes, noteHref, fmtDay, NOTE_STATUS, type Note } from '../../lib/content'
+import { getNotes, noteHref, fmtFull, NOTE_STATUS, type Note } from '../../lib/content'
 
 export async function getStaticPaths() {
   const notes = await getNotes()
@@ -14,7 +14,7 @@ const st = NOTE_STATUS[d.status]
 ---
 <Article title={d.title} description={d.summary ?? `${d.topic} 学习笔记`} nav="notes" back={{ href: '/notes/', label: '全部笔记' }} toc={headings.map((h) => ({ id: h.slug, text: h.text, depth: h.depth }))}>
   <Fragment slot="meta">
-    <span>{st.icon} {st.label}</span><span>{d.topic}</span><span>最后更新 {fmtDay(d.updated)}</span>{d.tags.map((t) => <span>#{t}</span>)}
+    <span>{st.icon} {st.label}</span><span>{d.topic}</span><span>最后更新 {fmtFull(d.updated)}</span>{d.tags.map((t) => <span>#{t}</span>)}
   </Fragment>
   <p class="hint">学习笔记，会随着学习继续修改，难免有不完整的地方。</p>
   <Content />
@@ -23,7 +23,7 @@ const st = NOTE_STATUS[d.status]
       <div class="more">
         <div class="sh"><h2>同主题的笔记 · {d.topic}</h2></div>
         <div class="list">
-          {siblings.map((s) => <a class="row" href={noteHref(s)} data-title={s.data.title}><span class="k">{NOTE_STATUS[s.data.status].icon} 笔记</span><span>{s.data.title}</span><small>{fmtDay(s.data.updated)}</small><small class="go">→</small></a>)}
+          {siblings.map((s) => <a class="row" href={noteHref(s)} data-title={s.data.title}><span class="k">{NOTE_STATUS[s.data.status].icon} 笔记</span><span>{s.data.title}</span><small>{fmtFull(s.data.updated)}</small><small class="go">→</small></a>)}
         </div>
       </div>
     </Fragment>
