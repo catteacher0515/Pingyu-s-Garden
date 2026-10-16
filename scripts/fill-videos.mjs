@@ -10,11 +10,20 @@ const DIR = path.join(ROOT, 'src/content/videos')
 const COVERS = path.join(ROOT, 'public/media/videos')
 const H = { 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141 Safari/537.36', Referer: 'https://www.bilibili.com/' }
 
-async function api(url) {
-  const r = await fetch(url, { headers: H })
+// B 站会拒绝 GitHub Actions 服务器的请求（HTTP 412 风控）：先带上随机 buvid3 直连，
+// 不行再通过 r.jina.ai 中转（它原样返回接口的 JSON）
+const buvid = `${crypto.randomUUID().toUpperCase()}infoc`
+async function get(url, via) {
+  const r = via
+    ? await fetch(`https://r.jina.ai/${url}`, { headers: { 'X-Return-Format': 'text' } })
+    : await fetch(url, { headers: { ...H, Cookie: `buvid3=${buvid}` } })
   const t = await r.text()
+  try { return JSON.parse(t.slice(t.indexOf('{'))) } catch { throw new Error(`HTTP ${r.status}：${t.slice(0, 120)}`) }
+}
+async function api(url) {
   let j
-  try { j = JSON.parse(t) } catch { throw new Error(`${url} → HTTP ${r.status}：${t.slice(0, 120)}`) }
+  try { j = await get(url) } catch (e) { console.log(`直连失败（${e.message.slice(0, 40)}），改用中转`) }
+  if (j?.code !== 0) j = await get(url, true)
   if (j.code !== 0) throw new Error(`${url} → ${j.code} ${j.message}`)
   return j.data
 }
