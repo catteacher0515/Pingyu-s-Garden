@@ -28,7 +28,7 @@ collections:
     fields:
       - { name: title, label: 标题 }
       - { name: date, label: 发布日期, widget: datetime, time_format: false, format: YYYY-MM-DD }
-      - { name: url, label: 视频链接, hint: '完整视频的地址，比如 B 站视频页链接。B 站链接会自动生成网页内播放器。' }
+      - { name: url, label: 视频链接, hint: '完整视频的地址，比如 B 站视频页链接。视频页点封面会在新标签页打开这个链接。' }
       - { name: platform, label: 平台, widget: select, options: [B站, YouTube, 小红书, 视频号, 抖音], default: B站 }
       - { name: duration, label: 时长, required: false, hint: '例如 04:35' }
       - { name: summary, label: 一句话简介, widget: text, required: false }
@@ -39,7 +39,7 @@ collections:
         label: 章节
         widget: list
         required: false
-        hint: '和 B 站分段章节一致；视频页会显示章节，点一下从那里开始播'
+        hint: '和 B 站分段章节一致；视频页会显示章节，点一下在 B 站从那里开始播'
         fields:
           - { name: at, label: 开始时间, hint: '例如 1:05' }
           - { name: title, label: 章节名 }

@@ -1,10 +1,9 @@
 ---
 import { render } from 'astro:content'
 import Article from '../../layouts/Article.astro'
-import BiliPlayer from '../../components/BiliPlayer.astro'
 import site from '../../data/site.json'
 import { opt } from '../../lib/img'
-import { getVideos, videoHref, bvidOf, fmtFull, type Video } from '../../lib/content'
+import { getVideos, videoHref, fmtFull, type Video } from '../../lib/content'
 
 export async function getStaticPaths() {
   const videos = await getVideos()
@@ -14,8 +13,9 @@ export async function getStaticPaths() {
 const { video, newer, older } = Astro.props as { video: Video; newer?: Video; older?: Video }
 const { Content, headings } = await render(video)
 const d = video.data
-const bvid = bvidOf(d.url)
+// 网站里不嵌播放器（B 站外链播放器只有 360P，点画面还会跳走），封面和章节都直接在新标签页打开平台原视频
 const toSec = (at: string) => at.split(':').reduce((s, n) => s * 60 + Number(n), 0)
+const at = (sec: number) => { const u = new URL(d.url); u.searchParams.set('t', String(sec)); return u.href }
 // 很多视频的说明正文就是以简介开头的，这种情况不再单独显示简介，避免同一句话出现两次
 const flat = (s = '') => s.replace(/\s+/g, '')
 const showLead = d.summary && !flat(video.body).startsWith(flat(d.summary).slice(0, 20))
@@ -28,18 +28,18 @@ const mirrors = site.follow.filter((f) => f.url && ['抖音', '小红书'].inclu
     {d.draft && <span class="draft-badge">草稿 · 仅本地可见</span>}
   </Fragment>
   <div slot="hero" class="player">
-    {bvid ? <BiliPlayer bvid={bvid} cover={d.cover} title={d.title} /> : (
-      <a class="fallback" href={d.url} target="_blank" rel="noopener" data-cursor="去看">
-        {d.cover && <img src={opt(d.cover)} alt="" />}<span>▶ 去{d.platform}观看</span>
-      </a>
-    )}
-    {bvid && d.chapters.length > 1 && (
-      <ol class="chapters" aria-label="章节">
-        {d.chapters.map((c) => <li><button data-seek={toSec(c.at)}><time>{c.at}</time>{c.title}</button></li>)}
+    <a class="cover" href={d.url} target="_blank" rel="noopener" data-cursor="去看">
+      {d.cover && <img src={opt(d.cover)} alt="" />}
+      <span class="play" aria-hidden="true">▶</span>
+      <span class="hint">去{d.platform}播放（高清 · 新标签页打开）↗</span>
+    </a>
+    {d.chapters.length > 1 && (
+      <ol class="chapters" aria-label="章节，点击后从这里开始播放">
+        {d.chapters.map((c) => <li><a href={at(toSec(c.at))} target="_blank" rel="noopener"><time>{c.at}</time>{c.title}</a></li>)}
       </ol>
     )}
     <p class="watch">
-      <a class="ulink" href={d.url} target="_blank" rel="noopener">去{d.platform}看高清 / 一键三连 ↗</a>
+      <a class="ulink" href={d.url} target="_blank" rel="noopener">喜欢的话，去{d.platform}一键三连 ↗</a>
       {mirrors.length > 0 && <span>也发在{mirrors.map((m) => <a class="ulink" href={m.url} target="_blank" rel="noopener">{m.name}</a>)}</span>}
     </p>
   </div>
@@ -53,15 +53,16 @@ const mirrors = site.follow.filter((f) => f.url && ['抖音', '小红书'].inclu
 
 <style>
   .player { margin-bottom: 30px; }
-  .fallback { position: relative; display: grid; place-items: center; aspect-ratio: 16/9; border-radius: 6px; overflow: hidden; background: #111; color: #fff; }
-  .fallback img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .7; }
-  .fallback span { position: relative; font-size: 22px; font-weight: 700; }
+  .cover { position: relative; display: block; aspect-ratio: 16/9; border-radius: 16px; overflow: hidden; background: #111; }
+  .cover img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .8s var(--ease); }
+  .cover:hover img { transform: scale(1.03); }
+  .play { position: absolute; left: 50%; top: 50%; width: 84px; height: 84px; margin: -42px 0 0 -42px; border-radius: 50%; background: rgba(255, 255, 255, .92); color: #111; display: grid; place-items: center; font-size: 28px; transition: transform .3s; }
+  .cover:hover .play { transform: scale(1.08); }
+  .hint { position: absolute; left: 16px; bottom: 14px; padding: 6px 12px; border-radius: 999px; background: rgba(0, 0, 0, .6); color: #fff; font-size: 13px; }
   .chapters { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; list-style: none; padding: 0; }
-  .chapters button { display: inline-flex; align-items: baseline; gap: 8px; padding: 7px 14px; border-radius: 999px; border: 1px solid var(--line); background: #fff; font-size: 14px; color: var(--ink); transition: border-color .25s, background .25s, color .25s; }
-  .chapters button:hover { border-color: var(--ink); }
-  .chapters button.on { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+  .chapters a { display: inline-flex; align-items: baseline; gap: 8px; padding: 7px 14px; border-radius: 999px; border: 1px solid var(--line); background: #fff; font-size: 14px; color: var(--ink); transition: border-color .25s, background .25s, color .25s; }
+  .chapters a:hover { border-color: var(--ink); }
   .chapters time { font-size: 12px; color: var(--mute); font-variant-numeric: tabular-nums; }
-  .chapters button.on time { color: #b9bdd8; }
   .watch { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; margin-top: 18px; font-size: 15px; }
   .watch span { color: var(--mute); }
   .watch span a { margin-left: 12px; color: var(--ink); }
@@ -74,12 +75,3 @@ const mirrors = site.follow.filter((f) => f.url && ['抖音', '小红书'].inclu
   .pager b { display: block; margin-top: 6px; font-size: 17px; line-height: 1.4; }
 </style>
 
-<script>
-  // 点章节：让播放器从这个时间开始播，并标出当前选中的章节
-  const box = document.querySelector<HTMLElement>('.bili')
-  const btns = [...document.querySelectorAll<HTMLButtonElement>('.chapters button')]
-  btns.forEach((b) => b.addEventListener('click', () => {
-    btns.forEach((x) => x.classList.toggle('on', x === b))
-    box?.dispatchEvent(new CustomEvent('bili:seek', { detail: Number(b.dataset.seek) }))
-  }))
-</script>

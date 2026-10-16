@@ -53,10 +53,6 @@ export const noteHref = (n: Note) => `/notes/${n.id}/`
 export const postHref = (p: Post) => p.data.external ?? `/articles/${p.id}/`
 export const videoHref = (v: Video) => `/videos/${v.id}/`
 
-export function bvidOf(url: string) {
-  return url.match(/BV[0-9A-Za-z]{10}/)?.[0]
-}
-
 /** 各栏目是否有已发布内容；没有内容的栏目不在导航、侧边栏、首页入口里出现 */
 export async function getSectionPresence() {
   const [videos, posts, notes, projects, rants] = await Promise.all([getVideos(), getPosts(), getNotes(), getProjects(), getRants()])
