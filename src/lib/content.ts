@@ -13,7 +13,7 @@ const visible = ({ data }: { data: { draft: boolean } }) => import.meta.env.DEV 
 const time = (d?: Date) => d?.getTime() ?? 0
 
 export async function getVideos() {
-  return (await getCollection('videos', visible)).sort((a, b) => time(b.data.date) - time(a.data.date))
+  return (await getCollection('videos', (v) => visible(v) && !!v.data.title)).sort((a, b) => time(b.data.date) - time(a.data.date))
 }
 
 export async function getPosts() {

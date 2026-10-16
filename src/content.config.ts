@@ -17,6 +17,8 @@ const videos = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/videos' }),
   schema: z.object({
     ...common,
+    // 编辑后台只填链接时标题先是空的，等 scripts/fill-videos.mjs 从 B 站补全；没标题的条目不上线
+    title: z.string().default(''),
     date: z.coerce.date(),
     url: z.string().url(),
     platform: z.string().default('B站'),

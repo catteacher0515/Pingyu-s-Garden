@@ -4,7 +4,7 @@ import { opt } from '../../lib/img'
 import { getVideos, videoHref, thumb, fmtFull, excerpt } from '../../lib/content'
 
 const videos = await getVideos()
-const kindOf = (v: (typeof videos)[number]) => v.data.series ?? v.data.tags[0] ?? v.data.platform
+const kindOf = (v: (typeof videos)[number]) => v.data.series ?? '其他'
 const counts = new Map<string, number>()
 for (const v of videos) counts.set(kindOf(v), (counts.get(kindOf(v)) ?? 0) + 1)
 const kinds = [...counts.entries()].sort((a, b) => b[1] - a[1])

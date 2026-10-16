@@ -26,26 +26,26 @@ collections:
     sortable_fields: [date, title]
     summary: '{{title}}（{{date}}）'
     fields:
-      - { name: title, label: 标题 }
-      - { name: date, label: 发布日期, widget: datetime, time_format: false, format: YYYY-MM-DD }
-      - { name: url, label: 视频链接, hint: '完整视频的地址，比如 B 站视频页链接。视频页点封面会在新标签页打开这个链接。' }
+      - { name: url, label: B 站视频链接, hint: '只填这一项就能发布：保存后几分钟内，网站会自动从 B 站读取标题、日期、时长、封面、简介和章节。下面的内容都可以不填；填了的不会被覆盖。' }
+      - { name: series, label: 分类, widget: select, options: [工具上手, AI 认知, 日常], required: false, hint: '可不填，不填归到「其他」' }
+      - { name: title, label: 标题, required: false, hint: '可不填，自动用 B 站标题' }
+      - { name: summary, label: 一句话简介, widget: text, required: false, hint: '可不填，自动取 B 站简介第一句' }
+      - { name: cover, label: 封面图, widget: image, required: false, hint: '可不填，自动下载 B 站封面' }
+      - { name: tags, label: 标签, widget: list, required: false }
+      - { name: draft, label: 草稿（不发布）, widget: boolean, default: false }
+      - { name: date, label: 发布日期, widget: datetime, time_format: false, format: YYYY-MM-DD, default: '{{now}}', hint: '不用改，会自动换成 B 站的发布日期' }
       - { name: platform, label: 平台, widget: select, options: [B站, YouTube, 小红书, 视频号, 抖音], default: B站 }
-      - { name: duration, label: 时长, required: false, hint: '例如 04:35' }
-      - { name: summary, label: 一句话简介, widget: text, required: false }
-      - { name: cover, label: 封面图, widget: image, required: false }
-      - { name: preview, label: 预览片段, widget: file, required: false, hint: '可选：3 到 6 秒的静音 mp4，用于首页放映厅和列表悬停预览，建议小于 3MB。' }
-      - { name: series, label: 分类, widget: select, options: [工具上手, AI 认知, 日常], required: false, hint: '视频列表页按这个分类筛选' }
+      - { name: duration, label: 时长, required: false, hint: '可不填，自动读取' }
       - name: chapters
         label: 章节
         widget: list
         required: false
-        hint: '和 B 站分段章节一致；视频页会显示章节，点一下在 B 站从那里开始播'
+        hint: '可不填，自动读取 B 站分段章节；视频页点章节会在 B 站从那里开始播'
         fields:
           - { name: at, label: 开始时间, hint: '例如 1:05' }
           - { name: title, label: 章节名 }
-      - { name: tags, label: 标签, widget: list, required: false }
-      - { name: draft, label: 草稿（不发布）, widget: boolean, default: false }
-      - { name: body, label: 视频说明 / 资料, widget: markdown, required: false }
+      - { name: preview, label: 预览片段, widget: file, required: false, hint: '可选：3 到 6 秒的静音 mp4，鼠标悬停在视频卡片上时播放，建议小于 3MB。' }
+      - { name: body, label: 视频说明 / 资料, widget: markdown, required: false, hint: '可不填，自动用 B 站简介' }
 
   - name: posts
     label: 文章
@@ -59,16 +59,14 @@ collections:
       - { label: 分类, field: category }
     fields:
       - { name: title, label: 标题 }
-      - { name: category, label: 分类, widget: select, options: [教程, 文章], default: 教程 }
-      - { name: date, label: 发布日期, widget: datetime, time_format: false, format: YYYY-MM-DD, required: false }
-      - { name: summary, label: 一句话简介, widget: text, required: false }
-      - { name: cover, label: 封面图, widget: image, required: false }
-      - { name: external, label: 外部原文链接（直接跳走）, required: false, hint: '只有正文不放在本站时才填：点击会直接跳到这个地址。正文写在本站就留空。' }
-      - { name: origin, label: 首发链接, required: false, hint: '正文在本站、同时也发在知乎等平台时填原文地址：文末会显示「本文首发于…」。' }
-      - { name: tags, label: 标签, widget: list, required: false }
+      - { name: body, label: 正文, widget: markdown, hint: '直接粘贴 Markdown 也可以；图片拖进来会自动上传' }
+      - { name: cover, label: 封面图, widget: image, required: false, hint: '可不填，列表里会显示文字占位' }
+      - { name: tags, label: 标签, widget: list, required: false, hint: '第一个标签就是文章页的分类，例如 AI 工具箱' }
+      - { name: summary, label: 一句话简介, widget: text, required: false, hint: '可不填，自动取正文开头' }
+      - { name: origin, label: 首发链接, required: false, hint: '可不填。也发在知乎等平台时填原文地址，文末会显示「本文首发于…」' }
+      - { name: date, label: 发布日期, widget: datetime, time_format: false, format: YYYY-MM-DD, default: '{{now}}', required: false }
       - { name: draft, label: 草稿（不发布）, widget: boolean, default: false }
-      - { name: order, label: 排序（没有日期时生效，越小越靠前）, widget: number, value_type: int, default: 0, required: false }
-      - { name: body, label: 正文, widget: markdown, required: false }
+      - { name: category, label: 类型, widget: select, options: [文章, 教程], default: 文章, hint: '不用改' }
 
   - name: projects
     label: 项目

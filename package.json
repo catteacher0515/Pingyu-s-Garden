@@ -8,7 +8,8 @@
     "preview": "astro preview",
     "notes:sync": "node scripts/sync-notes.mjs",
     "notes:publish": "scripts/publish-notes.sh",
-    "images": "node scripts/optimize-images.mjs"
+    "images": "node scripts/optimize-images.mjs",
+    "videos:fill": "node scripts/fill-videos.mjs"
   },
   "dependencies": {
     "astro": "^7.3.7",

@@ -1,0 +1,37 @@
+# 在编辑后台新建视频时只填 B 站链接：这里自动从 B 站补全标题、日期、封面、简介和章节，再提交回仓库。
+# 提交后 Cloudflare Pages 会自动重新部署。
+name: 补全视频信息
+
+on:
+  push:
+    branches: [astro-v2]
+    paths: ['src/content/videos/**']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fill-videos
+  cancel-in-progress: false
+
+jobs:
+  fill:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: node scripts/fill-videos.mjs
+      - name: 提交补全结果
+        run: |
+          git add -A src/content/videos public/media/videos
+          if git diff --cached --quiet; then echo "没有需要提交的改动"; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "videos: 从 B 站补全视频信息"
+          git pull --rebase
+          git push
