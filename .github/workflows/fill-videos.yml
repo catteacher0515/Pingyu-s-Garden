@@ -5,7 +5,7 @@ name: 补全视频信息
 on:
   push:
     branches: [astro-v2]
-    paths: ['src/content/videos/**']
+    paths: ['src/content/videos/**', 'scripts/fill-videos.mjs', '.github/workflows/fill-videos.yml']
   workflow_dispatch:
 
 permissions:

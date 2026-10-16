@@ -12,7 +12,9 @@ const H = { 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Apple
 
 async function api(url) {
   const r = await fetch(url, { headers: H })
-  const j = await r.json()
+  const t = await r.text()
+  let j
+  try { j = JSON.parse(t) } catch { throw new Error(`${url} → HTTP ${r.status}：${t.slice(0, 120)}`) }
   if (j.code !== 0) throw new Error(`${url} → ${j.code} ${j.message}`)
   return j.data
 }
@@ -73,7 +75,8 @@ for (const name of fs.readdirSync(DIR).filter((f) => f.endsWith('.md'))) {
     console.log(`✓ ${bvid} ${out.title}`)
     changed++
   } catch (e) {
-    console.error(`✗ ${name}: ${e.message}`)
+    // ::error:: 让失败原因出现在 GitHub Actions 的摘要里
+    console.error(`::error::${name}: ${e.message}`)
     process.exitCode = 1
   }
 }
