@@ -12,7 +12,7 @@ fi
 echo "① 从 Obsidian 挑选要发布的笔记…"
 node scripts/sync-notes.mjs
 
-git add src/content/notes public/media/notes
+git add -A src/content/notes src/content/posts/obsidian public/media/notes
 if git diff --cached --quiet; then
   echo "② 笔记没有变化，不需要发布。"
   exit 0
