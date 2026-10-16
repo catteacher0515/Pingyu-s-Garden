@@ -24,7 +24,7 @@ echo "$OUT"
 mv "$STAMP.new" "$STAMP"
 
 # 有内容被拦下（含密钥或服务器 IP）时提醒，同一批只提醒一次
-BLOCKED=$(echo "$OUT" | grep '⛔' | sed 's/^ *⛔ //' | cut -d'：' -f1)
+BLOCKED=$(echo "$OUT" | grep '⛔' | sed -e 's/^ *⛔ //' -e 's/：.*//')
 if [ -n "$BLOCKED" ] && [ "$BLOCKED" != "$(cat ../last-blocked 2>/dev/null)" ]; then
   notify "有笔记含密钥或服务器 IP，没发布：$(echo "$BLOCKED" | head -1 | xargs -0 basename)"
 fi

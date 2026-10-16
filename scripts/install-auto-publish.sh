@@ -9,7 +9,7 @@ NODE_DIR="$(dirname "$(command -v node)")"
 
 mkdir -p "$HOME_DIR"
 [ -d "$REPO/.git" ] || git clone -q --branch astro-v2 git@github.com:catteacher0515/Pingyu-s-Garden.git "$REPO"
-(cd "$REPO" && git fetch -q && git reset -q --hard origin/astro-v2 && npm ci --silent --no-audit --no-fund)
+(cd "$REPO" && git fetch -q && git reset -q --hard origin/astro-v2 && { [ -d node_modules ] || npm ci --silent --no-audit --no-fund })
 
 cat > "$PLIST" <<PL
 <?xml version="1.0" encoding="UTF-8"?>
