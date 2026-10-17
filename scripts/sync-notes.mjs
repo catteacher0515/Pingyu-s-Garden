@@ -1,6 +1,7 @@
 // 从 Obsidian 库里挑出要公开的内容，转换成网站能用的 Markdown：
 //   勾了属性 `publish` 的 → 笔记（src/content/notes）
-//   勾了属性 `article` 的 → 文章（src/content/posts/obsidian，文章页里和其他文章排在一起）
+//   勾了属性 `发成文章` 的 → 文章（src/content/posts/obsidian，文章页里和其他文章排在一起）。
+//   不用 article 这个名字：库里已有笔记把它当文字属性用，Obsidian 的属性类型是全库共用的
 // 只读 Obsidian 库，不会修改库里的任何文件。含密钥或公网 IP 的不会发布，会在输出里提醒。
 //
 // 用法：node scripts/sync-notes.mjs [--dry-run]
@@ -61,12 +62,12 @@ const warnings = []
 const blocked = []
 for (const file of mdFiles) {
   const src = fs.readFileSync(file, 'utf8')
-  if (!/^(publish|article)\s*:/m.test(src)) continue
+  if (!/^(publish|发成文章)\s*:/m.test(src)) continue
   const { data, body } = splitFrontmatter(src)
-  const article = isTrue(data.article)
+  const article = isTrue(data['发成文章'])
   if (!article && !isTrue(data.publish)) {
     // 写了 publish 却没被识别成属性（最常见：文件第一行是空行），提醒一下
-    if (/^(publish|article)\s*:\s*true\s*$/m.test(src) && !/^---\r?\n/.test(src)) {
+    if (/^(publish|发成文章)\s*:\s*true\s*$/m.test(src) && !/^---\r?\n/.test(src)) {
       warnings.push(`${path.relative(VAULT, file)}：勾了发布但没生效。属性必须从文件第一行的 --- 开始，请删掉它前面的空行。`)
     }
     continue

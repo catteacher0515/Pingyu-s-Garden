@@ -1,6 +1,6 @@
 #!/bin/zsh
 # 后台自动发布：由 launchd 每 5 分钟运行一次（安装见 scripts/install-auto-publish.sh）。
-# Obsidian 里勾了 publish（笔记）或 article（文章）的内容，有变化就同步到网站并推送；没变化什么都不做。
+# Obsidian 里勾了 publish（笔记）或 发成文章（文章）的内容，有变化就同步到网站并推送；没变化什么都不做。
 # 在单独的仓库副本里运行，不碰日常开发用的工作区。
 set -u
 REPO="$HOME/Library/Application Support/pingyu-publisher/repo"
