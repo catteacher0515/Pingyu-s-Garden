@@ -1,9 +1,9 @@
 [Unit]
-Description=Check huapingyu.cn source updates every minute
+Description=Check huapingyu.cn source updates every two minutes
 
 [Timer]
 OnBootSec=1min
-OnUnitInactiveSec=1min
+OnUnitInactiveSec=2min
 Unit=huapingyu-publish.service
 
 [Install]
