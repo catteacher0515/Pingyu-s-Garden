@@ -1,0 +1,11 @@
+[Unit]
+Description=Check huapingyu.cn source updates every minute
+
+[Timer]
+OnBootSec=1min
+OnUnitInactiveSec=1min
+Unit=huapingyu-publish.service
+
+[Install]
+WantedBy=timers.target
+

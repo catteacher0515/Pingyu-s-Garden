@@ -1,0 +1,13 @@
+[Unit]
+Description=Build and publish huapingyu.cn from astro-v2
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=garden
+Group=garden
+ExecStart=/usr/local/bin/huapingyu-deploy
+TimeoutStartSec=15min
+UMask=0022
+

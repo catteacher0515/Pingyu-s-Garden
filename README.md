@@ -2,7 +2,7 @@
 
 花萍雨的个人网站：Agent 项目、学习笔记、文章、视频和「发发神经」。只做电脑端。
 
-> 这个分支（`astro-v2`）是从零重写的新版本，已上线：https://www.huapingyu.cn （Cloudflare Pages，push 到 `astro-v2` 自动部署）。
+> 这个分支（`astro-v2`）是从零重写的新版本，已上线：https://huapingyu.cn （北京服务器，push 到 `astro-v2` 后自动部署；Cloudflare Pages 保留为备用）。
 > 旧版仍在 `main` 分支，部署在 GitHub Pages：https://catteacher0515.github.io/Pingyu-s-Garden/ 。
 
 ## 本地运行

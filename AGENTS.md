@@ -9,7 +9,7 @@
 - `main`: the old React/Vite poster-style site, still live on GitHub Pages at `https://catteacher0515.github.io/Pingyu-s-Garden/` via `.github/workflows/deploy-pages.yml`. Leave it alone until the new site replaces it.
 - `astro-v2`: the from-scratch rebuild (Astro 7 + GSAP + Sveltia CMS). This is where new work happens.
 - `redesign-prototype`: archive of the single-file prototype in `docs/prototypes/redesign-v2/` that the rebuild is based on.
-- `astro-v2` is live on Cloudflare Pages at https://pingyu-s-garden.pages.dev (project `pingyu-s-garden`, production branch `astro-v2`, `NODE_VERSION=24.14.1`, auto-deploys on push). Later move to the user's own domestic server once ICP filing is done. Vercel was tried earlier and failed; `.vercel/` is ignored.
+- `astro-v2` is the production branch. Primary site is https://huapingyu.cn on the Beijing server. Cloudflare Pages https://pingyu-s-garden.pages.dev remains a fallback and still auto-deploys from `astro-v2`. Vercel was tried earlier and failed; `.vercel/` is ignored.
 - Before merging `astro-v2` into `main`, the GitHub Pages workflow must be removed or updated: the new site assumes it is served from `/`, not `/Pingyu-s-Garden/`.
 - Cloudflare's GitHub App ("Cloudflare Workers and Pages") is installed on the user's account with access to this repository only. Framework preset is `None`; build command and output dir are set by hand.
 - `docs/superpowers/` holds specs and plans for the old React poster site; they are history, not the current design.
@@ -54,11 +54,14 @@
 - The three resume projects: AI 超级智能体, AI 修图智能体, 实习时做的内容运营工作台 (新通教育). They live in `src/content/projects/` as `wip: true` until the user supplies real details; never invent results, metrics or responsibilities. `noteTopic` links Obsidian notes (same `topic`) to a project page.
 - Do not put a resume PDF or phone number on the site; the user applies via recruiting platforms.
 
-## Domain and mainland hosting (2026-10-13)
+## Domain and mainland hosting (2026-10-29)
 
-- Target domain `huapingyu.cn` (registered at Tencent Cloud, DNS on DNSPod, registrant 刘博). Since 2026-10-13 `www.huapingyu.cn` is live: DNSPod CNAME → `pingyu-s-garden.pages.dev`, added as a Cloudflare Pages custom domain (SSL active). It is the canonical `site`. The apex `huapingyu.cn` has no record yet (DNSPod URL forwarding needs ICP); it will point to the Beijing server after filing. ICP 新增网站 order 2036856883047 submitted 2026-10-13; the first 工信部短信核验 expired (24h window, the SMS goes to 刘博's phone), resubmitted 2026-10-14, SMS verified 2026-10-15, now waiting for 河北管局审核.
-- Mainland server: Aliyun Lighthouse Beijing `39.96.92.158` (root SSH key works; nginx + certbot; already serves myshiguangxu.cn and zllab.online, do not disturb them).
-- Existing ICP filing 冀ICP备2026042324号 (subject *博, website -1 = myshiguangxu.cn). huapingyu.cn must be added via Aliyun 备案「新增网站」 before it can be served from the Beijing server; after approval set `icp` in `src/data/site.json` (footer links to beian.miit.gov.cn) and switch DNS to the server.
+- Canonical domain: `https://huapingyu.cn`, registered at Tencent Cloud, DNS on DNSPod (registrant 刘博). Apex and `www` A records point to `39.96.92.158`, TTL 600; `www` redirects to apex. Previous `www` CNAME to Cloudflare was replaced.
+- Aliyun filing console verified order `2036856883047` as 管局审核通过 on 2026-10-29; site 萍雨学习手记, domain huapingyu.cn, website filing `冀ICP备2026042324号-3`. This exact number is in `src/data/site.json`; do not use -1 (another site) or guess -2.
+- Aliyun Beijing Lighthouse `39.96.92.158`: nginx + certbot, independent config `/etc/nginx/sites-available/huapingyu`; web root `/var/www/huapingyu/current` is an atomic symlink to a release. Other sites `myshiguangxu.cn` and `zllab.online` must not be disturbed.
+- Automatic mainland publishing: `huapingyu-publish.timer` checks `origin/astro-v2` every minute. Service runs as unprivileged user `garden`; dedicated public HTTPS clone `/opt/huapingyu/source`; installed script `/usr/local/bin/huapingyu-deploy` from `scripts/deploy-mainland.sh`. Builds before switching and retains last working release if build fails. CMS and Obsidian continue pushing to `astro-v2`. Server deployment files are in `deploy/`. After changing deploy script/systemd/nginx sources, explicitly install them on the server.
+- Logs: `journalctl -u huapingyu-publish.service`; manual update: `systemctl start huapingyu-publish.service`. TLS renewal uses certbot webroot `/var/www/huapingyu/acme` and nginx reload hook.
+- Local GitHub SSH port 22 can time out. Use `git -c core.sshCommand='ssh -p 443 -o Hostname=ssh.github.com -o ConnectTimeout=10' ...` if needed. The `~/dev/Pingyu-s-Garden-repo` clone is stale.
 
 ## IP identity
 

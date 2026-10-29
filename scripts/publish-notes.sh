@@ -23,6 +23,6 @@ git commit -q -m "notes: sync from Obsidian ($(date '+%Y-%m-%d %H:%M'))"
 
 echo "③ 先同步编辑后台里的新内容…"
 git pull -q --rebase --autostash
-echo "④ 推送到 GitHub，Cloudflare 会在几分钟内自动更新网站…"
+echo "④ 推送到 GitHub，北京服务器会自动更新网站…"
 git push -q
-echo "✅ 完成：https://pingyu-s-garden.pages.dev/notes/"
+echo "✅ 完成：https://huapingyu.cn/notes/"

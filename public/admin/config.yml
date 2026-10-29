@@ -8,7 +8,7 @@ backend:
   # 没有部署 OAuth 中转服务，「使用 GitHub 登录」会一直卡在 Signing in，所以只开放令牌登录
   auth_methods: [token]
 
-site_url: https://www.huapingyu.cn
+site_url: https://huapingyu.cn
 
 media_folder: public/media/uploads
 public_folder: /media/uploads
